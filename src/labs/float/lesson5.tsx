@@ -5,7 +5,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { cn } from '@/lib/utils'
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
-import { FLOATERS, G, LIQUIDS, TANK5, kN, motion5, rest5, step5, wet5, type FloaterKey, type LiquidKey, type Motion5 } from './physics'
+import { FLOATERS, G, LIQUIDS, SEA5, TANK5, kN, motion5, rest5, step5, wet5, type FloaterKey, type LiquidKey, type Motion5 } from './physics'
 
 const STATE: Record<Motion5, { name: string; color: string }> = {
   float: { name: '漂浮', color: '#7fe3d4' }, hover: { name: '悬浮', color: '#ffe9a8' }, sunk: { name: '沉底', color: '#ffb394' },
@@ -13,7 +13,7 @@ const STATE: Record<Motion5, { name: string; color: string }> = {
 }
 interface Now { obj: FloaterKey; tank: number; liquid: LiquidKey; m: Motion5 }
 const TASKS: (Task & { ok: (s: Now) => boolean })[] = [
-  { id: 'sink', text: '把钢锭放进水里，看它停在哪', note: '重力比浮力大得多：下沉，一直沉到池底', ok: s => s.obj === 'steel' && s.m === 'sunk' },
+  { id: 'sink', text: '把钢锭放进水里，看它停在哪', note: '重力比浮力大得多：下沉，一直沉到水底', ok: s => s.obj === 'steel' && s.m === 'sunk' },
   { id: 'ballast', text: '往压载箱里加水，直到它沉下去', note: '加到比同体积的水还重，它就沉了', ok: s => s.obj === 'tank' && s.m === 'sunk' },
   { id: 'hover', text: '调到刚好悬浮：不上也不下', note: '和同体积的水一样重：浮力等于重力，停在哪都行', ok: s => s.obj === 'tank' && s.m === 'hover' },
   { id: 'sea', text: '悬浮的压载箱，换到海水里试试', note: '海水更密，浮力变大：它浮上来了', ok: s => s.obj === 'tank' && s.liquid === 'sea' && s.tank === 1000 && s.m === 'float' },
@@ -57,11 +57,11 @@ export default function Lesson5() {
   }, [])
   const place = (b: number) => { Object.assign(sim.current, { b, v: 0, support: 0 }); setPos({ b, v: 0, support: 0 }) }
   const dragTo = (b: number) => { setTouched(true); sim.current.held = true; place(b) }
-  const pushDown = () => { setTouched(true); place(-1.7) }
+  const pushDown = () => { setTouched(true); place(-2.1) }
   const change = (k: FloaterKey) => { if (k === obj) return; setObj(k); place(DROP_FROM) }
   const addWater = (d: number) => setTank(t => Math.min(TANK5.max, Math.max(TANK5.min, t + d)))
-  // 沉在池底的压载箱调到和水一样重时，它不会自己离开池底：把它托到水中间，才看得出“停在哪都行”
-  useEffect(() => { const x = sim.current; if (obj === 'tank' && x.b < -2.6 && Math.abs(wet5(x.b, rho).fBuoy - tank * G) < 30) place(-1.55) }, [tank, rho, obj])   // eslint-disable-line react-hooks/exhaustive-deps
+  // 沉在水底的压载箱调到和水一样重时，它不会自己离开水底：把它托到水中间，才看得出“停在哪都行”
+  useEffect(() => { const x = sim.current; if (obj === 'tank' && x.b < -SEA5.depth + 0.1 && Math.abs(wet5(x.b, rho).fBuoy - tank * G) < 30) place(-2) }, [tank, rho, obj])   // eslint-disable-line react-hooks/exhaustive-deps
 
   const w = wet5(pos.b, rho), g = mass * G
   const m = motion5(pos.b, pos.v, mass, rho)
@@ -131,7 +131,7 @@ export default function Lesson5() {
             <span className="grid size-9 place-items-center rounded-full bg-white/10 text-xl font-bold">{m === 'air' ? '·' : fSym}</span>
             <Side symbol="G" value={kN(g)} unit="kN" />
           </div>
-          {m === 'sunk' && <p className="mt-2 text-center text-[13px] text-white/60">池底还托着它：支持力 {kN(pos.support)} kN</p>}
+          {m === 'sunk' && <p className="mt-2 text-center text-[13px] text-white/60">水底还托着它：支持力 {kN(pos.support)} kN</p>}
 
           <h2 className="mt-5 text-[12.5px] text-white/55">关键参数（{FLOATERS[obj].name}，{mass} kg）</h2>
           <div className="mt-2 grid grid-cols-3 gap-2">

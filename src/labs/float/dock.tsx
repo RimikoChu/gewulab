@@ -14,6 +14,8 @@ export const HALF = POOL.side / 2
 export const JIB_Y = 8.6                     // 吊臂高度
 const SUN = new THREE.Vector3(0.812, 0.334, 0.478)   // 太阳方向（和天空图里的太阳对齐）
 const SKY_ROT = 0.096
+export const SEA_Y = -1.6                     // 海面的高度（码头面是 0）
+export const QUAY_X = 26.1                   // 岸壁的位置
 export const YELLOW = '#e8b21e', STEEL = '#59626b', CONCRETE = '#a7a59d'
 
 // ---------- 小工具 ----------
@@ -58,8 +60,9 @@ function getWaterNormal() {
   const t = new THREE.DataTexture(data, N, N); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true
   return (waterNormal = t)
 }
-export function useRipple(repeat: number, speed = 0.03) {
-  const map = useMemo(() => { const t = getWaterNormal().clone(); t.needsUpdate = true; t.repeat.set(repeat, repeat); return t }, [repeat])
+export function useRipple(repeat: number | [number, number], speed = 0.03) {
+  const [rx, ry] = typeof repeat === 'number' ? [repeat, repeat] : repeat
+  const map = useMemo(() => { const t = getWaterNormal().clone(); t.needsUpdate = true; t.repeat.set(rx, ry); return t }, [rx, ry])
   useFrame((_, dt) => { map.offset.x += dt * speed; map.offset.y += dt * speed * 0.6 })
   return map
 }
@@ -90,7 +93,7 @@ export function useConcrete(rx: number, ry: number) {
 }
 
 /** 码头地面、地面标线、岸边和海 */
-function Quay() {
+function Quay({ sea: withSea }: { sea: boolean }) {
   const [d, n, r] = useConcrete(34, 62)
   const sea = useRipple(70, 0.012)
   const marks = useMemo(() => {
@@ -101,8 +104,9 @@ function Quay() {
     // 斜纹警示带
     for (let i = 0; i < 14; i++) line(-13 + i * 1.1, 7.2, 0.3, 3.2, '#e4b524', 0.7)
     // 车道虚线
-    for (let i = 0; i < 16; i++) line(-40 + i * 5, 10.5, 2.6, 0.2, '#e9e6dc')
-    for (let i = 0; i < 16; i++) line(-40 + i * 5, -9.5, 2.6, 0.2, '#e9e6dc')
+    // 车道虚线只画到岸边黄线以内，不能伸到水面上
+    for (let i = 0; i < 13; i++) line(-40 + i * 5, 10.5, 2.6, 0.2, '#e9e6dc')
+    for (let i = 0; i < 13; i++) line(-40 + i * 5, -9.5, 2.6, 0.2, '#e9e6dc')
     // 岸边黄线
     line(24.6, 40, 0.35, 260)
     return mergeParts(P)
@@ -113,7 +117,7 @@ function Quay() {
       <mesh geometry={marks}><Painted rough={0.8} metal={0} /></mesh>
       {/* 岸壁和海面 */}
       <mesh position={[26.05, -2, 40]}><boxGeometry args={[0.1, 4, 260]} /><meshStandardMaterial color="#6f6d66" roughness={0.9} /></mesh>
-      <mesh position={[160, -1.6, 40]} rotation-x={-Math.PI / 2}><planeGeometry args={[280, 640]} /><meshPhysicalMaterial color="#1c5560" roughness={0.12} metalness={0.1} normalMap={sea} normalScale={new THREE.Vector2(0.55, 0.55)} envMapIntensity={1.6} /></mesh>
+      {withSea && <mesh position={[160, SEA_Y, 40]} rotation-x={-Math.PI / 2}><planeGeometry args={[280, 640]} /><meshPhysicalMaterial color="#1c5560" roughness={0.12} metalness={0.1} normalMap={sea} normalScale={new THREE.Vector2(0.55, 0.55)} envMapIntensity={1.6} /></mesh>}
     </group>
   )
 }
@@ -258,8 +262,33 @@ export function Pool({ spout = true }: { spout?: boolean }) {
   )
 }
 
+/** 钢架玻璃水槽：和试验水池一样大，四面透明，后面和两侧衬深色板。lid：顶上加一圈盖框 */
+export function GlassTank({ lid = false }: { lid?: boolean }) {
+  const top = BRIM + 0.25, o = HALF + 0.08, hgt = top - POOL.floor
+  const geo = useMemo(() => {
+    const P: Part[] = []
+    P.push({ p: [0, POOL.floor / 2, 0], s: [POOL.side + 0.36, POOL.floor, POOL.side + 0.36], c: '#4a5058' })
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) P.push({ p: [sx * o, top / 2, sz * o], s: [0.16, top, 0.16], c: STEEL })
+    for (const sz of [-1, 1]) P.push({ p: [0, top - 0.06, sz * o], s: [POOL.side + 0.32, 0.12, 0.16], c: STEEL })
+    for (const sx of [-1, 1]) P.push({ p: [sx * o, top - 0.06, 0], s: [0.16, 0.12, POOL.side + 0.32], c: STEEL })
+    if (lid) for (const x of [-0.75, 0.75]) P.push({ p: [x, top - 0.03, 0], s: [0.1, 0.06, POOL.side + 0.2], c: STEEL })
+    return mergeParts(P)
+  }, [lid, top, o])
+  const dark = <meshStandardMaterial color="#173a44" roughness={0.9} />
+  return (
+    <group>
+      <mesh geometry={geo} castShadow receiveShadow><Painted metal={0.5} rough={0.5} /></mesh>
+      <mesh position={[0, POOL.floor + hgt / 2, -HALF]}><planeGeometry args={[POOL.side, hgt]} />{dark}</mesh>
+      <mesh position={[-HALF, POOL.floor + hgt / 2, 0]} rotation-y={Math.PI / 2}><planeGeometry args={[POOL.side, hgt]} />{dark}</mesh>
+      <mesh position={[HALF, POOL.floor + hgt / 2, 0]} rotation-y={-Math.PI / 2}><planeGeometry args={[POOL.side, hgt]} />{dark}</mesh>
+      <mesh position={[0, POOL.floor + 0.006, 0]} rotation-x={-Math.PI / 2}><planeGeometry args={[POOL.side, POOL.side]} /><meshStandardMaterial color="#1b414b" roughness={0.85} /></mesh>
+      <mesh position={[0, POOL.floor + hgt / 2, HALF + 0.02]} renderOrder={4}><planeGeometry args={[POOL.side, hgt]} /><meshBasicMaterial color="#ffffff" transparent opacity={0.035} depthWrite={false} /></mesh>
+    </group>
+  )
+}
+
 /** 池里的水：一块半透明的水体 + 会晃的水面 */
-export function Water({ levelY, color, stir }: { levelY: number; color: string; stir: React.RefObject<number> }) {
+export function Water({ levelY, color, stir, side = POOL.side }: { levelY: number; color: string; stir: React.RefObject<number>; side?: number }) {
   const map = useRipple(2.2, 0.03), mat = useRef<THREE.MeshPhysicalMaterial>(null)
   useFrame(() => { if (mat.current) { const k = 0.18 + stir.current * 0.6; mat.current.normalScale.set(k, k) } })
   const hgt = levelY - POOL.floor
@@ -267,33 +296,77 @@ export function Water({ levelY, color, stir }: { levelY: number; color: string; 
   return (
     <group>
       <mesh position={[0, POOL.floor + hgt / 2, 0]} renderOrder={2}>
-        <boxGeometry args={[POOL.side - 0.01, hgt, POOL.side - 0.01]} />
+        <boxGeometry args={[side - 0.01, hgt, side - 0.01]} />
         <meshBasicMaterial color={deep} transparent opacity={0.5} depthWrite={false} />
       </mesh>
       <mesh position={[0, levelY + 0.004, 0]} rotation-x={-Math.PI / 2} renderOrder={3}>
-        <planeGeometry args={[POOL.side - 0.01, POOL.side - 0.01]} />
+        <planeGeometry args={[side - 0.01, side - 0.01]} />
         <meshPhysicalMaterial ref={mat} color={color} transparent opacity={0.5} roughness={0.04} envMapIntensity={1.6} normalMap={map} clearcoat={1} depthWrite={false} />
       </mesh>
     </group>
   )
 }
 
-/** 悬臂吊：立柱在水池后面，吊臂伸到水池正上方 */
-export function Crane() {
+/** 码头外面的开放水域：能看进水里。水体和试验水池一样用不受光照的深色半透明材质。
+ *  cut：把水沿这条 z 线竖着剖开，只留一侧（dir = 1 留 z 更小的一侧），另一侧露出海床，从那边能看到水下的剖面 */
+export function OpenSea({ depth, cut, dir = 1, color = '#1f7f9c', gloss = 0.5, tint = 0.5 }: { depth: number; cut?: number; dir?: 1 | -1; color?: string; gloss?: number; tint?: number }) {
+  const X1 = 300, bed = SEA_Y - depth
+  const [za, zb] = cut == null ? [-280, 360] : dir > 0 ? [-280, cut] : [cut, 360]
+  const w = X1 - QUAY_X, l = zb - za, cx = (QUAY_X + X1) / 2, cz = (za + zb) / 2
+  const map = useRipple([w * 0.28, l * 0.28], 0.012)
+  const [d, n, r] = useConcrete(60, 140)
+  const deep = useMemo(() => new THREE.Color(color).multiplyScalar(0.22), [color])
+  // 剖面上的一层渐变：靠近水面透亮，越往下越暗；最上面一条亮线是水面
+  const face = useMemo(() => {
+    const c = document.createElement('canvas'); c.width = 4; c.height = 256
+    const g = c.getContext('2d')!, k = new THREE.Color(color), rgb = `${Math.round(k.r * 255)},${Math.round(k.g * 255)},${Math.round(k.b * 255)}`
+    const grad = g.createLinearGradient(0, 0, 0, 256)
+    grad.addColorStop(0, `rgba(${rgb},0.42)`); grad.addColorStop(0.45, `rgba(${rgb},0.12)`); grad.addColorStop(1, 'rgba(4,22,28,0.38)')
+    g.fillStyle = grad; g.fillRect(0, 0, 4, 256)
+    g.fillStyle = 'rgba(225,246,250,0.75)'; g.fillRect(0, 0, 4, 2)
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace
+    return t
+  }, [color])
+  return (
+    <group>
+      {/* 海床：露在外面的一段是浅色的，水底下的一段刷深，水才显得深 */}
+      <mesh position={[cx, bed, 40]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[w, 640]} /><meshStandardMaterial map={d} normalMap={n} roughnessMap={r} color="#a9aaa2" envMapIntensity={0.6} /></mesh>
+      <mesh position={[cx, bed + 0.012, cz]} rotation-x={-Math.PI / 2}><planeGeometry args={[w, l]} /><meshStandardMaterial color="#1b414b" roughness={0.9} /></mesh>
+      {/* 岸壁一直接到海床 */}
+      <mesh position={[QUAY_X + 0.012, bed / 2, 40]} rotation-y={Math.PI / 2} receiveShadow><planeGeometry args={[640, -bed]} /><meshStandardMaterial color="#77756e" roughness={0.92} /></mesh>
+      {/* 岸壁泡在水里的那一段刷深色：水线一眼看得出来 */}
+      <mesh position={[QUAY_X + 0.02, (bed + SEA_Y) / 2, cz]} rotation-y={Math.PI / 2}><planeGeometry args={[l, depth]} /><meshStandardMaterial color="#1d444e" roughness={0.9} /></mesh>
+      <mesh position={[QUAY_X + 0.03, SEA_Y + 0.05, cz]} rotation-y={Math.PI / 2}><planeGeometry args={[l, 0.1]} /><meshBasicMaterial color="#3b4a44" /></mesh>
+      {cut != null && <mesh position={[cx, (bed + SEA_Y) / 2, cut - dir * 26]} rotation-y={dir > 0 ? 0 : Math.PI}><planeGeometry args={[w, depth]} /><meshBasicMaterial color="#0d2a31" /></mesh>}
+      <mesh position={[cx, (bed + SEA_Y) / 2, cz]} renderOrder={2}>
+        <boxGeometry args={[w, depth, l]} />
+        <meshBasicMaterial color={deep} transparent opacity={tint} depthWrite={false} />
+      </mesh>
+      {cut != null && <mesh position={[cx, (bed + SEA_Y) / 2, cut + dir * 0.006]} rotation-y={dir > 0 ? 0 : Math.PI} renderOrder={4}><planeGeometry args={[w, depth]} /><meshBasicMaterial map={face} transparent depthWrite={false} toneMapped={false} /></mesh>}
+      <mesh position={[cx, SEA_Y + 0.004, cz]} rotation-x={-Math.PI / 2} renderOrder={3}>
+        <planeGeometry args={[w, l]} />
+        <meshPhysicalMaterial color={color} transparent opacity={gloss} roughness={0.06} envMapIntensity={1.3} normalMap={map} normalScale={new THREE.Vector2(0.4, 0.4)} clearcoat={1} depthWrite={false} />
+      </mesh>
+    </group>
+  )
+}
+
+/** 悬臂吊：立柱在后面，吊臂往前伸。reach：立柱到吊钩的水平距离；jib：吊臂离地多高 */
+export function Crane({ reach = HALF + 1.25, jib: JIB_Y = 8.6 }: { reach?: number; jib?: number }) {
   const geo = useMemo(() => {
-    const P: Part[] = [], z0 = -HALF - 1.25
-    P.push({ p: [0, 0.12, z0], s: [1.7, 0.24, 1.7], c: '#3c4249' }, { p: [0, 4.6, z0], s: [0.55, 9.2, 0.55], c: YELLOW })
+    const P: Part[] = [], z0 = -reach
+    P.push({ p: [0, 0.12, z0], s: [1.7, 0.24, 1.7], c: '#3c4249' }, { p: [0, (JIB_Y + 0.6) / 2, z0], s: [0.55, JIB_Y + 0.6, 0.55], c: YELLOW })
     P.push({ p: [0, JIB_Y + 0.25, z0 / 2 + 0.35], s: [0.42, 0.5, -z0 + 1.9], c: YELLOW }, { p: [0, JIB_Y + 0.25, z0 - 1], s: [0.42, 0.5, 1.6], c: YELLOW }, { p: [0, JIB_Y + 0.1, z0 - 1.5], s: [0.9, 0.9, 0.7], c: '#4a5058' })
     const bl = Math.hypot(2.2, 2.2); P.push({ p: [0, JIB_Y - 1.05, z0 + 1.2], s: [0.2, 0.2, bl], c: YELLOW, r: [Math.PI / 4, 0, 0] })
     for (let i = 0; i < 4; i++) P.push({ p: [0, 0.45 + i * 0.3, z0], s: [0.57, 0.14, 0.57], c: i % 2 ? YELLOW : '#22262a' })     // 柱脚警示条
     P.push({ p: [0, JIB_Y - 0.12, 0], s: [0.6, 0.3, 0.7], c: '#3c4249' })                                                        // 吊臂下的小车
     return mergeParts(P)
-  }, [])
+  }, [reach, JIB_Y])
   return <mesh geometry={geo} castShadow receiveShadow><Painted metal={0.4} rough={0.45} /></mesh>
 }
 
 /** 钢丝绳 + 吊秤 + 吊钩。y 是吊秤中心的高度，reading 是屏上显示的数 */
-export function Hoist({ y, reading }: { y: number; reading: string }) {
+export function Hoist({ y, reading, jib: JIB_Y = 8.6 }: { y: number; reading: string; jib?: number }) {
   const iron = <meshStandardMaterial color="#30353b" metalness={0.8} roughness={0.4} />
   return (
     <group>
@@ -393,7 +466,9 @@ export interface Label extends Tag { className: string; style?: CSSProperties; n
 /** 舞台：天空、灯光、码头环境、镜头控制、后期和画质分档都在这里；children 是这一课自己的器材 */
 const VIEW: [number, number] = [-0.42, 0.2]
 /** view：默认机位的方位角和仰角；pan：平移时看向的点能离 target 多远 */
-export function DockStage({ labels, target, span, view = VIEW, children }: { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; children: ReactNode }) {
+/** indoor：这一课在室内或别的世界，不画码头和船体；sky：背景要不要画天空（不画时用 backdrop 这个颜色）；fog：雾的起止距离；sun：阳光强度 */
+export function DockStage({ labels, target, span, view = VIEW, sea = true, indoor = false, backdrop = '#1c2125', sky = !indoor, fog = [70, 420], sun = 3.4, children }: { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; sea?: boolean; indoor?: boolean; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; children: ReactNode }) {
+  const aim = useMemo(() => { const o = new THREE.Object3D(); o.position.set(target.x, 0, target.z); o.updateMatrixWorld(); return o }, [target])   // 阳光对着这一课的器材，影子才落在画面里
   const [home, setHome] = useState(0)                 // 每加一，镜头回到默认位置
   const [names, setNames] = useState(true)
   useEffect(() => { const t = setTimeout(() => setNames(false), 9000); return () => clearTimeout(t) }, [])
@@ -403,23 +478,22 @@ export function DockStage({ labels, target, span, view = VIEW, children }: { lab
   return (
     <div className="relative size-full">
       <Canvas onDoubleClick={() => setHome(h => h + 1)} shadows dpr={[1, tier === 2 ? 1.75 : tier === 1 ? 1.5 : 1.25]} camera={{ fov: 34, near: 0.5, far: 900 }} gl={{ antialias: false }}>
-        <color attach="background" args={['#9fb4c8']} />
-        <fog attach="fog" args={['#b7c4d0', 70, 420]} />
+        <color attach="background" args={[sky ? '#9fb4c8' : backdrop]} />
+        <fog attach="fog" args={[sky ? '#b7c4d0' : backdrop, fog[0], fog[1]]} />
         <Rig home={home} target={target} span={span} view={view} />
         <PerformanceMonitor bounds={() => [32, 70]} flipflops={2} onDecline={() => setTier(t => Math.max(0, t - 1))} />
         <ambientLight intensity={0.12} />
         {/* 傍晚的斜阳：方向和天空图里的太阳一致，拉出长影子 */}
-        <directionalLight castShadow position={SUN.clone().multiplyScalar(60).add(new THREE.Vector3(1, 0, 0)).toArray()} intensity={3.4} color="#ffe0b8"
+        <primitive object={aim} />
+        <directionalLight castShadow target={aim} position={SUN.clone().multiplyScalar(60).add(new THREE.Vector3(1, 0, 0)).add(aim.position).toArray()} intensity={sun} color="#ffe0b8"
           shadow-mapSize={tier === 0 ? [1024, 1024] : [2048, 2048]} shadow-bias={-0.0006} shadow-normalBias={0.03} shadow-radius={5}>
           <orthographicCamera attach="shadow-camera" args={[-24, 16, 18, -14, 1, 140]} />
         </directionalLight>
         <Suspense fallback={null}>
           {/* 实拍天空（Poly Haven，CC0）：背景、环境光、反射都用它 */}
-          <Environment files="/assets/env/sky_1k.hdr" background backgroundBlurriness={0.04} environmentIntensity={1.15}
+          <Environment files="/assets/env/sky_1k.hdr" background={sky} backgroundBlurriness={0.04} environmentIntensity={1.15}
             backgroundRotation={[0, SKY_ROT, 0]} environmentRotation={[0, SKY_ROT, 0]} />
-          <Quay />
-          <Hull />
-          <Yard />
+          {!indoor && <><Quay sea={sea} /><Hull /><Yard /></>}
           {children}
         </Suspense>
         <TagProjector tags={labels} els={els} />

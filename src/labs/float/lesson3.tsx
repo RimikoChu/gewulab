@@ -55,8 +55,8 @@ export default function Lesson3() {
   const resetAll = () => { crane.reset(); setFactor('vol'); setMat('steel'); setLiquid('fresh'); setRows([]); setDone({}); setFinale(false); try { localStorage.removeItem(KEY) } catch { /* 忽略 */ } }
   /** 换探究的因素：其余条件都回到标准状态（钢块、淡水） */
   const pick = (f: Factor) => { if (f !== factor) crane.retract(() => { setFactor(f); setMat('steel'); setLiquid('fresh') }) }
-  /** 换液体或材料：吊车先收回，换好以后自动放到完全浸没 */
-  const swap = (f: () => void) => crane.retract(() => { f(); crane.moveTo(SUBMERGE) })
+  /** 换液体或材料：吊车先收回，换好（行车平移到另一只液槽上方）以后自动放到完全浸没 */
+  const swap = (f: () => void) => crane.retract(() => { f(); setTimeout(() => crane.moveTo(SUBMERGE), 1500) })
 
   const now = valueOf(factor, r, mat, liquid)
   const canRecord = !busy && !moving && !!now

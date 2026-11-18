@@ -16,9 +16,9 @@ const ORDER: Sub[] = ['ice', 'salvage', 'space', 'crown']
 const FLOOR = POOL.floor - POOL.brim, LIFTED = -1.95, CRATE = 600
 const TASKS: Task[] = [
   { id: 'ice', text: '冰山：让冰融化，看水面变不变', note: '冰化成的水，正好填满它原来排开的那部分' },
-  { id: 'salvage', text: '沉船：加浮筒，把它从池底捞起来', note: '浮筒排开的水够多，总浮力就超过了重力' },
+  { id: 'salvage', text: '沉船：加浮筒，把它从海底捞起来', note: '浮筒排开的水够多，总浮力就超过了重力' },
   { id: 'space', text: '太空：关掉重力，把木箱按到水下', note: '水没有了重力，也就没有压力差：木箱留在原地' },
-  { id: 'crown', text: '王冠：把金块和王冠各放进量筒一次', note: '一样重，王冠排开的水更多：它不是纯金' },
+  { id: 'crown', text: '王冠：把金块和王冠各放进溢水杯一次', note: '一样重，王冠排开的水更多：它不是纯金' },
 ]
 const KEY = 'gewu:float:x'
 
@@ -93,17 +93,17 @@ export default function LessonX() {
   const nextSub = ORDER.find(k => !done[k])
   const { hint, next }: { hint: string; next: string | null } = (() => {
     if (done[sub]) return nextSub ? { hint: `这个做完了。接着做：${SUBS[nextSub].name}`, next: 'sub' } : { hint: '四个拓展实验都做完了。', next: null }
-    if (sub === 'ice') return s.melting ? { hint: '看水面和黄线…', next: null } : { hint: '按“让冰融化”，盯住池壁上那道黄线', next: 'melt' }
-    if (sub === 'salvage') return sv.up ? { hint: '浮力超过重力了：它正在离开池底', next: null } : { hint: `浮力还不够（差 ${kN(-sv.net)} kN）：再加一只浮筒`, next: 'plus' }
+    if (sub === 'ice') return s.melting ? { hint: '看水面和黄线…', next: null } : { hint: '按“让冰融化”，盯住槽壁上那道黄线', next: 'melt' }
+    if (sub === 'salvage') return sv.up ? { hint: '浮力超过重力了：它正在离开海底', next: null } : { hint: `浮力还不够（差 ${kN(-sv.net)} kN）：再加一只浮筒`, next: 'plus' }
     if (sub === 'space') return !zeroG ? { hint: '先试一次：把木箱按到水下，它会浮回来。然后把重力关掉', next: 'g' } : { hint: sp.wet > 0.99 ? '松手了，它一动不动…' : '把木箱按到水下再松手', next: sp.wet > 0.99 ? null : 'push' }
-    return got.gold == null ? { hint: '先把金块放进量筒', next: 'gold' } : got.crown == null ? { hint: '再把一样重的王冠放进去', next: 'crown' } : { hint: '', next: null }
+    return got.gold == null ? { hint: '先把金块放进装满水的溢水杯', next: 'gold' } : got.crown == null ? { hint: '再把一样重的王冠放进去', next: 'crown' } : { hint: '', next: null }
   })()
 
   const info = SUBS[sub]
   const dens = (k: CrownKey) => got[k] != null ? (GOLD.mass / (got[k]! - CYL.start)).toFixed(1) : '—'
   return (
     <LabShell title="浮力" lessons={LESSONS} current="x" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
-      actionsLabel={{ ice: '冰', salvage: '浮筒（每只排开 0.5 m³ 的水）', space: '木箱（也可以直接拖）', crown: '量筒' }[sub]}
+      actionsLabel={{ ice: '冰', salvage: '浮筒（每只排开 0.5 m³ 的水）', space: '木箱（也可以直接拖）', crown: '溢水杯' }[sub]}
       stage={<SceneX sub={sub} liquid={liquid}
         ice={{ side: ice.side, level: ice.level, bottom: ice.bottom, under: ice.under, start }}
         wreck={{ b: s.wb, bags, level: sv.level, g: sv.g, fBuoy: sv.fBuoy }}
@@ -141,7 +141,7 @@ export default function LessonX() {
             <p className="mt-2 text-[13.5px] leading-snug text-white/65">冰露在水面上的部分占 {Math.round((1 - 900 / rho) * 100)}%，水下占 {Math.round(900 / rho * 100)}%。</p>
           </>}
           {sub === 'salvage' && <>
-            <div className="pop text-center text-[32px] leading-none font-bold" key={String(lifted)} style={{ color: lifted ? '#7fe3d4' : '#ffb394' }}>{lifted ? '捞起来了' : sv.up ? '上浮中' : '沉在池底'}</div>
+            <div className="pop text-center text-[32px] leading-none font-bold" key={String(lifted)} style={{ color: lifted ? '#7fe3d4' : '#ffb394' }}>{lifted ? '捞起来了' : sv.up ? '上浮中' : '沉在海底'}</div>
             <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
               <div><div className="font-formula text-[18px] italic text-white/65">F<sub>浮</sub></div><div className="text-[30px] leading-none font-bold tabular-nums">{kN(sv.fBuoy)}<span className="ml-1 text-[13px] font-medium text-white/55">kN</span></div></div>
               <span className="grid size-9 place-items-center rounded-full bg-white/10 text-xl font-bold">{sv.up ? '>' : '<'}</span>
@@ -165,7 +165,6 @@ export default function LessonX() {
               <ParamTile symbol="G" value={kN(CRATE * (zeroG ? 0 : G))} unit="kN · 木箱" />
             </div>
             <p className="mt-3 text-[13.5px] leading-snug text-white/65">{zeroG ? '重力“关掉”以后，木箱和水都没有了重力：把它放在哪，它就停在哪。' : '在地面上，把木箱按到水下再松手，浮力比重力大，它会浮回来。'}</p>
-            <p className="mt-2 text-[12.5px] leading-snug text-white/45">这里只是把计算里的 g 改成了 0，画面仍在船厂。</p>
           </>}
           {sub === 'crown' && <>
             <div key={String(ok.crown)} className="pop text-center text-[28px] leading-tight font-bold" style={{ color: ok.crown ? '#ffb394' : '#ffffff' }}>{ok.crown ? '王冠掺了别的金属' : '都是 1000 g'}</div>
@@ -178,7 +177,7 @@ export default function LessonX() {
                 ))}
               </tbody>
             </table>
-            <p className="mt-3 font-formula text-[15px] leading-relaxed text-white/70">体积 = 放进去以后的水面 − 原来的 {CYL.start} mL</p>
+            <p className="mt-3 font-formula text-[15px] leading-relaxed text-white/70">体积 = 流进量杯的水（1 mL = 1 cm³）</p>
             <p className="mt-2 text-[13.5px] leading-snug text-white/65">纯金的密度是 19.3 g/cm³。{ok.crown && `王冠只有 ${dens('crown')}，说明里面掺了密度更小的金属。`}</p>
           </>}
         </Glass>

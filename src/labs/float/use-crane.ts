@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 const SPEED = 0.6            // 升降速度（m/s）
 
-export function useCrane(max: number) {
+export function useCrane(max: number, speed = SPEED) {
   const [drop, setDrop] = useState(0)                  // 从起点往下放了多少米
   const [busy, setBusy] = useState(false)              // 正在收回，暂时不能操作
   const [touched, setTouched] = useState(false)        // 动过一次以后，不再显示“可以拖动”的提示
@@ -18,14 +18,14 @@ export function useCrane(max: number) {
       const dt = Math.min(0.05, (now - last) / 1000); last = now
       const d = goal.current - dropRef.current
       if (Math.abs(d) > 1e-4) {
-        const n = Math.abs(d) <= SPEED * dt ? goal.current : dropRef.current + Math.sign(d) * SPEED * dt
+        const n = Math.abs(d) <= speed * dt ? goal.current : dropRef.current + Math.sign(d) * speed * dt
         dropRef.current = n; setDrop(n); raf.current = requestAnimationFrame(frame); return
       }
       raf.current = 0
       if (then.current) { const f = then.current; then.current = null; busyRef.current = false; setBusy(false); f() }
     }
     if (!raf.current) raf.current = requestAnimationFrame(frame)
-  }, [])
+  }, [speed])
   useEffect(() => () => cancelAnimationFrame(raf.current), [])
 
   const moveTo = (d: number) => { if (busyRef.current) return; setTouched(true); goal.current = Math.round(Math.min(maxRef.current, Math.max(0, d)) * 1e4) / 1e4; tick() }

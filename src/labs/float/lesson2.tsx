@@ -9,7 +9,7 @@ import { BOXES, G, STEP, dropForTop, kN, maxDrop2, solve2, type BoxKey } from '.
 import { useCrane } from './use-crane'
 
 interface Row { id: number; box: BoxKey; dTop: number; down: number; up: number }
-const DEEPER = 0.3     // “更深”至少要比上一次深这么多（m）
+const DEEPER = 1       // “更深”至少要比上一次深这么多（m）
 const TASKS: (Task & { ok: (rows: Row[]) => boolean })[] = [
   { id: 'in', text: '把钢箱完全放进水里，记录数据', note: '底面受到的压力比顶面大，差值就是浮力', ok: rows => rows.some(x => x.box === 'b1') },
   { id: 'deep', text: '放到更深的地方，再记录一次', note: '两个压力都变大了，差值没有变', ok: rows => { const a = rows.filter(x => x.box === 'b1').map(x => x.dTop); return a.length > 1 && Math.max(...a) - Math.min(...a) >= DEEPER - 1e-6 } },
@@ -20,7 +20,7 @@ type Next = 'lower' | 'record' | 'box' | null
 
 export default function Lesson2() {
   const [box, setBox] = useState<BoxKey>('b1')
-  const crane = useCrane(maxDrop2())
+  const crane = useCrane(maxDrop2(), 1.2)
   const [rows, setRows] = useState<Row[]>([])
   const [done, setDone] = useState<Record<string, boolean>>(() => { try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} } })
   const [banner, setBanner] = useState<string | null>(null)

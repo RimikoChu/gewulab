@@ -64,47 +64,48 @@ export type Lesson4Result = ReturnType<typeof solve>
 export const kN = (x: number) => (Math.abs(x) < 5 ? 0 : x / 1000).toFixed(2)
 
 // ---------- 第 1 课 水里变轻了（称重法） ----------
-// 水池没有注满：物体放进去，水面只会升高，不会溢出。物体形状不规则，体积不好量，但浮力能直接“称”出来。
+// 地点在码头岸边：岸上的吊车把物体放进港池。水面很大，放进去水位不变。物体形状不规则，体积不好量，但浮力能直接“称”出来。
 export const ITEMS = {
   anchor: { name: '船锚', mat: '铸钢', mass: 3000, rho: 7850, h: 1.8 },
   prop: { name: '螺旋桨', mat: '青铜', mass: 4400, rho: 8800, h: 1.7 },
   slab: { name: '混凝土块', mat: '混凝土', mass: 2400, rho: 2400, h: 1 },
 } as const
 export type ItemKey = keyof typeof ITEMS
-/** 第 1 课的水位比满水位低 0.35 m */
-export const BASE1 = -0.35
+/** 第 1 课的高度都相对港池水面来算 */
+export const BASE1 = 0
 export const maxDrop1 = (k: ItemKey) => START_GAP + ITEMS[k].h + 0.25
 
 /** drop：物体从起点往下放了多少米。浸入的体积按“浸入的高度占全高的比例”估算 */
 export function solve1(drop: number, item: ItemKey) {
-  const it = ITEMS[item], A = POOL.side ** 2, V = it.mass / it.rho, rho = LIQUIDS.fresh.rho
-  const bottom = BASE1 + START_GAP - drop                              // 物体底部相对满水位的高度
-  const depth = Math.min(it.h, Math.max(0, (BASE1 - bottom) / (1 - V / (it.h * A))))   // 水面会跟着升高，所以要一起解
+  const it = ITEMS[item], V = it.mass / it.rho, rho = LIQUIDS.fresh.rho
+  const bottom = BASE1 + START_GAP - drop                              // 物体底部相对水面的高度
+  const depth = Math.min(it.h, Math.max(0, BASE1 - bottom))
   const vImm = V * depth / it.h
   const g = it.mass * G, fBuoy = rho * G * vImm
-  return { bottom, depth, frac: depth / it.h, level: BASE1 + vImm / A, vImm, volume: V, g, fBuoy, fPull: g - fBuoy, inAir: vImm < 1e-6, under: depth > it.h - 1e-4 }
+  return { bottom, depth, frac: depth / it.h, level: BASE1, vImm, volume: V, g, fBuoy, fPull: g - fBuoy, inAir: vImm < 1e-6, under: depth > it.h - 1e-4 }
 }
 export type Lesson1Result = ReturnType<typeof solve1>
 
 // ---------- 第 2 课 浮力从哪来（上下表面的压力差） ----------
-// 钢箱底面是 1 m × 1 m。只算水产生的压强：p = ρ g h，面上的压力 F = p S。
+// 地点在深水船坞：水深 7 m，钢箱可以放得很深。钢箱底面是 1 m × 1 m。只算水产生的压强：p = ρ g h，面上的压力 F = p S。
 export const BOXES = {
-  b1: { name: '钢箱 1 m 高', short: '1 m 高', h: 1, mass: 3000, shallow: 0.5, deep: 1.3 },
-  b2: { name: '钢箱 2 m 高', short: '2 m 高', h: 2, mass: 6000, shallow: 0.2, deep: 0.45 },
+  b1: { name: '钢箱 1 m 高', short: '1 m 高', h: 1, mass: 3000, shallow: 1, deep: 5 },
+  b2: { name: '钢箱 2 m 高', short: '2 m 高', h: 2, mass: 6000, shallow: 1, deep: 4 },
 } as const
 export type BoxKey = keyof typeof BOXES
-/** 第 2 课的水位比满水位低 0.3 m，2 m 高的钢箱放进去也不会溢出 */
-export const BASE2 = -0.3
-const LOWEST = POOL.floor - POOL.brim + 0.15                      // 钢箱底面最低能到的位置（相对满水位）
+/** 第 2 课的高度都相对船坞水面来算 */
+export const BASE2 = 0
+export const DOCK2 = { depth: 7 }
+const LOWEST = -DOCK2.depth + 0.4                                 // 钢箱底面最低能到的位置（相对水面）
 export const maxDrop2 = () => BASE2 + START_GAP - LOWEST
 /** 要让顶面在水下 t 米，吊车该放下多少 */
-export const dropForTop = (k: BoxKey, t: number) => START_GAP - BOXES[k].h / POOL.side ** 2 + BOXES[k].h + t
+export const dropForTop = (k: BoxKey, t: number) => START_GAP + BOXES[k].h + t
 
 export function solve2(drop: number, box: BoxKey) {
-  const b = BOXES[box], A = POOL.side ** 2, rho = LIQUIDS.fresh.rho, k = rho * G
-  const bottom = BASE2 + START_GAP - drop                           // 底面相对满水位的高度
-  const wet = Math.min(b.h, Math.max(0, (BASE2 - bottom) / (1 - 1 / A)))   // 浸在水里的高度；水面跟着升高，一起解
-  const level = BASE2 + wet / A
+  const b = BOXES[box], rho = LIQUIDS.fresh.rho, k = rho * G
+  const bottom = BASE2 + START_GAP - drop                           // 底面相对水面的高度
+  const wet = Math.min(b.h, Math.max(0, BASE2 - bottom))            // 浸在水里的高度；船坞很大，水面不动
+  const level = BASE2
   const dBot = Math.max(0, level - bottom), dTop = dBot - b.h       // 底面、顶面在水面下多深（顶面为负表示还露在外面）
   const fUp = k * dBot, fDown = k * Math.max(0, dTop)               // 面积 1 m²
   const fSide = k * (Math.max(0, dTop) + dBot) / 2 * wet            // 每个侧面：平均压强 × 浸湿的面积
@@ -114,7 +115,8 @@ export function solve2(drop: number, box: BoxKey) {
 export type Lesson2Result = ReturnType<typeof solve2>
 
 // ---------- 第 3 课 和什么有关（控制变量） ----------
-// 物块都是 1 m³ 的正方体，只是材料不同；水池里可以换三种液体。每次只改一个条件。
+// 地点在材料试验间：并排三只液槽（淡水、海水、柴油），头顶的行车把物块吊到其中一只上方。
+// 物块都是 1 m³ 的正方体，只是材料不同。每次只改一个条件。
 export const MATS = {
   steel: { name: '钢', rho: 7850, color: '#aeb6be', metal: 0.85, rough: 0.42 },
   alu: { name: '铝', rho: 2700, color: '#e3e7ea', metal: 0.95, rough: 0.28 },
@@ -128,12 +130,14 @@ export const LIQUIDS3 = {
 } as const
 export type Liquid3Key = keyof typeof LIQUIDS3
 export const BASE3 = -0.3
+/** 液槽：内部 2.4 m 见方，深度和试验水池一样 */
+export const TANK3 = { side: 2.4 }
 export const maxDrop3 = () => BASE3 + START_GAP - (POOL.floor - POOL.brim + 0.15)
 /** 要让 1 m³ 物块的顶面在液面下 t 米（t 为负表示露出一截），吊车该放下多少 */
-export const dropForTop3 = (t: number) => t >= 0 ? START_GAP - 1 / POOL.side ** 2 + 1 + t : START_GAP + (1 + t) * (1 - 1 / POOL.side ** 2)
+export const dropForTop3 = (t: number) => t >= 0 ? START_GAP - 1 / TANK3.side ** 2 + 1 + t : START_GAP + (1 + t) * (1 - 1 / TANK3.side ** 2)
 
 export function solve3(drop: number, mat: MatKey, liquid: Liquid3Key) {
-  const A = POOL.side ** 2, rho = LIQUIDS3[liquid].rho
+  const A = TANK3.side ** 2, rho = LIQUIDS3[liquid].rho
   const bottom = BASE3 + START_GAP - drop
   const wet = Math.min(1, Math.max(0, (BASE3 - bottom) / (1 - 1 / A)))
   const level = BASE3 + wet / A
@@ -144,7 +148,7 @@ export function solve3(drop: number, mat: MatKey, liquid: Liquid3Key) {
 export type Lesson3Result = ReturnType<typeof solve3>
 
 // ---------- 第 5 课 沉还是浮（浮沉条件） ----------
-// 物体都是 1 m³ 的正方体，直接放在水里，不挂吊车：它自己上浮、下沉、停住。
+// 地点在港池：物体都是 1 m³ 的正方体，直接放在水里，不挂吊车：它自己上浮、下沉、停住。水面很大，水位不变。
 export const FLOATERS = {
   wood: { name: '木箱', mass: 600 },
   ice: { name: '冰块', mass: 900 },
@@ -157,15 +161,15 @@ export const BASE5 = -0.35
 const FLOOR5 = POOL.floor - POOL.brim                                 // 池底（相对满水位）
 export const TOP5 = 0.9                                               // 物体最高能被提到的位置（底面相对满水位）
 
-/** 物体底面在 b（相对满水位）时：浸入多深、水面多高、受多大浮力 */
+/** 物体底面在 b（相对水面）时：浸入多深、水面多高、受多大浮力 */
+export const SEA5 = { depth: 3, top: 0.9 }                            // 港池水深；物体最高能被提到的位置（底面相对水面）
 export function wet5(b: number, rho: number) {
-  const A = POOL.side ** 2
-  const wet = Math.min(1, Math.max(0, (BASE5 - b) / (1 - 1 / A)))
-  const level = BASE5 + wet / A
+  const wet = Math.min(1, Math.max(0, -b))
+  const level = 0
   return { wet, level, fBuoy: rho * G * wet, dTop: Math.max(0, level - b) - 1 }
 }
 export type Motion5 = 'float' | 'hover' | 'sunk' | 'rising' | 'sinking' | 'air'
-/** 往前算一小步。返回新的位置、速度，以及池底的支持力 */
+/** 往前算一小步。返回新的位置、速度，以及水底的支持力 */
 export function step5(b: number, v: number, mass: number, rho: number, dt: number) {
   const { fBuoy, wet } = wet5(b, rho)
   const net = fBuoy - mass * G
@@ -173,8 +177,8 @@ export function step5(b: number, v: number, mass: number, rho: number, dt: numbe
   nv -= (wet > 0 ? 0.9 * nv + 1.0 * nv * Math.abs(nv) : 0.05 * nv) * dt   // 水的阻力：慢的时候正比于速度，快的时候正比于速度的平方
   nv = Math.max(-1.4, Math.min(1.4, nv))
   let nb = b + nv * dt, support = 0
-  if (nb <= FLOOR5) { nb = FLOOR5; if (nv < 0) nv = 0; if (net < 0) support = -net }
-  if (nb > TOP5) { nb = TOP5; nv = 0 }
+  if (nb <= -SEA5.depth) { nb = -SEA5.depth; if (nv < 0) nv = 0; if (net < 0) support = -net }
+  if (nb > SEA5.top) { nb = SEA5.top; nv = 0 }
   return { b: nb, v: nv, support }
 }
 /** 现在算哪种状态 */
@@ -182,14 +186,14 @@ export function motion5(b: number, v: number, mass: number, rho: number): Motion
   const { wet, fBuoy } = wet5(b, rho), net = fBuoy - mass * G
   if (wet < 1e-4) return 'air'
   if (Math.abs(v) > 0.015) return v > 0 ? 'rising' : 'sinking'
-  if (b <= FLOOR5 + 1e-4 && net < -1) return 'sunk'
+  if (b <= -SEA5.depth + 1e-4 && net < -1) return 'sunk'
   if (wet < 1 - 1e-3) return 'float'
   return Math.abs(net) < 30 ? 'hover' : net > 0 ? 'rising' : 'sinking'
 }
-/** 漂浮时静止的位置（底面相对满水位）；浮不起来则返回 null */
+/** 漂浮时静止的位置（底面相对水面）；浮不起来则返回 null */
 export function rest5(mass: number, rho: number) {
-  const A = POOL.side ** 2, wet = mass / rho
-  return wet < 1 ? BASE5 - wet * (1 - 1 / A) : null
+  const wet = mass / rho
+  return wet < 1 ? -wet : null
 }
 
 // ---------- 第 6 课 钢铁变成船（排水量、载重线） ----------
@@ -280,4 +284,4 @@ export function stepG(b: number, v: number, mass: number, rho: number, g: number
 export const GOLD = { mass: 1000, rho: 19.3 }
 export const CROWN = { gold: { name: '金块', V: 1000 / 19.3 }, crown: { name: '王冠', V: 700 / 19.3 + 300 / 10.5 } } as const
 export type CrownKey = keyof typeof CROWN
-export const CYL = { r: 0.025, start: 200 }              // 量筒内半径（m）、一开始的水量（mL）
+export const CYL = { r: 0.02, start: 0 }                 // 接水的量杯：内半径（m）、一开始的水量（mL）
