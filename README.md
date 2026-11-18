@@ -14,11 +14,13 @@
 
 欢迎学科老师、开发者，以及你们用的 AI 助手一起加新的实验室。
 
+**最快的办法**：把 [`docs/start-prompt.md`](docs/start-prompt.md) 里的那段话贴给你的 AI 助手。它会列出[还可以认领的实验室](https://github.com/RimikoChu/gewulab/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)让你选，然后照规范开工。
+
 | 想了解 | 看这里 |
 |---|---|
 | 怎么参与、怎么提交 | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 | 一间实验室要做成什么样 | [`docs/lab-standard.md`](docs/lab-standard.md) |
-| 让 AI 助手来做 | [`AGENTS.md`](AGENTS.md) |
+| 让 AI 助手来做 | [`docs/start-prompt.md`](docs/start-prompt.md)（给人贴的话）、[`AGENTS.md`](AGENTS.md)（助手读的规则） |
 | 怎么审别人的提交 | [`docs/review-checklist.md`](docs/review-checklist.md) |
 | 总规划：约 50 间，哪些可以认领 | [`docs/roadmap.md`](docs/roadmap.md) |
 

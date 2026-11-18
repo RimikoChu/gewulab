@@ -1,0 +1,49 @@
+# 认领实验室：在实验室的议题下回复 /认领 或 /放弃，自动改负责人和标签。规则见 docs/roadmap.md。
+name: 认领
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  issues: write
+jobs:
+  claim:
+    if: ${{ !github.event.issue.pull_request && (startsWith(github.event.comment.body, '/认领') || startsWith(github.event.comment.body, '/放弃')) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const issue = context.payload.issue, who = context.payload.comment.user.login
+            const cmd = context.payload.comment.body.trim().split(/\s/)[0]
+            const labels = issue.labels.map(l => l.name), assignees = issue.assignees.map(a => a.login)
+            const say = body => github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body })
+            const swap = async (from, to) => {
+              if (labels.includes(from)) await github.rest.issues.removeLabel({ owner, repo, issue_number: issue.number, name: from }).catch(() => {})
+              await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: [to] })
+            }
+            if (!labels.includes('实验室')) return
+
+            if (cmd === '/放弃') {
+              if (!assignees.includes(who)) return say(`@${who} 这一间不是你认领的，不需要放弃。`)
+              await github.rest.issues.removeAssignees({ owner, repo, issue_number: issue.number, assignees: [who] })
+              await swap('已认领', '可认领')
+              return say(`@${who} 已放弃，这一间重新可以认领了。谢谢告知。`)
+            }
+
+            if (assignees.length) return say(`@${who} 这一间已经被 @${assignees[0]} 认领了，请另选一间：[还可以认领的](https://github.com/${owner}/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)。`)
+            if (!labels.includes('可认领')) return say(`@${who} 这一间现在不能认领（看它的标签）。[还可以认领的](https://github.com/${owner}/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)。`)
+            const mine = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', assignee: who, labels: '实验室,已认领' })
+            if (mine.length >= 2) return say(`@${who} 你已经认领了两间（${mine.map(i => '#' + i.number).join('、')}）。做完一间，或者在其中一间回复 \`/放弃\`，再来认领。`)
+            await github.rest.issues.addAssignees({ owner, repo, issue_number: issue.number, assignees: [who] })
+            await swap('可认领', '已认领')
+            await say([
+              `@${who} 认领成功，这一间归你了。`,
+              '',
+              '接下来：',
+              '1. **14 天内提交规格卡**（`docs/specs/<目录名>.md`，模板是 `docs/spec-template.md`）。提交请求的说明里写上 `关联 #' + issue.number + '`。',
+              '2. 规格卡合并后做样板课，再做其余课。每一步一个提交请求。',
+              '3. 做不下去了，回复 `/放弃`，让别人接手。',
+              '',
+              '规范：[`docs/lab-standard.md`](https://github.com/' + owner + '/' + repo + '/blob/main/docs/lab-standard.md)',
+            ].join('\n'))
