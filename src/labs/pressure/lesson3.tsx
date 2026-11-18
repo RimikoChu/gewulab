@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { DIRS, PLACES, SITE3, dropFor, kPa, maxDrop3, solve3, type DirKey, type PlaceKey } from './physics'
-import { useCrane } from '../float/use-crane'
+import { useCrane } from '@/lab-kit'
 
 interface Row { id: number; place: PlaceKey; h: number; dir: DirKey; p: number }
 const near = (a: number, b: number) => Math.abs(a - b) < 0.055

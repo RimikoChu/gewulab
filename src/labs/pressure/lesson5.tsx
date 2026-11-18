@@ -4,7 +4,7 @@ import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { LOCK, lockBlock, lockGoal, lockNext, lockStart, type Lock5 } from './physics'
-import { useTasks } from './world'
+import { useTasks } from '@/lab-kit'
 
 const TASKS: Task[] = [
   { id: 'in', text: '让闸室和下游相平，把船开进闸室', note: '阀门一开，闸室和下游底下连通了：水面慢慢变得一样高' },

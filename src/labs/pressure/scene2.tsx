@@ -3,10 +3,8 @@ import { useMemo } from 'react'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { CARS, kPa, type CarKey } from './physics'
-import { Painted, mergeParts, type Label, type Part } from '../float/dock'
 import { ST } from './hydro'
-import { LabStage } from './stage'
-import { useSlide } from './world'
+import { LabStage, Painted, mergeParts, useSlide, type Label, type Part } from '@/lab-kit'
 
 const X0 = ST.road                              // 这一课在大场景里的位置
 const TARGET = new THREE.Vector3(X0 - 3.6, 1.25, -1.2)

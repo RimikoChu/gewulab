@@ -3,9 +3,8 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { paperGap, type solve7 } from './physics'
-import { Painted, mergeParts, type Label, type Part } from '../float/dock'
 import { ST } from './hydro'
-import { LabStage } from './stage'
+import { LabStage, Painted, mergeParts, type Label, type Part } from '@/lab-kit'
 
 const X0 = ST.tunnel, Z0 = -3
 const CY = 1.9                                           // 试验段中心的高度

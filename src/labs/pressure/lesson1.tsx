@@ -4,7 +4,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import Scene1 from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { POSES, kN, solve1, type PoseKey } from './physics'
-import { useTasks } from './world'
+import { useTasks } from '@/lab-kit'
 
 interface Row { id: number; pose: PoseKey; n: number; F: number; S: number; sink: number }
 const TASKS: Task[] = [

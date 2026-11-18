@@ -1,13 +1,11 @@
 // 压强 · 第 3 课的三维场景：水库岸边。岸上的小吊臂吊着一只压力探头，可以放进水库，也可以转过去放进旁边的泥浆井。
-// 水和岸都朝镜头剖开，水上水下一起看。舞台（镜头、标签、画质分档）沿用 float/dock.tsx 的 DockStage。
+// 水和岸都朝镜头剖开，水上水下一起看。舞台和通用部件来自 @/lab-kit。
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
-import { DIRS, PLACES, SITE3, kPa, maxDrop3, type DirKey, type Lesson3Result, type PlaceKey } from './physics'
-import { Led, Rod, useConcrete, useLiftDrag, useRipple, type Label } from '../float/dock'
-import { LabStage } from './stage'
-import { makeCaustics, makeRuler, useFaceGradient, useSlide } from './world'
+import { DIRS, G, PLACES, SITE3, kPa, maxDrop3, type DirKey, type Lesson3Result, type PlaceKey } from './physics'
+import { LabStage, Led, Rod, makeCaustics, makeRuler, useConcrete, useFaceGradient, useLiftDrag, useRipple, useSlide, type Label } from '@/lab-kit'
 
 const WY = -0.8, BED = WY - SITE3.depth                 // 水面、水底的高度（岸顶是 0）
 const PZ = -1.5                                         // 探头所在的那条线，在剖面后面 1.5 m
@@ -151,7 +149,7 @@ function Splash({ at, fire, color }: { at: [number, number]; fire: number; color
   useFrame((_, dt) => {
     if (!ref.current) return
     parts.current.forEach((q, i) => {
-      if (q.life > 0) { q.v.y -= 9.8 * dt; q.p.addScaledVector(q.v, dt); if (q.p.y < WY - 0.05) q.life = 0 }
+      if (q.life > 0) { q.v.y -= G * dt; q.p.addScaledVector(q.v, dt); if (q.p.y < WY - 0.05) q.life = 0 }
       const s = q.life > 0 ? 1 : 0
       m.makeScale(s, s, s).setPosition(q.p); ref.current!.setMatrixAt(i, m)
     })

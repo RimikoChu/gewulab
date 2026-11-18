@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import Scene2 from './scene2'
 import { LESSONS, goLesson } from './lessons'
 import { BOXES, G, STEP, dropForTop, kN, maxDrop2, solve2, type BoxKey } from './physics'
-import { useCrane } from './use-crane'
+import { useCrane } from '@/lab-kit'
 
 interface Row { id: number; box: BoxKey; dTop: number; down: number; up: number }
 const DEEPER = 1       // “更深”至少要比上一次深这么多（m）

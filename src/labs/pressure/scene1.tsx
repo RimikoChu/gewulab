@@ -4,10 +4,8 @@ import { type ThreeEvent } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { POSES, kN, type PoseKey } from './physics'
-import { Painted, Rod, mergeParts, useConcrete, type Label, type Part } from '../float/dock'
 import { ST } from './hydro'
-import { LabStage } from './stage'
-import { useSlide } from './world'
+import { LabStage, Painted, Rod, mergeParts, useConcrete, useSlide, type Label, type Part } from '@/lab-kit'
 
 const X0 = ST.sand                              // 这一课在大场景里的位置
 const TARGET = new THREE.Vector3(X0 + 0.6, 1.25, -0.5)

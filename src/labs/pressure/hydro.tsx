@@ -4,8 +4,8 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { DAM, SITE3 } from './physics'
-import { Painted, mergeParts, useConcrete, useRipple, type Part } from '../float/dock'
-import { Hills, Pines, makeStrata, useFaceGradient, useSlide } from './world'
+import { Hills, Pines } from './world'
+import { Painted, makeStrata, mergeParts, useConcrete, useFaceGradient, useRipple, useSlide, type Part } from '@/lab-kit'
 
 /** 各课所在的位置（x 坐标） */
 export const ST = { lock: 150, tunnel: 102, sand: 72, road: 40, bank: 0, dam: -250 }

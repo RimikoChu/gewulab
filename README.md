@@ -2,14 +2,38 @@
 
 按课本单元组织的互动实验室：每个单元一间实验室，打开就能动手，适合课堂投屏。
 
+## 现在有的实验室
+
+| 实验室 | 学科 | 教材位置 | 入口 |
+|---|---|---|---|
+| 压强 | 物理 · 初中 | 八年级下册 第九章 | `/labs/pressure/index.html` |
+| 浮力 | 物理 · 初中 | 八年级下册 第十章 | `/labs/float/index.html` |
+| 地震（旧版，待重做） | 地理 · 高中 | 必修第一册 | `/labs/quake/index.html` |
+
+## 一起来做
+
+欢迎学科老师、开发者，以及你们用的 AI 助手一起加新的实验室。
+
+| 想了解 | 看这里 |
+|---|---|
+| 怎么参与、怎么提交 | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| 一间实验室要做成什么样 | [`docs/lab-standard.md`](docs/lab-standard.md) |
+| 让 AI 助手来做 | [`AGENTS.md`](AGENTS.md) |
+| 怎么审别人的提交 | [`docs/review-checklist.md`](docs/review-checklist.md) |
+| 总规划：约 50 间，哪些可以认领 | [`docs/roadmap.md`](docs/roadmap.md) |
+
 ## 目录
 
 | 路径 | 内容 |
 |---|---|
-| `src/` | 首页（React + Vite + TypeScript + Tailwind，组件基于 shadcn/ui） |
-| `src/labs.ts` | 实验室清单和封面线稿 |
-| `public/labs/quake/` | 地震实验室：六课加随堂小测（原生 ES 模块 + Canvas，第 1 课用 three.js） |
+| `src/labs/<名字>/` | 一间实验室的全部代码（参考实现：`pressure`） |
+| `src/lab-kit/` | 实验页的公共部件：舞台、常驻画布、拼模型的工具、贴图、常用状态 |
+| `src/components/lab/` | 实验页的界面外壳 |
+| `src/labs.ts` | 首页的实验室清单和封面线稿 |
+| `docs/specs/` | 每间实验室的规格卡 |
+| `scripts/` | 检查脚本和新建实验室的脚手架 |
 | `DESIGN.md` | 前端规范：颜色、字号、组件用法、封面画法、动效、文案 |
+| `public/labs/quake/` | 地震实验室的旧版本 |
 
 ## 本地运行
 
@@ -21,7 +45,15 @@ npm install
 npm run dev
 ```
 
-打开终端里显示的地址即可。地震实验室在 `/labs/quake/index.html`。
+打开终端里显示的地址即可。
+
+## 检查
+
+```bash
+npm run check
+```
+
+类型检查、结构检查、计算测试、打包，一次跑完。提交之前要全部通过。
 
 ## 打包
 
@@ -35,3 +67,7 @@ npm run build
 
 - 实验里的地形、烈度公式等为教学示意，数据来源和待核实项见各实验的规格文档。
 - 第三方组件：shadcn/ui、Magic UI、Radix（均为 MIT 许可）。
+
+## 许可
+
+MIT，见 [`LICENSE`](LICENSE)。`public/assets/` 里的第三方素材按各自的许可（目前都是 CC0）。“格物实验室”这个名称和标志不在许可范围内。

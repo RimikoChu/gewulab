@@ -3,10 +3,8 @@ import { useMemo } from 'react'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { LOCK, type Lock5 } from './physics'
-import { Painted, mergeParts, useRipple, type Label, type Part } from '../float/dock'
 import { CANAL, ST } from './hydro'
-import { LabStage } from './stage'
-import { useFaceGradient, useSlide } from './world'
+import { LabStage, Painted, mergeParts, useFaceGradient, useRipple, useSlide, type Label, type Part } from '@/lab-kit'
 
 const X0 = ST.lock, BED = CANAL.bed, W = -CANAL.back       // 船闸中心、渠底、渠宽
 const HALF = 9                                             // 闸室半长

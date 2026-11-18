@@ -4,9 +4,8 @@ import { useThree, type ThreeEvent } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { SPOTS, TUBE, type SpotKey } from './physics'
-import { Painted, mergeParts, type Label, type Part } from '../float/dock'
 import { CREST, PEAK } from './hydro'
-import { LabStage } from './stage'
+import { LabStage, Painted, mergeParts, type Label, type Part } from '@/lab-kit'
 
 const AT: Record<SpotKey, [number, number, number]> = { crest: [CREST.x, CREST.y, -4], peak: [PEAK.x, PEAK.y, PEAK.z] }
 const TOP = 0.8, HGY = TOP + 0.06                        // 桌面高度、槽里水银面的高度

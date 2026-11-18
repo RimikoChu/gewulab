@@ -5,9 +5,8 @@ import { useFrame } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { BALL, BOIL, JACK, kN, kPa, pWater, tonPerM2, type SpotKey } from './physics'
-import { ForceArrow, Painted, Rod, mergeParts, useConcrete, useLiftDrag, type Label, type Part } from '../float/dock'
 import { CREST, DEEP, PEAK, ST, WY } from './hydro'
-import { LabStage } from './stage'
+import { ForceArrow, LabStage, Painted, Rod, mergeParts, useConcrete, useLiftDrag, type Label, type Part } from '@/lab-kit'
 
 export type Sub = 'ball' | 'dive' | 'boil' | 'jack'
 const XB = 198, ZB = -4                                    // 半球

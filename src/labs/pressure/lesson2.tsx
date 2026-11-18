@@ -4,7 +4,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import Scene2 from './scene2'
 import { LESSONS, goLesson } from './lessons'
 import { CARS, G, kN, kPa, solve2, type CarKey } from './physics'
-import { useTasks } from './world'
+import { useTasks } from '@/lab-kit'
 
 interface Row { id: number; car: CarKey; plates: boolean; F: number; S: number; p: number }
 const TASKS: Task[] = [

@@ -1,6 +1,27 @@
-// 吊车的升降控制，各课共用：朝目标位置匀速移动；点一下走一步，按住连续走；换东西之前先收回。
+// 实验页常用的几个状态：匀速变化的数、吊车式的升降控制、任务进度。
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { Task } from '@/components/lab/lab-shell'
 
+/** 一个数匀速变到目标值：转向、移动、水位升降这类“有过程的动作”都用它 */
+export function useSlide(to: number, speed: number) {
+  const [x, setX] = useState(to), cur = useRef(to)
+  useEffect(() => {
+    let raf = 0, last = performance.now()
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now
+      const d = to - cur.current
+      cur.current = Math.abs(d) <= speed * dt ? to : cur.current + Math.sign(d) * speed * dt
+      setX(cur.current)
+      if (cur.current !== to) raf = requestAnimationFrame(frame)
+    }
+    if (cur.current !== to) raf = requestAnimationFrame(frame)
+    return () => cancelAnimationFrame(raf)
+  }, [to, speed])
+  return x
+}
+
+// ---------- 升降控制 ----------
+/** 朝目标位置匀速移动；点一下走一步，按住连续走；换东西之前先收回 */
 const SPEED = 0.6            // 升降速度（m/s）
 
 export function useCrane(max: number, speed = SPEED) {
@@ -42,4 +63,24 @@ export function useCrane(max: number, speed = SPEED) {
     retract: (f: () => void) => { if (busyRef.current) return; if (dropRef.current < 1e-4) { f(); return } then.current = f; goal.current = 0; busyRef.current = true; setBusy(true); setTouched(true); tick() },
     reset: () => { cancelAnimationFrame(raf.current); raf.current = 0; then.current = null; goal.current = 0; dropRef.current = 0; setDrop(0); busyRef.current = false; setBusy(false); setTouched(false) },
   }
+}
+
+// ---------- 任务进度 ----------
+/** 每课的任务打勾、顶上的提示条、做完后的结论卡。进度存在浏览器里 */
+export function useTasks(key: string, tasks: Task[]) {
+  const [done, setDone] = useState<Record<string, boolean>>(() => { try { return JSON.parse(localStorage.getItem(key) || '{}') } catch { return {} } })
+  const [banner, setBanner] = useState<string | null>(null)
+  const [finale, setFinale] = useState(false)
+  useEffect(() => { if (!banner) return; const t = setTimeout(() => setBanner(null), 3600); return () => clearTimeout(t) }, [banner])
+  const doneRef = useRef(done); doneRef.current = done
+  /** 把满足条件的任务打勾：ok 返回 true 的、还没完成的都算 */
+  const check = (ok: (id: string) => boolean) => {
+    const d = { ...doneRef.current }; let hit: Task | undefined
+    for (const t of tasks) if (!d[t.id] && ok(t.id)) { d[t.id] = true; hit = t }
+    if (!hit) return
+    doneRef.current = d; setDone(d); try { localStorage.setItem(key, JSON.stringify(d)) } catch { /* 忽略 */ }
+    if (tasks.every(t => d[t.id])) setFinale(true); else setBanner(hit.note)
+  }
+  const reset = () => { doneRef.current = {}; setDone({}); setFinale(false); setBanner(null); try { localStorage.removeItem(key) } catch { /* 忽略 */ } }
+  return { done, banner, finale, setFinale, check, reset, current: tasks.find(t => !done[t.id]) }
 }

@@ -4,7 +4,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import Scene6 from './scene6'
 import { LESSONS, goLesson } from './lessons'
 import { SPOTS, TUBE, kPa, solve6, type SpotKey } from './physics'
-import { useSlide, useTasks } from './world'
+import { useSlide, useTasks } from '@/lab-kit'
 
 interface Row { id: number; spot: SpotKey; tilt: number; thick: boolean; h: number; len: number }
 const TASKS: Task[] = [

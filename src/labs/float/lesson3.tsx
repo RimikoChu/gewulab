@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { G, LIQUIDS3, MATS, STEP, dropForTop3, kN, maxDrop3, solve3, type Lesson3Result, type Liquid3Key, type MatKey } from './physics'
-import { useCrane } from './use-crane'
+import { useCrane } from '@/lab-kit'
 
 type Factor = 'vol' | 'liq' | 'mat' | 'depth'
 const FACTORS: Record<Factor, { name: string; ask: string; yes: string; no: string }> = {

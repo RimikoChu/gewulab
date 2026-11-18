@@ -12,7 +12,7 @@ import LessonX from './lessonx'
 import Quiz from './quiz'
 import { HydroWorld } from './hydro'
 import { isReady } from './lessons'
-import { StageHost } from './stage'
+import { StageHost } from '@/lab-kit'
 
 // 地址栏 # 后面是课号；没有或写错就从第 1 课开始
 const current = () => { const k = location.hash.slice(1); return isReady(k) ? k : '1' }
@@ -22,7 +22,7 @@ function PressureLab() {
   return (
     <>
       {/* 整座水电站只建一次：换课时画布不重建，镜头飞到另一处 */}
-      <StageHost world={f => <HydroWorld level={f.level} narrow={f.narrow} />} />
+      <StageHost<{ level: number; narrow: boolean }> world={w => <HydroWorld level={w?.level} narrow={w?.narrow} />} />
       {key === '1' ? <Lesson1 key="1" /> : key === '2' ? <Lesson2 key="2" /> : key === '4' ? <Lesson4 key="4" /> : key === '5' ? <Lesson5 key="5" /> : key === '6' ? <Lesson6 key="6" /> : key === '7' ? <Lesson7 key="7" /> : key === 'x' ? <LessonX key="x" /> : key === 'q' ? <Quiz key="q" /> : <Lesson3 key="3" />}
     </>
   )

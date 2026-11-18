@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { cn } from '@/lib/utils'
 import { LESSONS, goLesson } from './lessons'
-import { LabStage } from './stage'
+import { LabStage } from '@/lab-kit'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
 const QS: Q[] = [

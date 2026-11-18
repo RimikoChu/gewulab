@@ -3,10 +3,8 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { DAM, kPa, pWater } from './physics'
-import { ForceArrow, useLiftDrag, type Label } from '../float/dock'
 import { DEEP, ST } from './hydro'
-import { LabStage } from './stage'
-import { makeStrata } from './world'
+import { ForceArrow, LabStage, makeStrata, useLiftDrag, type Label } from '@/lab-kit'
 
 const X0 = ST.dam                                // 坝的迎水面
 const NARROW = 30                                // 窄水库的对岸离坝面 30 m
@@ -51,5 +49,5 @@ export default function Scene4(props: SceneProps) {
     { id: 'nRes', at: [wide ? X0 + 70 : X0 + NARROW + 40, wide ? DEEP + 6 : DEEP + 55, 0], ax: 0.5, name: true, className: 'scene-name', children: wide ? '水库（很宽，一直到岸边）' : '山岩：水只剩坝前 30 m 宽的一条' },
     { id: 'nHouse', at: [X0 - 96, DEEP + 19, -35], ax: 0.5, name: true, className: 'scene-name', children: '发电厂房' },
   ]
-  return <LabStage labels={labels} target={TARGET} span={SPAN} view={VIEW} fog={FOG} level={level} narrow={!wide}><Apparatus {...props} /></LabStage>
+  return <LabStage labels={labels} target={TARGET} span={SPAN} view={VIEW} fog={FOG} world={{ level, narrow: !wide }}><Apparatus {...props} /></LabStage>
 }

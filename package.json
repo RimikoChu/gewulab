@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "check:labs": "node scripts/check-labs.mjs",
+    "check": "tsc --noEmit && node scripts/check-labs.mjs && vitest run && vite build",
+    "new-lab": "node scripts/new-lab.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -35,6 +39,8 @@
     "@vitejs/plugin-react": "^6.3.0",
     "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2",
-    "vite": "^8.3.8"
-  }
+    "vite": "^8.3.8",
+    "vitest": "^4.1.12"
+  },
+  "license": "MIT"
 }

@@ -4,7 +4,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import SceneX, { type Sub } from './scenex'
 import { LESSONS, goLesson } from './lessons'
 import { BALL, BOIL, JACK, P0, SPOTS, ballHold, kN, kPa, pWater, tonPerM2, type SpotKey } from './physics'
-import { useSlide, useTasks } from './world'
+import { useSlide, useTasks } from '@/lab-kit'
 
 const SUBS: Record<Sub, { name: string; title: string; concept: string }> = {
   ball: { name: '半球', title: '马德堡半球', concept: '看不见的空气，力气大得惊人' },

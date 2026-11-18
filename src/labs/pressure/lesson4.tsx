@@ -4,7 +4,7 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import Scene4 from './scene4'
 import { LESSONS, goLesson } from './lessons'
 import { DAM, G, kPa, pWater } from './physics'
-import { useSlide, useTasks } from './world'
+import { useSlide, useTasks } from '@/lab-kit'
 
 interface Row { id: number; wide: boolean; h: number; p: number }
 const TASKS: Task[] = [
