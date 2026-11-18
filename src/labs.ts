@@ -41,6 +41,12 @@ export const ART: Record<string, string> = {
     <g class="m bob" style="--t:2.6s"><rect class="w" x="136" y="72" width="48" height="46" rx="3"/><path class="t" d="M146 94h28"/>
       <path class="c" d="M160 156v-26M152 138l8-9 8 9"/><path d="M160 32v26M152 50l8 9 8-9"/></g>
     <text x="236" y="100">F<tspan class="zh" dy="4" font-size="9">浮</tspan><tspan dy="-4"> = G</tspan><tspan class="zh" dy="4" font-size="9">排</tspan></text>`,
+  pressure: `<path class="a" d="M40 62c10-5 20 5 30 0s20 5 30 0 20 5 30 0 20 5 30 0v98H40z"/>
+    <path class="w" d="M160 40h22l44 120h-66z"/><path d="M24 160h272"/>
+    <path class="t" d="M160 80h-6M160 100h-6M160 120h-6M160 140h-6"/>
+    <g class="m flow" style="--t:2.4s"><path class="c" d="M124 84h30M110 112h44M94 142h60"/></g>
+    <path class="c" d="M148 79l7 5-7 5M148 107l7 5-7 5M148 137l7 5-7 5"/>
+    <text x="236" y="100">p = <tspan>ρgh</tspan></text>`,
   lens: `<path class="t d" d="M26 108h268"/>
     <ellipse class="a" cx="160" cy="108" rx="10" ry="60"/>
     <rect class="w" x="68" y="80" width="12" height="28" rx="2"/><path class="s m flick" style="--t:1.1s" d="M74 60c7 7 6 17 0 19-6-2-7-12 0-19z"/>
@@ -91,6 +97,7 @@ export const ART: Record<string, string> = {
 export const LABS: Lab[] = [
   { id: 'quake', name: '地震', hook: '一次真实的地震：发生、预警、看穿地球', desc: '用 2008 年汶川地震做主线：先分清震级和烈度，再跟着纵波和横波跑一趟，算出预警能抢到几秒，最后用地震波看穿地球内部。', pts: ['震级与烈度', '纵波与横波', '地震预警', '地球的圈层'], s: 'geo', grade: '高中', book: '必修一', n: 6, wide: true, href: '/labs/quake/index.html', lessons: ['地震发生', '纵波横波', '地震预警', '找到震中', '看穿地球', '房屋抗震'] },
   { id: 'float', name: '浮力', hook: '为什么钢铁做的船能浮在水上', desc: '在一座造船厂里做实验：用吊车把船锚放进港池，看吊秤读数少了多少；接住溢出来的水，称一称有多重。最后弄懂一块会沉的钢铁怎样变成能浮的船，再去太空看浮力为什么消失。', pts: ['称重法测浮力', '阿基米德原理', '浮沉条件'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/float/index.html' },
+  { id: 'pressure', name: '压强', hook: '大坝为什么要做成上窄下宽', desc: '在一座水电站里做实验：把混凝土块压在沙地上、让卡车开上软土，弄懂压强；把探头伸进水库，量出越深压强越大；再自己开船闸、做托里拆利实验、吹风洞。所有的课都在同一个大场景里，换课时镜头飞过去。', pts: ['压强 p = F/S', '液体压强 p = ρgh', '大气压与流速'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/pressure/index.html' },
   { id: 'lens', name: '凸透镜成像', hook: '把蜡烛的像接到光屏上', desc: '移动蜡烛和光屏，找到清晰的像。物距由远到近，像从缩小变成放大，最后成了接不到的虚像。照相机、投影仪、放大镜都在这条线上。', pts: ['成像规律', '焦距', '实像与虚像'], vb: '0 14 320 164', s: 'phys', grade: '初中', book: '八年级上册', n: 6 },
   { id: 'cell', name: '原电池', hook: '化学反应怎样点亮一盏灯', desc: '把锌片和铜片插进稀硫酸，接上导线，灯亮了。放大到微观，看电子从哪里出发、离子往哪里走。', pts: ['氧化还原', '电极反应', '化学电源'], vb: '0 -6 320 206', s: 'chem', grade: '高中', book: '必修二', n: 6 },
   { id: 'pyth', name: '勾股定理', hook: '把两个正方形拼进第三个', desc: '亲手把两个小正方形拼进斜边上的大正方形，再看赵爽的弦图怎样用面积证明它。', pts: ['拼图证明', '赵爽弦图', '勾股数'], vb: '0 -4 320 204', s: 'math', grade: '初中', book: '八年级下册', n: 5 },

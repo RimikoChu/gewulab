@@ -415,9 +415,14 @@ export function ForceArrow({ tip, dir, len, color, opacity = 1, thick = 1 }: { t
 /** 镜头：斜侧俯视；宽屏时给右边的面板让出位置 */
 function Rig({ home, target, span, view }: { home: number; target: THREE.Vector3; span: [number, number]; view: [number, number] }) {
   const { camera, size, scene } = useThree()
-  const controls = useThree(s => s.controls) as (THREE.EventDispatcher & { target: THREE.Vector3; minDistance: number; maxDistance: number; update: () => void }) | null
+  const controls = useThree(s => s.controls) as (THREE.EventDispatcher & { target: THREE.Vector3; minDistance: number; maxDistance: number; enabled: boolean; update: () => void }) | null
   useEffect(() => { if (import.meta.env.DEV) Object.assign(window, { __scene: scene, __camera: camera }) }, [scene, camera])   // 仅开发时：方便在控制台里检查场景
+  // 画布尺寸变了、按了复位：直接跳到默认机位。看向的地方变了（同一个大场景里换到另一处）：飞过去
+  const seen = useRef({ w: 0, h: 0, home: -1 })
+  const fly = useRef<{ t: number; p0: THREE.Vector3; l0: THREE.Vector3; p1: THREE.Vector3; l1: THREE.Vector3; d0: number; d1: number } | null>(null)
+  const range = (dist: number) => { const cam = camera as THREE.PerspectiveCamera; cam.near = Math.max(0.3, dist * 0.02); cam.far = Math.max(900, dist * 40); cam.updateProjectionMatrix() }
   useEffect(() => {
+    if (size.width < 2 || size.height < 2) return
     const wide = size.width >= 1024
     const usableW = Math.max(240, size.width - (wide ? 650 : 0)), usableH = Math.max(200, size.height - (wide ? 215 : 0))
     const tan = Math.tan((34 * Math.PI) / 360) * 2
@@ -429,15 +434,35 @@ function Rig({ home, target, span, view }: { home: number; target: THREE.Vector3
     const shift = wide ? 25 * ((tan * dist) / size.height) : 0
     const look = target.clone().addScaledVector(right, shift)
     if (wide) look.y -= 52 * ((tan * dist) / size.height)   // 底部有操作条，画面整体往上让一点
-    camera.position.copy(look).addScaledVector(dir, dist)
-    camera.lookAt(look); camera.updateProjectionMatrix()
-    if (controls) { controls.target.copy(look); controls.minDistance = dist * 0.4; controls.maxDistance = dist * 2.2; controls.update() }
-  }, [camera, controls, size.width, size.height, home, target, span, view])
+    const pos = look.clone().addScaledVector(dir, dist)
+    const snap = !controls || seen.current.home < 0 || seen.current.w !== size.width || seen.current.h !== size.height || seen.current.home !== home
+    seen.current = { w: size.width, h: size.height, home }
+    if (snap) {
+      fly.current = null
+      camera.position.copy(pos); camera.lookAt(look); range(dist)
+      if (controls) { controls.enabled = true; controls.target.copy(look); controls.minDistance = dist * 0.4; controls.maxDistance = dist * 2.2; controls.update() }
+    } else {
+      const d0 = camera.position.distanceTo(controls.target)
+      fly.current = { t: 0, p0: camera.position.clone(), l0: controls.target.clone(), p1: pos, l1: look, d0, d1: dist }
+      controls.enabled = false; controls.minDistance = 0; controls.maxDistance = Infinity
+      range(Math.min(d0, dist)); (camera as THREE.PerspectiveCamera).far = Math.max(900, Math.max(d0, dist) * 40 + pos.distanceTo(camera.position)); camera.updateProjectionMatrix()
+    }
+  }, [camera, controls, size.width, size.height, home, target, span, view])   // eslint-disable-line react-hooks/exhaustive-deps
+  useFrame((_, dt) => {
+    const f = fly.current; if (!f || !controls) return
+    const far = f.p0.distanceTo(f.p1)
+    f.t = Math.min(1, f.t + dt / Math.min(3.2, 1.4 + far / 160))
+    const k = f.t < 0.5 ? 4 * f.t ** 3 : 1 - Math.pow(-2 * f.t + 2, 3) / 2           // 先慢、中间快、最后慢
+    camera.position.lerpVectors(f.p0, f.p1, k); controls.target.lerpVectors(f.l0, f.l1, k)
+    camera.position.y += Math.sin(k * Math.PI) * Math.min(60, far * 0.12)            // 中途抬高一点，像越过去
+    camera.lookAt(controls.target)
+    if (f.t >= 1) { fly.current = null; range(f.d1); controls.minDistance = f.d1 * 0.4; controls.maxDistance = f.d1 * 2.2; controls.enabled = true; controls.update() }
+  })
   // 平移时，看向的点不能离器材太远
   useEffect(() => {
     if (!controls) return
     const lo = target.clone().add(new THREE.Vector3(-8, -3.4, -7)), hi = target.clone().add(new THREE.Vector3(8, 5, 7)), c = new THREE.Vector3()
-    const clamp = () => { c.copy(controls.target).clamp(lo, hi); if (c.distanceToSquared(controls.target) > 1e-8) { camera.position.add(c.clone().sub(controls.target)); controls.target.copy(c) } }
+    const clamp = () => { if (fly.current) return; c.copy(controls.target).clamp(lo, hi); if (c.distanceToSquared(controls.target) > 1e-8) { camera.position.add(c.clone().sub(controls.target)); controls.target.copy(c) } }
     controls.addEventListener('change' as never, clamp)
     return () => controls.removeEventListener('change' as never, clamp)
   }, [controls, camera, target])
@@ -471,7 +496,7 @@ export function DockStage({ labels, target, span, view = VIEW, sea = true, indoo
   const aim = useMemo(() => { const o = new THREE.Object3D(); o.position.set(target.x, 0, target.z); o.updateMatrixWorld(); return o }, [target])   // 阳光对着这一课的器材，影子才落在画面里
   const [home, setHome] = useState(0)                 // 每加一，镜头回到默认位置
   const [names, setNames] = useState(true)
-  useEffect(() => { const t = setTimeout(() => setNames(false), 9000); return () => clearTimeout(t) }, [])
+  useEffect(() => { setNames(true); const t = setTimeout(() => setNames(false), 9000); return () => clearTimeout(t) }, [target])   // 换到另一处，器材名称再显示一遍
   const els = useRef<Record<string, HTMLDivElement | null>>({})
   // 画质三档：2 全开；1 环境遮蔽减半；0 只留色调。手机从 1 起步，帧率不够再自动降一档
   const [tier, setTier] = useState(() => (typeof window !== 'undefined' && (window.innerWidth < 820 || window.matchMedia('(pointer: coarse)').matches) ? 1 : 2))
