@@ -58,10 +58,10 @@ export default function App() {
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <div>
             <h1 className="text-[30px] leading-tight font-bold tracking-tight sm:text-[36px]">实验室</h1>
-            <p className="mt-1.5 text-base text-muted-foreground">课本里的每个单元，都有一间能动手的实验室。</p>
+            <p className="mt-1.5 text-base text-muted-foreground">课本里的每个单元，都有一间能动手的实验室。还没做的，欢迎一起来做。</p>
           </div>
           <dl className="flex gap-7 pb-0.5 text-sm text-muted-foreground">
-            {[[LABS.length, '间实验室'], [LABS.reduce((s, l) => s + l.n, 0), '节课'], [Object.keys(SUBJECTS).length, '个学科']].map(([n, t]) => (
+            {[[LABS.filter(l => l.href).length, '间已上线'], [LABS.length, '间在规划'], [Object.keys(SUBJECTS).length, '个学科']].map(([n, t]) => (
               <div key={t as string} className="flex items-baseline gap-1.5">
                 <dt className="order-2">{t}</dt>
                 <dd className="text-[22px] font-bold text-foreground tabular-nums"><NumberTicker value={n as number} className="tracking-normal text-foreground" /></dd>

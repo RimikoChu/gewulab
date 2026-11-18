@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { BorderBeam } from '@/components/ui/border-beam'
-import { ART, SUBJECTS, type Lab } from '@/labs'
+import { ART, PLACEHOLDER, SUBJECTS, issueUrl, type Lab } from '@/labs'
 import { cn } from '@/lib/utils'
 
 const subjectVars = (s: Lab['s']) => ({
@@ -13,11 +13,11 @@ const subjectVars = (s: Lab['s']) => ({
 function Cover({ lab, featured }: { lab: Lab; featured?: boolean }) {
   return (
     <svg
-      viewBox={lab.wide ? '0 0 640 360' : lab.vb ?? '0 0 320 200'}
+      viewBox={lab.wide ? '0 0 640 360' : ART[lab.id] ? lab.vb ?? '0 0 320 200' : '0 14 320 172'}
       preserveAspectRatio={featured ? 'xMidYMid slice' : undefined}
       className={cn('ill block w-full', lab.wide && 'wide', featured ? 'big absolute inset-0 h-full' : 'h-auto')}
       aria-hidden="true"
-      dangerouslySetInnerHTML={{ __html: ART[lab.id] }}
+      dangerouslySetInnerHTML={{ __html: ART[lab.id] ?? PLACEHOLDER }}
     />
   )
 }
@@ -27,17 +27,18 @@ function Props({ lab }: { lab: Lab }) {
     <>
       <Badge className="rounded-sm border-0 bg-(--s-bg) px-1.5 font-normal text-(--s-fg)">{SUBJECTS[lab.s]}</Badge>
       <span>{lab.grade === '高中' ? '高中' : ''}{lab.book}</span>
-      <span>{lab.n} 课</span>
+      {lab.n != null && <span>{lab.n} 课</span>}
     </>
   )
 }
 
-/** 普通卡片：封面 + 标题 + 说明 + 知识点 + 一行属性 */
+/** 普通卡片：封面 + 标题 + 说明 + 知识点 + 一行属性。做好的点开进实验室；还没做的点开是它的认领议题 */
 export function LabCard({ lab }: { lab: Lab }) {
   const live = !!lab.href
-  const Wrapper = live ? 'a' : 'div'
+  const to = lab.href ?? (lab.issue != null ? issueUrl(lab.issue) : undefined)
+  const Wrapper = to ? 'a' : 'div'
   return (
-    <Wrapper href={lab.href} className="lab-card group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2" style={subjectVars(lab.s)}>
+    <Wrapper href={to} {...(!live && to ? { target: '_blank', rel: 'noreferrer' } : null)} className="lab-card group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2" style={subjectVars(lab.s)}>
       <Card className={cn('gap-0 overflow-hidden rounded-xl py-0 shadow-none transition-[background,box-shadow] duration-150',
         'group-hover:bg-[#fbfbfa] group-hover:shadow-[0_3px_10px_rgb(15_15_15/0.07)]')}>
         <div className={cn('border-b bg-(--s-tile)', !live && 'opacity-75 transition-opacity group-hover:opacity-100')}><Cover lab={lab} /></div>
@@ -49,7 +50,7 @@ export function LabCard({ lab }: { lab: Lab }) {
           </div>
           <div className="mt-3 flex items-center gap-2 overflow-hidden text-[13px] whitespace-nowrap text-muted-foreground">
             <Props lab={lab} />
-            {!live && <span className="ml-auto text-faint">即将上线</span>}
+            {!live && <span className="ml-auto text-faint group-hover:text-primary">{lab.issue != null ? '还没做，欢迎参与' : '即将上线'}</span>}
           </div>
         </div>
       </Card>
