@@ -10,9 +10,9 @@ export interface Task { id: string; text: string; note: string }
  * actions：这一课最主要的两三个按钮（手机上固定在屏幕底部）；extras：其余的选项；
  * hint：一句话告诉学生下一步做什么；finale：全部任务完成时弹出的结论卡。
  */
-export function LabShell({ title, lessons, current, stage, lesson, panel, actions, extras, hint, banner, finale, onReset }: {
-  title: string; lessons: LessonTab[]; current: string
-  stage: ReactNode; lesson: ReactNode; panel: ReactNode; actions: ReactNode; extras: ReactNode; hint: string
+export function LabShell({ title, lessons, current, onLesson, stage, lesson, panel, actions, actionsLabel = '吊车（按住连续升降，也可以直接拖物块）', extras, hint, banner, finale, onReset }: {
+  title: string; lessons: LessonTab[]; current: string; onLesson: (key: string) => void
+  stage: ReactNode; lesson: ReactNode; panel: ReactNode; actions: ReactNode; actionsLabel?: string; extras: ReactNode; hint: string
   banner?: string | null; finale?: ReactNode; onReset: () => void
 }) {
   const hintLine = <p key={hint} className="hint-in text-center text-[14px] font-medium text-[#ffe9a8]">{hint}</p>
@@ -30,7 +30,7 @@ export function LabShell({ title, lessons, current, stage, lesson, panel, action
         <a href="/" className="flex h-10 flex-none items-center gap-2 rounded-lg px-2.5 text-[15px] font-semibold hover:bg-white/10"><ArrowLeft className="size-4" />{title}</a>
         <nav className="glass flex min-w-0 items-center gap-0.5 overflow-x-auto rounded-xl p-1 [scrollbar-width:none]" aria-label="课次">
           {lessons.map(l => (
-            <button key={l.key} disabled={l.disabled} aria-current={l.key === current}
+            <button key={l.key} disabled={l.disabled} aria-current={l.key === current} onClick={() => l.key !== current && onLesson(l.key)}
               className={cn('flex h-9 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] whitespace-nowrap text-white/75',
                 'aria-[current=true]:bg-white aria-[current=true]:font-semibold aria-[current=true]:text-[#10151a]',
                 l.disabled ? 'opacity-45' : 'hover:bg-white/10')}>
@@ -53,7 +53,7 @@ export function LabShell({ title, lessons, current, stage, lesson, panel, action
           <div className="glass flex flex-col gap-2.5 rounded-2xl px-3.5 py-3">
             <div className="hidden lg:block">{hintLine}</div>
             <div className="flex flex-wrap items-end justify-center gap-x-4 gap-y-3">
-              <div className="hidden lg:block"><Control label="吊车（按住连续升降，也可以直接拖物块）">{actions}</Control></div>
+              <div className="hidden lg:block"><Control label={actionsLabel}>{actions}</Control></div>
               {extras}
             </div>
           </div>
@@ -80,7 +80,7 @@ export function LessonBlock({ no, title, concept, tasks, done, current, theory }
   const [open, setOpen] = useState(false)
   return (
     <section>
-      <p className="text-[12.5px] tracking-[0.18em] text-white/60">第 {no} 课</p>
+      <p className="text-[12.5px] tracking-[0.18em] text-white/60">{/^\d+$/.test(no) ? `第 ${no} 课` : no === '拓展' ? '拓展课' : no}</p>
       <h1 className="mt-1 text-[34px] leading-[1.1] font-bold tracking-tight [text-shadow:0_2px_18px_rgb(0_0_0/0.45)]">{title}</h1>
       <p className="mt-2 text-[16px] leading-snug font-medium text-[#7fe3d4] [text-shadow:0_1px_10px_rgb(0_0_0/0.5)]">{concept}</p>
       <ul className="glass mt-4 flex flex-col rounded-2xl p-1.5">

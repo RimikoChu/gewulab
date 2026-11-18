@@ -141,3 +141,4 @@
 .scene-btn:hover { background: rgb(255 255 255 / 0.12); }
 .scene-btn[aria-pressed="true"] { color: #7fe3d4; }
 @media (prefers-reduced-motion: reduce) { .lab-pulse, .pop, .hint-in, .row-in, .drag-hint { animation: none; } }
+.force-tag { font: italic 700 17px var(--font-formula); white-space: nowrap; pointer-events: none; text-shadow: 0 1px 6px rgb(0 0 0 / 0.75), 0 0 2px rgb(0 0 0 / 0.6); font-variant-numeric: tabular-nums; }

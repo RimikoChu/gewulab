@@ -1,22 +1,12 @@
 // 浮力 · 第 4 课 阿基米德原理（造船厂：吊车、试验水池、计量槽）
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowDown, ArrowUp, ChevronDown } from 'lucide-react'
-import { Control, Glass, HoldButton, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type LessonTab, type Task } from '@/components/lab/lab-shell'
+import { Control, Glass, HoldButton, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
+import { LESSONS, goLesson } from './lessons'
 import { cn } from '@/lib/utils'
 import Scene4 from './scene4'
 import { BLOCKS, G, LIQUIDS, START_GAP, STEP, advance, kN, maxDrop, solve, type BlockKey, type Lesson4Result, type Lesson4State, type LiquidKey } from './physics'
 
-const LESSONS: LessonTab[] = [
-  { key: '1', no: '1', name: '水里变轻了', disabled: true },
-  { key: '2', no: '2', name: '浮力从哪来', disabled: true },
-  { key: '3', no: '3', name: '和什么有关', disabled: true },
-  { key: '4', no: '4', name: '阿基米德原理' },
-  { key: '5', no: '5', name: '沉还是浮', disabled: true },
-  { key: '6', no: '6', name: '钢铁变成船', disabled: true },
-  { key: '7', no: '7', name: '飘在空中', disabled: true },
-  { key: 'x', no: '拓展', name: '太空 · 冰山 · 沉船 · 王冠', disabled: true },
-  { key: 'q', no: '测', name: '随堂检测', disabled: true },
-]
 
 // 任务在按“记录数据”的那一刻判定。顺序按吊车往下放的顺序排：先一半，再全部，最后换海水
 type Goal = 'half' | 'full'
@@ -124,7 +114,7 @@ export default function Lesson4() {
 
   const allDone = TASKS.every(t => done[t.id])
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="4" banner={banner} onReset={resetAll} hint={hint}
+    <LabShell title="浮力" lessons={LESSONS} current="4" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene4 r={r} block={st.block} liquid={st.liquid} flowing={flowing} drop={st.drop} onDrop={dragTo} dragHint={!touched} />}
       lesson={
         <LessonBlock no="4" title="阿基米德原理" concept="排开多少水，就得到多大的浮力" tasks={TASKS} done={done} current={task?.id}
