@@ -6,4 +6,5 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  build: { rollupOptions: { input: { main: path.resolve(__dirname, 'index.html'), float: path.resolve(__dirname, 'labs/float/index.html') } } },
 })
