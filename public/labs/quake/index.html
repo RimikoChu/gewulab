@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>地震实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="stage"><canvas id="cv"></canvas><div class="ov" id="ov"></div></div>
+<header class="top">
+  <div class="brand"><i></i>地震实验室</div>
+  <nav class="steps" id="steps"></nav>
+  <button class="tb" id="reset" title="重做本课"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+  <button class="tb" id="full" title="全屏"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</header>
+<aside class="card" id="card"></aside>
+<aside class="panel" id="panel"></aside>
+<div class="dock" id="dock"></div>
+<div class="toast" id="toast"></div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import { createApp } from './js/engine.js';
+import { L3, L4 } from './js/lessons-map.js';
+import { L1 } from './js/lesson1-3d.js';
+import { L2, L5 } from './js/lessons-wave.js';
+import { L6 } from './js/lesson-build.js';
+import { QUIZ } from './js/quiz.js';
+createApp([L1, L2, L3, L4, L5, L6, QUIZ]);
+</script>
+</body>
+</html>

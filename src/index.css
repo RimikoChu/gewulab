@@ -1,0 +1,111 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+/* 设计令牌：详见 DESIGN.md。改颜色、圆角只改这里 */
+:root {
+  --radius: 0.5rem;
+  --background: #ffffff;
+  --foreground: #37352f;
+  --card: #ffffff;
+  --card-foreground: #37352f;
+  --popover: #ffffff;
+  --popover-foreground: #37352f;
+  --primary: #0b8277;        /* 品牌色：青绿，只用于 Logo、主要按钮、当前进度 */
+  --brand-warm: #ffcf5c;     /* Logo 里的一点暖色 */
+  --primary-foreground: #ffffff;
+  --secondary: #f1f1ef;
+  --secondary-foreground: #37352f;
+  --muted: #f7f6f3;
+  --muted-foreground: #787774;
+  --accent: #f1f1ef;
+  --accent-foreground: #37352f;
+  --destructive: #e03e3e;
+  --border: rgb(55 53 47 / 0.11);
+  --input: rgb(55 53 47 / 0.16);
+  --ring: rgb(55 53 47 / 0.35);
+  --faint: #9b9a97;
+
+  /* 学科色：浅底 / 文字 / 中间色 / 封面底 */
+  --phys-bg: #e8deee; --phys-fg: #412454; --phys-mid: #9065b0; --phys-tile: #f6f3f8;
+  --chem-bg: #fadec9; --chem-fg: #49290e; --chem-mid: #d9730d; --chem-tile: #fcf5ef;
+  --bio-bg: #dbeddb;  --bio-fg: #1c3829;  --bio-mid: #448361;  --bio-tile: #f2f7f2;
+  --geo-bg: #fdecc8;  --geo-fg: #402c1b;  --geo-mid: #cb912f;  --geo-tile: #fcf8ec;
+  --math-bg: #d3e5ef; --math-fg: #183347; --math-mid: #337ea9; --math-tile: #f0f5f8;
+}
+
+@theme inline {
+  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-formula: "STIX Two Text", "Times New Roman", Georgia, serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-faint: var(--faint);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans antialiased; font-size: 15px; line-height: 1.5; }
+}
+
+/* ---------- 封面线稿 ---------- */
+.ill { fill: none; stroke: #37352f; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ill .w { fill: #fff; } .ill .a { fill: var(--s-bg); } .ill .s { fill: var(--s-mid); }
+.ill .d { stroke-dasharray: 3 5; } .ill .t { stroke-width: 1.2; } .ill .c { stroke: var(--s-mid); } .ill .n { stroke: none; }
+.ill text { stroke: none; fill: #5f5e5b; font: italic 15px var(--font-formula); }
+.ill text.zh { font: 500 12.5px -apple-system, "PingFang SC", sans-serif; }
+
+/* 宽幅线稿：线宽不随缩放变粗；小卡片里不显示文字标注 */
+.ill.wide * { vector-effect: non-scaling-stroke; }
+.ill.wide:not(.big) .lbl { display: none; }
+.ill.wide:not(.big) { stroke-width: 1.5; }
+
+/* 动效：平时静止，悬停才动；主推卡一直轻轻在动 */
+.ill .m { animation-duration: var(--t, 3s); animation-timing-function: linear; animation-iteration-count: infinite; animation-play-state: paused; transform-box: fill-box; transform-origin: center; }
+.lab-card:hover .m, .lab-card[data-featured] .m { animation-play-state: running; }
+.ring { animation-name: ring; }
+@keyframes ring { from { transform: scale(var(--a, 1)); opacity: var(--oa, 1); } to { transform: scale(var(--b, 1.5)); opacity: var(--ob, 1); } }
+.flow { stroke-dasharray: 4 7; animation-name: flow; }
+@keyframes flow { to { stroke-dashoffset: -22; } }
+.bob { animation-name: bob; animation-timing-function: ease-in-out !important; }
+@keyframes bob { 50% { transform: translateY(5px); } }
+.beat { animation-name: beat; }
+@keyframes beat { 0%, 30%, 100% { transform: scale(1); } 12% { transform: scale(1.16); } }
+.flick { animation-name: flick; transform-origin: center bottom !important; }
+@keyframes flick { 0%, 100% { transform: scale(1); } 30% { transform: scale(.88, 1.14); } 65% { transform: scale(1.08, .92); } }
+.rise { animation-name: rise; }
+@keyframes rise { to { transform: translateY(-14px); opacity: 0; } }
+.spin { animation-name: spin; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.blink { animation-name: blink; }
+@keyframes blink { 0%, 100% { fill: #fff; } 20%, 55% { fill: var(--s-mid); } }
+.orb { offset-path: path('M272 102a112 46 0 1 1-224 0a112 46 0 1 1 224 0'); offset-rotate: 0deg; animation-name: orb; transform-box: view-box !important; transform-origin: 0 0 !important; }
+@keyframes orb { to { offset-distance: 100%; } }
+.sway { animation-name: sway; }
+@keyframes sway { 0%, 52%, 100% { transform: translateX(0); } 60% { transform: translateX(2.5px); } 68% { transform: translateX(-2.5px); } 76% { transform: translateX(1.8px); } 84% { transform: translateX(-1.2px); } 92% { transform: translateX(.6px); } }
+.draw { stroke-dasharray: 1; animation-name: draw; }
+@keyframes draw { 0% { stroke-dashoffset: 0; } 1% { stroke-dashoffset: 1; } 62%, 100% { stroke-dashoffset: 0; } }
+.glow { animation-name: glow; }
+@keyframes glow { 0%, 100% { fill: #fff; } 50% { fill: #ffd66b; } }
+@media (prefers-reduced-motion: reduce) { .ill .m { animation: none; } }
