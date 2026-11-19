@@ -94,7 +94,7 @@ export default function Lesson3() {
 
   const lq = PLACES[place]
   return (
-    <LabShell title="压强" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint} actionsLabel="探头（也可以直接抓住上下拖）"
+    <LabShell autoStep={() => { if (next !== 'turn') return false; turn(); return true }} title="压强" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint} actionsLabel="探头（也可以直接抓住上下拖）"
       stage={<Scene3 r={r} place={place} dir={dir} drop={drop} moving={moving} onDrop={crane.dragTo} onTurn={turn} dragHint={!crane.touched} turnHint={next === 'turn' && !turned} />}
       lesson={
         <LessonBlock no="3" title="水里的压强" concept="越深，压得越厉害" tasks={TASKS} done={done} current={task?.id}
@@ -161,7 +161,7 @@ export default function Lesson3() {
       </>}
       extras={
         <Control label="探头放在哪">
-          <Segmented label="探头放在哪" disabled={busy} pulse={next === 'place'} value={place} onChange={k => go(k as PlaceKey)} options={(Object.keys(PLACES) as PlaceKey[]).map(k => ({ value: k, label: PLACES[k].name }))} />
+          <Segmented label="探头放在哪" disabled={busy} pulse={next === 'place'} want={task?.id === 'mud' ? 'mud' : 'water'} value={place} onChange={k => go(k as PlaceKey)} options={(Object.keys(PLACES) as PlaceKey[]).map(k => ({ value: k, label: PLACES[k].name }))} />
         </Control>
       }
     />

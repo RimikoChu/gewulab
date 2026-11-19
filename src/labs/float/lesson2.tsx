@@ -71,7 +71,7 @@ export default function Lesson2() {
 
   const max = maxDrop2()
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="2" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell autoStep={() => { if (moving || busy || next !== 'lower') return false; crane.moveTo(dropForTop(box, task?.id === 'deep' ? b.deep : b.shallow)); return true }} title="浮力" lessons={LESSONS} current="2" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene2 r={r} box={box} drop={drop} onDrop={crane.dragTo} dragHint={!crane.touched} />}
       lesson={
         <LessonBlock no="2" title="浮力从哪来" concept="下面的水往上推得更用力" tasks={TASKS} done={done} current={task?.id}
@@ -148,7 +148,7 @@ export default function Lesson2() {
           <LabButton onClick={() => crane.moveTo(dropForTop(box, b.deep))} disabled={busy}>{b.deep} m</LabButton>
         </Control>
         <Control label="钢箱">
-          <Segmented label="钢箱" disabled={busy} pulse={next === 'box'} value={box} onChange={change} options={(Object.keys(BOXES) as BoxKey[]).map(k => ({ value: k, label: BOXES[k].short }))} />
+          <Segmented label="钢箱" disabled={busy} pulse={next === 'box'} want={'b2'} value={box} onChange={change} options={(Object.keys(BOXES) as BoxKey[]).map(k => ({ value: k, label: BOXES[k].short }))} />
         </Control>
       </>}
     />

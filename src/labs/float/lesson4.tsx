@@ -114,7 +114,7 @@ export default function Lesson4() {
 
   const allDone = TASKS.every(t => done[t.id])
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="4" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell autoStep={() => { if (moving || busy || next !== 'lower' || !task) return false; moveTo(task.goal === 'half' ? halfDrop(st.block) : fullDrop(st.block)); return true }} title="浮力" lessons={LESSONS} current="4" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene4 r={r} block={st.block} liquid={st.liquid} flowing={flowing} drop={st.drop} onDrop={dragTo} dragHint={!touched} />}
       lesson={
         <LessonBlock no="4" title="阿基米德原理" concept="排开多少水，就得到多大的浮力" tasks={TASKS} done={done} current={task?.id}
@@ -204,7 +204,7 @@ export default function Lesson4() {
           <Segmented label="物块" disabled={busy} value={st.block} onChange={v => v !== st.block && startRefill({ block: v })} options={(Object.keys(BLOCKS) as BlockKey[]).map(k => ({ value: k, label: BLOCKS[k].short }))} />
         </Control>
         <Control label="液体">
-          <Segmented label="液体" disabled={busy} pulse={next === 'liquid'} value={st.liquid} onChange={v => v !== st.liquid && startRefill({ liquid: v })} options={(Object.keys(LIQUIDS) as LiquidKey[]).map(k => ({ value: k, label: LIQUIDS[k].name }))} />
+          <Segmented label="液体" disabled={busy} pulse={next === 'liquid'} want={task?.liquid ?? null} value={st.liquid} onChange={v => v !== st.liquid && startRefill({ liquid: v })} options={(Object.keys(LIQUIDS) as LiquidKey[]).map(k => ({ value: k, label: LIQUIDS[k].name }))} />
         </Control>
       </>}
     />

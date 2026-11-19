@@ -174,12 +174,12 @@ export default function Lesson3() {
       </>}
       extras={<>
         <Control label="探究哪个因素">
-          <Segmented label="探究哪个因素" disabled={busy} pulse={next === 'factor'} value={factor} onChange={pick} options={ORDER.map(f => ({ value: f, label: FACTORS[f].name }))} />
+          <Segmented label="探究哪个因素" disabled={busy} pulse={next === 'factor'} want={nextFactor ?? null} value={factor} onChange={pick} options={ORDER.map(f => ({ value: f, label: FACTORS[f].name }))} />
         </Control>
         <Control label="只改这一个条件">
-          {(factor === 'vol' || factor === 'depth') && <Segmented label="位置" disabled={busy} pulse={next === 'cond'} value={posNow} onChange={k => crane.moveTo(POS[factor].find(p => p.key === k)!.drop)} options={POS[factor].map(p => ({ value: p.key, label: p.label }))} />}
-          {factor === 'liq' && <Segmented label="液体" disabled={busy} pulse={next === 'cond'} value={r.under ? liquid : ''} onChange={k => swap(() => setLiquid(k as Liquid3Key))} options={(Object.keys(LIQUIDS3) as Liquid3Key[]).map(k => ({ value: k, label: LIQUIDS3[k].name }))} />}
-          {factor === 'mat' && <Segmented label="材料" disabled={busy} pulse={next === 'cond'} value={r.under ? mat : ''} onChange={k => swap(() => setMat(k as MatKey))} options={(Object.keys(MATS) as MatKey[]).map(k => ({ value: k, label: `${MATS[k].name}块` }))} />}
+          {(factor === 'vol' || factor === 'depth') && <Segmented label="位置" disabled={busy} pulse={next === 'cond'} want={POS[factor][mine.length ? 1 : 0].key} value={posNow} onChange={k => crane.moveTo(POS[factor].find(p => p.key === k)!.drop)} options={POS[factor].map(p => ({ value: p.key, label: p.label }))} />}
+          {factor === 'liq' && <Segmented label="液体" disabled={busy} pulse={next === 'cond'} want={(['fresh', 'diesel'] as Liquid3Key[]).find(k => !mine.some(x => x.key === k)) ?? null} value={r.under ? liquid : ''} onChange={k => swap(() => setLiquid(k as Liquid3Key))} options={(Object.keys(LIQUIDS3) as Liquid3Key[]).map(k => ({ value: k, label: LIQUIDS3[k].name }))} />}
+          {factor === 'mat' && <Segmented label="材料" disabled={busy} pulse={next === 'cond'} want={(['steel', 'alu'] as MatKey[]).find(k => !mine.some(x => x.key === k)) ?? null} value={r.under ? mat : ''} onChange={k => swap(() => setMat(k as MatKey))} options={(Object.keys(MATS) as MatKey[]).map(k => ({ value: k, label: `${MATS[k].name}块` }))} />}
         </Control>
       </>}
     />

@@ -10,7 +10,7 @@ const errors = [], warns = []
 const err = (lab, msg) => errors.push(`[${lab}] ${msg}`), warn = (lab, msg) => warns.push(`[${lab}] ${msg}`)
 
 // 早期做的实验室，有几条后来才定的规矩没有回头改；新实验室不许进这张表
-const LEGACY = { float: ['one-world'] }
+const LEGACY = {}
 const labs = readdirSync(join(root, 'src/labs')).filter(d => !d.startsWith('_') && statSync(join(root, 'src/labs', d)).isDirectory())
 const cards = read('src/labs.ts')
 /** 去掉注释，只留会运行的代码（界面上的字也在里面） */
@@ -47,6 +47,8 @@ for (const id of labs) {
       const n = (m[1].match(/<(LabButton|HoldButton)\b/g) || []).length
       if (n > 3) err(id, `${where} 的主操作区有 ${n} 个按钮，最多三个`)
     }
+    // 6b. 在闪的分段选择要写明该选哪一项，自动演示才知道点哪个
+    for (const m of src.matchAll(/<Segmented\b[^\n]*?\/>/g)) if (/pulse=/.test(m[0]) && !/want=/.test(m[0])) err(id, `${where} 里有一个会闪的分段选择没有写 want：自动演示不知道该选哪一项`)
     // 7. 计算不能写在界面文件里：g 的取值只出现在 physics.ts
     if (f !== 'physics.ts' && f !== 'physics.test.ts' && /\b9\.8\b/.test(code) && !/\{G\}|\bG\b/.test(code)) warn(id, `${where} 里直接写了 9.8：取值放在 physics.ts`)
   }

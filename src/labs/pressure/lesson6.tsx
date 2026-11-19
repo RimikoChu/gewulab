@@ -101,7 +101,7 @@ export default function Lesson6() {
       </>}
       extras={
         <Control label="在哪里做">
-          <Segmented label="在哪里做" pulse={next === 'spot'} value={spot} onChange={k => { setSpot(k as SpotKey); setGoal(0) }} options={(Object.keys(SPOTS) as SpotKey[]).map(k => ({ value: k, label: SPOTS[k].name }))} />
+          <Segmented label="在哪里做" pulse={next === 'spot'} want={task?.id === 'peak' ? 'peak' : 'crest'} value={spot} onChange={k => { setSpot(k as SpotKey); setGoal(0) }} options={(Object.keys(SPOTS) as SpotKey[]).map(k => ({ value: k, label: SPOTS[k].name }))} />
         </Control>
       }
     />

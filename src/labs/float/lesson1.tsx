@@ -94,7 +94,7 @@ export default function Lesson1() {
   const rows = (Object.keys(ITEMS) as ItemKey[]).filter(k => rec[k])
   const it = ITEMS[item]
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="1" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell autoStep={() => { if (moving || busy || (next !== 'lower' && next !== 'raise')) return false; moveTo(next === 'lower' ? max : 0); return true }} title="浮力" lessons={LESSONS} current="1" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene1 r={r} item={item} drop={drop} onDrop={dragTo} dragHint={!touched} />}
       lesson={
         <LessonBlock no="1" title="水里变轻了" concept="读数变小了多少，浮力就是多少" tasks={TASKS} done={done} current={task?.id}
@@ -162,7 +162,7 @@ export default function Lesson1() {
           <LabButton onClick={() => moveTo(max)} disabled={busy}>完全浸没</LabButton>
         </Control>
         <Control label="物体">
-          <Segmented label="物体" disabled={busy} pulse={next === 'item'} value={item} onChange={change} options={(Object.keys(ITEMS) as ItemKey[]).map(k => ({ value: k, label: ITEMS[k].name }))} />
+          <Segmented label="物体" disabled={busy} pulse={next === 'item'} want={(Object.keys(ITEMS) as ItemKey[]).find(k => !both(rec[k])) ?? null} value={item} onChange={change} options={(Object.keys(ITEMS) as ItemKey[]).map(k => ({ value: k, label: ITEMS[k].name }))} />
         </Control>
       </>}
     />

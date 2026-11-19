@@ -104,7 +104,7 @@ export default function Lesson7() {
       </>}
       extras={
         <Control label="吹什么">
-          <Segmented label="吹什么" pulse={next === 'mode'} value={mode} onChange={k => { setMode(k as Mode); setGoal(0) }} options={[{ value: 'paper', label: '两张纸' }, { value: 'wing', label: '机翼' }]} />
+          <Segmented label="吹什么" pulse={next === 'mode'} want={wantMode} value={mode} onChange={k => { setMode(k as Mode); setGoal(0) }} options={[{ value: 'paper', label: '两张纸' }, { value: 'wing', label: '机翼' }]} />
         </Control>
       }
     />

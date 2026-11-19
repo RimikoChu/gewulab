@@ -166,7 +166,7 @@ export default function LessonX() {
       actions={actions}
       extras={
         <Control label="拓展实验">
-          <Segmented label="拓展实验" pulse={next === 'sub'} value={sub} onChange={k => setSub(k as Sub)} options={ORDER.map(k => ({ value: k, label: SUBS[k].name }))} />
+          <Segmented label="拓展实验" pulse={next === 'sub'} want={nextSub ?? null} value={sub} onChange={k => setSub(k as Sub)} options={ORDER.map(k => ({ value: k, label: SUBS[k].name }))} />
         </Control>
       }
     />

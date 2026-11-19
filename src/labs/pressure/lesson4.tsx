@@ -100,7 +100,7 @@ export default function Lesson4() {
       </>}
       extras={
         <Control label="水库">
-          <Segmented label="水库" pulse={next === 'wide'} value={wide ? 'wide' : 'narrow'} onChange={k => setWide(k === 'wide')} options={[{ value: 'wide', label: '宽' }, { value: 'narrow', label: '窄' }]} />
+          <Segmented label="水库" pulse={next === 'wide'} want={wantWide ? 'wide' : 'narrow'} value={wide ? 'wide' : 'narrow'} onChange={k => setWide(k === 'wide')} options={[{ value: 'wide', label: '宽' }, { value: 'narrow', label: '窄' }]} />
         </Control>
       }
     />
