@@ -162,10 +162,10 @@ export default function Lesson5() {
       </>}
       extras={<>
         <Control label="物体（都是 1 m³）">
-          <Segmented label="物体" pulse={next === 'obj'} value={obj} onChange={change} options={(Object.keys(FLOATERS) as FloaterKey[]).map(k => ({ value: k, label: FLOATERS[k].name }))} />
+          <Segmented label="物体" pulse={next === 'obj'} want={task?.id === 'sink' ? 'steel' : 'tank'} value={obj} onChange={change} options={(Object.keys(FLOATERS) as FloaterKey[]).map(k => ({ value: k, label: FLOATERS[k].name }))} />
         </Control>
         <Control label="液体">
-          <Segmented label="液体" pulse={next === 'liquid'} value={liquid} onChange={setLiquid} options={(Object.keys(LIQUIDS) as LiquidKey[]).map(k => ({ value: k, label: LIQUIDS[k].name }))} />
+          <Segmented label="液体" pulse={next === 'liquid'} want={task?.id === 'hover' ? 'fresh' : 'sea'} value={liquid} onChange={setLiquid} options={(Object.keys(LIQUIDS) as LiquidKey[]).map(k => ({ value: k, label: LIQUIDS[k].name }))} />
         </Control>
       </>}
     />

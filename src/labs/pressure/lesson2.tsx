@@ -109,7 +109,7 @@ export default function Lesson2() {
       </>}
       extras={
         <Control label="哪辆车">
-          <Segmented label="哪辆车" pulse={next === 'car'} value={car} onChange={k => pick(k as CarKey)} options={(Object.keys(CARS) as CarKey[]).map(k => ({ value: k, label: CARS[k].name }))} />
+          <Segmented label="哪辆车" pulse={next === 'car'} want={want.car} value={car} onChange={k => pick(k as CarKey)} options={(Object.keys(CARS) as CarKey[]).map(k => ({ value: k, label: CARS[k].name }))} />
         </Control>
       }
     />

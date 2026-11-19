@@ -158,10 +158,10 @@ export default function Lesson7() {
       </> : (Object.keys(LIQUIDS3) as Liquid3Key[]).map(k => <LabButton key={k} primary={k === liquid} pulse={next === 'liquid' && !seen.includes(k)} onClick={() => dip(k)}>{LIQUIDS3[k].name}</LabButton>)}
       extras={<>
         {balloon && <Control label={`吊篮里（空载 ${BASKET} kg，两位乘客 ${RIDERS} kg）`}>
-          <Segmented label="乘客" pulse={next === 'riders'} value={riders ? 'yes' : 'no'} onChange={v => setRiders(v === 'yes')} options={[{ value: 'no', label: '只有驾驶员' }, { value: 'yes', label: '再上两位乘客' }]} />
+          <Segmented label="乘客" pulse={next === 'riders'} want={task?.id === 'riders' ? 'yes' : 'no'} value={riders ? 'yes' : 'no'} onChange={v => setRiders(v === 'yes')} options={[{ value: 'no', label: '只有驾驶员' }, { value: 'yes', label: '再上两位乘客' }]} />
         </Control>}
         <Control label="器材">
-          <Segmented label="器材" pulse={next === 'mode'} value={mode} onChange={pick} options={[{ value: 'balloon', label: '热气球' }, { value: 'meter', label: '密度计' }]} />
+          <Segmented label="器材" pulse={next === 'mode'} want={task?.id === 'meter' ? 'meter' : 'balloon'} value={mode} onChange={pick} options={[{ value: 'balloon', label: '热气球' }, { value: 'meter', label: '密度计' }]} />
         </Control>
       </>}
     />

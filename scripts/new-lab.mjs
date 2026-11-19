@@ -96,6 +96,7 @@ export default function Scene1({ box, down }: { box: BoxKey; down: boolean }) {
 `)
 
 put(`src/labs/${id}/lesson1.tsx`, `// ${name} · 第 1 课（示例）：照这个样子写每一课。主操作区最多三个一步到位的按钮；提示语永远告诉学生下一步做什么。
+// 顶栏的“自动演示”会替学生点现在在闪的那个控件：所以该按的按钮要给 pulse，该选的分段选择还要给 want。
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks } from '@/lab-kit'
@@ -158,7 +159,7 @@ export default function Lesson1() {
       </>}
       extras={
         <Control label="箱子">
-          <Segmented label="箱子" pulse={next === 'box'} value={box} onChange={k => { setBox(k as BoxKey); setDown(false) }} options={(Object.keys(BOXES) as BoxKey[]).map(k => ({ value: k, label: BOXES[k].name }))} />
+          <Segmented label="箱子" pulse={next === 'box'} want={(task?.id as BoxKey) ?? null} value={box} onChange={k => { setBox(k as BoxKey); setDown(false) }} options={(Object.keys(BOXES) as BoxKey[]).map(k => ({ value: k, label: BOXES[k].name }))} />
         </Control>
       }
     />

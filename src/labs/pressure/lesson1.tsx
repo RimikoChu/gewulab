@@ -123,7 +123,7 @@ export default function Lesson1() {
       </>}
       extras={
         <Control label="怎么放">
-          <Segmented label="怎么放" pulse={next === 'pose'} value={pose} onChange={k => change(k as PoseKey)} options={ORDER.map(k => ({ value: k, label: POSES[k].name }))} />
+          <Segmented label="怎么放" pulse={next === 'pose'} want={want.flat ? 'flat' : 'end'} value={pose} onChange={k => change(k as PoseKey)} options={ORDER.map(k => ({ value: k, label: POSES[k].name }))} />
         </Control>
       }
     />

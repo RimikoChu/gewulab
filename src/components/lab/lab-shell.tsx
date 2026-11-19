@@ -1,6 +1,6 @@
 // 实验页统一外壳（沉浸式）：三维场景铺满全屏，课次条、课程块、读数面板、操作条都是叠在上面的半透明浮层。各实验室共用。
-import { useRef, useState, type ReactNode } from 'react'
-import { ArrowLeft, Check, ChevronDown, RotateCcw } from 'lucide-react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { ArrowLeft, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface LessonTab { key: string; no: string; name: string; disabled?: boolean }
@@ -9,15 +9,33 @@ export interface Task { id: string; text: string; note: string }
 /**
  * actions：这一课最主要的两三个按钮（手机上固定在屏幕底部）；extras：其余的选项；
  * hint：一句话告诉学生下一步做什么；finale：全部任务完成时弹出的结论卡。
+ *
+ * 自动演示：顶栏有一个“自动演示”，按下去先重做本课，然后每隔一秒替学生做下一步，一直做到结论卡。
+ * “下一步”就是现在在闪的那个控件：闪着的按钮直接点；闪着的分段选择点它 want 指的那一项。
+ * 下一步不是按钮的（比如要点场景里的东西），这一课用 autoStep 自己做，做了就返回 true。
  */
-export function LabShell({ title, lessons, current, onLesson, stage, lesson, panel, actions, actionsLabel = '吊车（按住连续升降，也可以直接拖物块）', extras, hint, banner, finale, onReset }: {
+export function LabShell({ title, lessons, current, onLesson, stage, lesson, panel, actions, actionsLabel = '吊车（按住连续升降，也可以直接拖物块）', extras, hint, banner, finale, onReset, autoStep }: {
   title: string; lessons: LessonTab[]; current: string; onLesson: (key: string) => void
   stage: ReactNode; lesson: ReactNode; panel: ReactNode; actions: ReactNode; actionsLabel?: string; extras: ReactNode; hint: string
-  banner?: string | null; finale?: ReactNode; onReset: () => void
+  banner?: string | null; finale?: ReactNode; onReset: () => void; autoStep?: () => boolean
 }) {
+  const root = useRef<HTMLDivElement>(null)
+  const [auto, setAuto] = useState(false)
+  const live = useRef({ autoStep, done: !!finale }); live.current = { autoStep, done: !!finale }
+  useEffect(() => {
+    if (!auto) return
+    const t = setInterval(() => {
+      if (live.current.done) { setAuto(false); return }
+      if (live.current.autoStep?.()) return
+      const el = root.current?.querySelector<HTMLButtonElement>('[data-auto]:not(:disabled)') ?? root.current?.querySelector<HTMLButtonElement>('button.lab-pulse:not(:disabled)')
+      el?.click()
+    }, 1100)
+    return () => clearInterval(t)
+  }, [auto])
+  const toggleAuto = () => { if (auto) setAuto(false); else { onReset(); setAuto(true) } }
   const hintLine = <p key={hint} className="hint-in text-center text-[14px] font-medium text-[#ffe9a8]">{hint}</p>
   return (
-    <div className="lab-dark relative flex min-h-dvh flex-col bg-[#0f1418] text-white lg:h-dvh lg:overflow-hidden">
+    <div ref={root} className="lab-dark relative flex min-h-dvh flex-col bg-[#0f1418] text-white lg:h-dvh lg:overflow-hidden">
       <div className="relative h-[58svh] flex-none touch-none lg:absolute lg:inset-0 lg:h-auto">
         {stage}
         {/* 上下两道渐变，让叠在画面上的字看得清 */}
@@ -38,7 +56,8 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
             </button>
           ))}
         </nav>
-        <button onClick={onReset} className="ml-auto flex h-10 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] text-white/80 hover:bg-white/10"><RotateCcw className="size-3.5" /><span className="hidden sm:inline">重做本课</span></button>
+        <button onClick={toggleAuto} aria-pressed={auto} className={cn('ml-auto flex h-10 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] hover:bg-white/10', auto ? 'bg-[#35c7b3]/20 text-[#7fe3d4]' : 'text-white/80')}>{auto ? <Square className="size-3.5" /> : <Play className="size-3.5" />}<span className="hidden sm:inline">{auto ? '停止演示' : '自动演示'}</span></button>
+        <button onClick={() => { setAuto(false); onReset() }} className="flex h-10 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] text-white/80 hover:bg-white/10"><RotateCcw className="size-3.5" /><span className="hidden sm:inline">重做本课</span></button>
       </header>
 
       {banner && (
@@ -150,11 +169,12 @@ export function HoldButton({ onStep, onHold, onRelease, ...rest }: { onStep: () 
 }
 
 /** 分段选择 */
-export function Segmented<T extends string>({ value, options, onChange, label, disabled, pulse }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; label: string; disabled?: boolean; pulse?: boolean }) {
+/** pulse：现在该选它；want：该选的是哪一项（自动演示靠它知道点哪个） */
+export function Segmented<T extends string>({ value, options, onChange, label, disabled, pulse, want }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; label: string; disabled?: boolean; pulse?: boolean; want?: T | null }) {
   return (
     <div role="radiogroup" aria-label={label} className={cn('flex rounded-xl bg-white/8 p-1', pulse && !disabled && 'lab-pulse', disabled && 'opacity-50')}>
       {options.map(o => (
-        <button key={o.value} role="radio" aria-checked={o.value === value} disabled={disabled} onClick={() => onChange(o.value)}
+        <button key={o.value} role="radio" aria-checked={o.value === value} disabled={disabled} onClick={() => onChange(o.value)} data-auto={pulse && !disabled && want === o.value && want !== value ? '' : undefined}
           className={cn('h-9 rounded-lg px-3 text-[14px] whitespace-nowrap text-white/75', o.value === value ? 'bg-white font-semibold text-[#10151a]' : 'hover:bg-white/10')}>{o.label}</button>
       ))}
     </div>

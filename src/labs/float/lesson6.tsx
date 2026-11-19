@@ -138,10 +138,10 @@ export default function Lesson6() {
       </>}
       extras={<>
         <Control label="同样是 60 吨钢">
-          <Segmented label="形状" pulse={next === 'mode'} value={mode} onChange={pick} options={[{ value: 'plate', label: '钢板' }, { value: 'barge', label: '驳船' }]} />
+          <Segmented label="形状" pulse={next === 'mode'} want={task?.id === 'plate' ? 'plate' : 'barge'} value={mode} onChange={pick} options={[{ value: 'plate', label: '钢板' }, { value: 'barge', label: '驳船' }]} />
         </Control>
         <Control label="水域">
-          <Segmented label="水域" pulse={next === 'water'} value={water} onChange={setWater} options={(Object.keys(WATERS) as WaterKey[]).map(k => ({ value: k, label: WATERS[k].name }))} />
+          <Segmented label="水域" pulse={next === 'water'} want={task?.id === 'sea' ? 'sea' : 'river'} value={water} onChange={setWater} options={(Object.keys(WATERS) as WaterKey[]).map(k => ({ value: k, label: WATERS[k].name }))} />
         </Control>
       </>}
     />

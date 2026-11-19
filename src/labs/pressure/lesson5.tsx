@@ -56,7 +56,7 @@ export default function Lesson5() {
   const doNext = () => { if (next) { if (next.key === 'go') go(); else tap(next.key) } }
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner ?? why} onReset={resetAll} hint={hint} actionsLabel="船闸（阀门、闸门、船都可以直接点）"
+    <LabShell autoStep={() => { if (task?.id !== 'stuck' || s.boat !== 0) return false; tap('gLow'); return true }} title="压强" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner ?? why} onReset={resetAll} hint={hint} actionsLabel="船闸（阀门、闸门、船都可以直接点）"
       stage={<Scene5 s={s} onTap={tap} onGo={go} />}
       lesson={
         <LessonBlock no="5" title="船怎样翻过大坝" concept="底下连通了，水面就会一样高" tasks={TASKS} done={T.done} current={task?.id}

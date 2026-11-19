@@ -65,7 +65,8 @@ export default function LessonX() {
   const ml = CYL.start + (s.item ? CROWN[s.item].V * inWater : 0)
 
   const freeze = () => { s.melt = 0; s.melting = false; redraw(n => n + 1) }
-  const drop = (k: CrownKey) => { s.item = k; s.p = 0; redraw(n => n + 1) }
+  const dropping = !!s.item && s.p < 1
+  const drop = (k: CrownKey) => { if (dropping) return; s.item = k; s.p = 0; redraw(n => n + 1) }
   // 物体到了筒底，把这次的读数记下来
   useEffect(() => { if (s.item && s.p >= 1 && got[s.item] == null) setGot(g => ({ ...g, [s.item!]: CYL.start + CROWN[s.item!].V })) })
   const pick = (k: Sub) => { setSub(k); if (k === 'space') { s.sb = BASE5 - CRATE / rho; s.sv = 0 } }
@@ -186,12 +187,12 @@ export default function LessonX() {
         ice: <><LabButton onClick={freeze} disabled={s.melt === 0}>重新冻上</LabButton><LabButton primary pulse={next === 'melt'} onClick={() => { s.melting = true; redraw(n => n + 1) }} disabled={s.melting}>让冰融化</LabButton></>,
         salvage: <><LabButton onClick={() => setBags(n => Math.max(0, n - 1))} disabled={bags <= 0}><Minus className="size-4" />减一只</LabButton><LabButton primary pulse={next === 'plus'} onClick={() => setBags(n => Math.min(WRECK.maxBags, n + 1))} disabled={bags >= WRECK.maxBags}><Plus className="size-4" />加一只浮筒</LabButton></>,
         space: <LabButton primary pulse={next === 'push'} onClick={() => { s.sb = -1.7; s.sv = 0; redraw(n => n + 1) }}><ArrowDownToLine className="size-4" />按到水下</LabButton>,
-        crown: <><LabButton primary={next === 'gold'} pulse={next === 'gold'} onClick={() => drop('gold')}>放进金块</LabButton><LabButton primary={next === 'crown'} pulse={next === 'crown'} onClick={() => drop('crown')}>放进王冠</LabButton><LabButton onClick={() => { s.item = null; s.p = 0; redraw(n => n + 1) }} disabled={!s.item}>取出来</LabButton></>,
+        crown: <><LabButton primary={next === 'gold'} pulse={next === 'gold' && !dropping} disabled={dropping} onClick={() => drop('gold')}>放进金块</LabButton><LabButton primary={next === 'crown'} pulse={next === 'crown' && !dropping} disabled={dropping} onClick={() => drop('crown')}>放进王冠</LabButton><LabButton onClick={() => { s.item = null; s.p = 0; redraw(n => n + 1) }} disabled={!s.item}>取出来</LabButton></>,
       }[sub]}
       extras={<>
-        {sub === 'space' && <Control label="重力"><Segmented label="重力" pulse={next === 'g'} value={zeroG ? 'zero' : 'earth'} onChange={v => setZeroG(v === 'zero')} options={[{ value: 'earth', label: '地面' }, { value: 'zero', label: '空间站（失重）' }]} /></Control>}
+        {sub === 'space' && <Control label="重力"><Segmented label="重力" pulse={next === 'g'} want={'zero'} value={zeroG ? 'zero' : 'earth'} onChange={v => setZeroG(v === 'zero')} options={[{ value: 'earth', label: '地面' }, { value: 'zero', label: '空间站（失重）' }]} /></Control>}
         {sub !== 'crown' && <Control label="液体"><Segmented label="液体" value={liquid} onChange={swapLiquid} options={(Object.keys(LIQUIDS) as LiquidKey[]).map(k => ({ value: k, label: LIQUIDS[k].name }))} /></Control>}
-        <Control label="拓展实验"><Segmented label="拓展实验" pulse={next === 'sub'} value={sub} onChange={pick} options={ORDER.map(k => ({ value: k, label: SUBS[k].name }))} /></Control>
+        <Control label="拓展实验"><Segmented label="拓展实验" pulse={next === 'sub'} want={nextSub ?? null} value={sub} onChange={pick} options={ORDER.map(k => ({ value: k, label: SUBS[k].name }))} /></Control>
       </>}
     />
   )
