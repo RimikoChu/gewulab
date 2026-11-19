@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { POOL } from './physics'
-import { Led, Painted, Rod, Stage, mergeParts, useConcrete, useRipple, type Part, type StageProps } from '@/lab-kit'
+import { LabStage, Led, Painted, Rod, mergeParts, useConcrete, useRipple, type Part, type StageProps } from '@/lab-kit'
 
 // 通用部件都在 lab-kit 里；这里转出一份，浮力各课的引用不用改
 export { ForceArrow, Led, Painted, Rod, mergeParts, useConcrete, useLiftDrag, useRipple, type Label, type Part, type Tag } from '@/lab-kit'
@@ -308,7 +308,14 @@ export function Hoist({ y, reading, jib: JIB_Y = 8.6 }: { y: number; reading: st
 }
 
 // ---------- 舞台 ----------
-/** 浮力实验室的舞台：通用舞台加上造船厂。indoor：这一课在室内或别的世界，不画码头和船体；sea：画不画默认的海面 */
-export function DockStage({ sea = true, indoor = false, sky = !indoor, view = [-0.42, 0.2], children, ...rest }: StageProps & { sea?: boolean; indoor?: boolean }) {
-  return <Stage sky={sky} view={view} {...rest}>{!indoor && <><Quay sea={sea} /><Hull /><Yard /></>}{children}</Stage>
+/** 这一课对造船厂的要求：indoor 表示这一课在室内或别的世界，不画码头和船体；sea 表示画不画默认的海面 */
+export interface DockWant { sea: boolean; indoor: boolean }
+/** 整座造船厂：码头、船体、堆场。放在实验室最外层的常驻舞台里，换课时不重建 */
+export function Shipyard({ want }: { want?: DockWant }) {
+  return want?.indoor ? null : <><Quay sea={want?.sea ?? true} /><Hull /><Yard /></>
 }
+/** 浮力每一课的舞台：把这一课的器材、标签、机位交给常驻的画布。换课时画面不重建，镜头飞过去 */
+export function DockStage({ sea = true, indoor = false, sky = !indoor, view = VIEW, children, ...rest }: Omit<StageProps, 'children'> & { sea?: boolean; indoor?: boolean; children: ReactNode }) {
+  return <LabStage<DockWant> sky={sky} view={view} {...rest} world={{ sea, indoor }}>{children}</LabStage>
+}
+const VIEW: [number, number] = [-0.42, 0.2]
