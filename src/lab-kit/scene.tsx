@@ -198,9 +198,9 @@ export interface Label extends Tag { className: string; style?: CSSProperties; n
 /** 舞台：画布、天空、灯光、镜头控制、文字标签、后期和画质分档都在这里。children 是场景里的东西（整个世界和这一课的器材） */
 const VIEW: [number, number] = [-0.42, 0.2]
 /** view：默认机位的方位角和仰角；pan：平移时看向的点能离 target 多远 */
-/** target：镜头看向哪里；span：要装进画面的宽和高（m）；sky：背景要不要画天空（不画时用 backdrop 这个颜色）；fog：雾的起止距离；sun：阳光强度 */
-export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; children: ReactNode }
-export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, children }: StageProps) {
+/** target：镜头看向哪里；span：要装进画面的宽和高（m）；sky：背景要不要画天空（不画时用 backdrop 这个颜色）；fog：雾的起止距离；sun：阳光强度；env：天空给的环境光强度（太空、室内这类自己打光的场景调小）；free：镜头可以转到正上方和正下方（没有地面的场景用） */
+export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; env?: number; free?: boolean; children: ReactNode }
+export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, env = 1.15, free = false, children }: StageProps) {
   const aim = useMemo(() => { const o = new THREE.Object3D(); o.position.set(target.x, 0, target.z); o.updateMatrixWorld(); return o }, [target])   // 阳光对着这一课的器材，影子才落在画面里
   const [home, setHome] = useState(0)                 // 每加一，镜头回到默认位置
   const [names, setNames] = useState(true)
@@ -224,12 +224,12 @@ export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125',
         </directionalLight>
         <Suspense fallback={null}>
           {/* 实拍天空（Poly Haven，CC0）：背景、环境光、反射都用它 */}
-          <Environment files="/assets/env/sky_1k.hdr" background={sky} backgroundBlurriness={0.04} environmentIntensity={1.15}
+          <Environment files="/assets/env/sky_1k.hdr" background={sky} backgroundBlurriness={0.04} environmentIntensity={env}
             backgroundRotation={[0, SKY_ROT, 0]} environmentRotation={[0, SKY_ROT, 0]} />
           {children}
         </Suspense>
         <TagProjector tags={labels} els={els} />
-        <OrbitControls makeDefault enablePan enableDamping dampingFactor={0.08} rotateSpeed={0.6} minPolarAngle={0.25} maxPolarAngle={1.52} />
+        <OrbitControls makeDefault enablePan enableDamping dampingFactor={0.08} rotateSpeed={0.6} minPolarAngle={free ? 0.02 : 0.25} maxPolarAngle={free ? Math.PI - 0.02 : 1.52} />
         {tier === 2 && <EffectComposer key="hi" multisampling={0}>
           <N8AO aoRadius={1.6} intensity={1.8} distanceFalloff={1} quality="medium" />
           <Vignette offset={0.3} darkness={0.36} />
