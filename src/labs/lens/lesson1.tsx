@@ -5,7 +5,7 @@ import { useSlide, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
 import { Dark, Ray } from './optics'
 import { ANGLES, N_WATER, refract, refractOut } from './physics'
-import { AXIS, ST } from './world'
+import { AXIS, ST, TOP } from './world'
 
 type A = '0' | '30' | '60'
 type Dir = 'in' | 'out'
@@ -16,7 +16,9 @@ const TASKS: Task[] = [
   { id: 'in:0', text: '让光垂直射进水里', note: '传播方向不变：入射角和折射角都是 0°' },
   { id: 'out:30', text: '反过来：让光从水里以 30° 射向空气', note: `约 ${refractOut(30)!.toFixed(1)}°：这回折射角比入射角大，光线偏离法线` },
 ]
-const RAD = Math.PI / 180, PX = ST.tank, PY = AXIS - 0.05, L = 0.9, RED = '#ff5a4a'
+const RAD = Math.PI / 180, PX = ST.tank, PY = AXIS - 0.05, RED = '#ff5a4a'
+// 水槽坐在台面上：槽底、水深、槽口比水面高出多少；光线在空气里和在水里各画多长
+const BOTTOM = TOP + 0.03, DEEP = PY - BOTTOM, RIM = 0.4, LA = 0.85, LW = DEEP - 0.08
 
 /** 标角度的一小段圆弧：圆心在入射点，从 from 度画到 to 度（从 +x 方向起、逆时针为正） */
 function Arc({ from, to, r = 0.26, color = '#ffffff' }: { from: number; to: number; r?: number; color?: string }) {
@@ -41,33 +43,34 @@ export default function Lesson1() {
   // 入射光线从哪来、折射光线往哪去、反射光线往哪去（单位向量）
   const s = into ? 1 : -1, src: [number, number] = [-Math.sin(i * RAD), s * Math.cos(i * RAD)], refl: [number, number] = [Math.sin(i * RAD), s * Math.cos(i * RAD)]
   const out: [number, number] | null = r == null ? null : [Math.sin(r * RAD), -s * Math.cos(r * RAD)]
-  const P = (d: [number, number], k = L): [number, number] => [PX + d[0] * k, PY + d[1] * k]
+  const P = (d: [number, number], k = d[1] > 0 ? LA : LW): [number, number] => [PX + d[0] * k, PY + d[1] * k]
   const pen = Math.atan2(-src[1], -src[0]) - Math.PI / 2
   const labels: Label[] = [
-    { id: 'i', at: [PX - 0.34, PY + s * 0.5, 0.3], ax: 1, className: 'scene-tag -translate-y-1/2', children: <><small>入射角</small>{i.toFixed(0)}°</> },
-    { id: 'r', at: [PX + 0.36, PY - s * 0.5, 0.3], className: `scene-tag -translate-y-1/2${r != null ? ' key' : ''}`, children: r != null ? <><small>折射角</small>{r.toFixed(1)}°</> : '没有折射光线了' },
-    { id: 'n', at: [PX, PY + 1.0, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '法线' },
+    { id: 'i', at: [PX - 0.34, PY + s * (into ? 0.5 : 0.36), 0.3], ax: 1, className: 'scene-tag -translate-y-1/2', children: <><small>入射角</small>{i.toFixed(0)}°</> },
+    { id: 'r', at: [PX + 0.36, PY - s * (into ? 0.36 : 0.5), 0.3], className: `scene-tag -translate-y-1/2${r != null ? ' key' : ''}`, children: r != null ? <><small>折射角</small>{r.toFixed(1)}°</> : '没有折射光线了' },
+    { id: 'n', at: [PX, PY + 0.97, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '法线' },
     { id: 'a', at: [PX - 1.25, PY + 0.2, 0.3], name: true, className: 'scene-name', children: '空气' }, { id: 'w', at: [PX - 1.25, PY - 0.3, 0.3], name: true, className: 'scene-name', children: '水' },
+    ...(into ? [] : [{ id: 'pen', at: [PX - 0.62, PY - DEEP + 0.04, 0.3] as [number, number, number], ax: 1, name: true, className: 'scene-name', children: '激光笔（防水的，放在水里）' }]),
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="激光笔"
       stage={<Dark at="tank" labels={labels}>
-        {/* 水槽：水、槽壁、水面那条亮线 */}
-        <mesh position={[PX, PY - 0.45, 0]}><boxGeometry args={[2.9, 0.9, 0.56]} /><meshPhysicalMaterial color="#3a8fd0" transmission={0.9} thickness={0.6} ior={1.33} roughness={0.03} attenuationColor="#2f7fc0" attenuationDistance={1.6} transparent opacity={0.72} envMapIntensity={1.8} /></mesh>
-        <mesh position={[PX, PY - 0.32, 0]}><boxGeometry args={[2.96, 1.36, 0.62]} /><meshStandardMaterial color="#cfe6ee" transparent opacity={0.09} roughness={0.05} depthWrite={false} /></mesh>
-        <Ray a={[PX - 1.45, PY]} b={[PX + 1.45, PY]} color="#9fd8ff" r={0.004} glow={false} z={0.28} />
-        {/* 玻璃槽的棱：前后两个框，加四条连着的边 */}
-        {[0.31, -0.31].map(z => [[-1.48, 0.36, 1.48, 0.36], [-1.48, -1.0, 1.48, -1.0], [-1.48, -1.0, -1.48, 0.36], [1.48, -1.0, 1.48, 0.36]].map(([x0, y0, x1, y1], j) => <Ray key={`${z}${j}`} a={[PX + x0, PY + y0]} b={[PX + x1, PY + y1]} color="#bcd3dc" r={0.005} glow={false} z={z} />))}
-        <mesh position={[PX, PY - 0.93, 0]}><boxGeometry args={[3.1, 0.06, 0.74]} /><meshStandardMaterial color="#2b3136" metalness={0.4} roughness={0.6} /></mesh>
-        <Ray a={[PX, PY - 0.98]} b={[PX, PY + 1.0]} color="#8a96a2" r={0.0035} dash z={-0.02} />
+        {/* 水槽：坐在台面上的一只玻璃槽。水用普通的半透明材质，水里的光线才看得清、不走样 */}
+        <mesh position={[PX, BOTTOM + DEEP / 2, 0]} renderOrder={2}><boxGeometry args={[2.9, DEEP, 0.56]} /><meshStandardMaterial color="#17548f" transparent opacity={0.2} roughness={0.15} depthWrite={false} /></mesh>
+        <mesh position={[PX, PY, 0]} rotation-x={-Math.PI / 2} renderOrder={2}><planeGeometry args={[2.9, 0.56]} /><meshStandardMaterial color="#6fb4e6" transparent opacity={0.16} roughness={0.05} depthWrite={false} side={2} /></mesh>
+        <mesh position={[PX, BOTTOM + (DEEP + RIM) / 2, 0]} renderOrder={3}><boxGeometry args={[2.96, DEEP + RIM, 0.62]} /><meshStandardMaterial color="#cfe6ee" transparent opacity={0.04} roughness={0.05} depthWrite={false} /></mesh>
+        <mesh position={[PX, BOTTOM - 0.012, 0]}><boxGeometry args={[3.0, 0.024, 0.66]} /><meshStandardMaterial color="#aebfc7" transparent opacity={0.5} roughness={0.1} /></mesh>
+        {/* 玻璃槽的棱：前后两个框 */}
+        {[0.31, -0.31].map(z => [[-1.48, RIM, 1.48, RIM], [-1.48, -DEEP, 1.48, -DEEP], [-1.48, -DEEP, -1.48, RIM], [1.48, -DEEP, 1.48, RIM]].map(([x0, y0, x1, y1], j) => <Ray key={`${z}${j}`} a={[PX + x0, PY + y0]} b={[PX + x1, PY + y1]} color="#bcd3dc" r={0.005} glow={false} z={z} />))}
+        <Ray a={[PX, PY - DEEP]} b={[PX, PY + 0.95]} color="#8a96a2" r={0.0035} dash z={-0.02} />
         <Ray a={P(src)} b={[PX, PY]} color={RED} />
         {out && <Ray a={[PX, PY]} b={P(out)} color={RED} />}
-        <Ray a={[PX, PY]} b={P(refl, out ? L * 0.6 : L)} color={RED} r={out ? 0.0035 : 0.009} glow={!out} />
+        <Ray a={[PX, PY]} b={P(refl, (refl[1] > 0 ? LA : LW) * (out ? 0.6 : 1))} color={RED} r={out ? 0.0035 : 0.009} glow={!out} />
         <Arc from={s * 90} to={s * 90 + s * i} />
         {r != null && <Arc from={-s * 90} to={-s * 90 + s * r} color="#7fe3d4" />}
         {/* 激光笔：在入射光线的起点，对着入射点 */}
-        <group position={[...P(src, L + 0.13), 0]} rotation-z={pen}>
+        <group position={[...P(src, (src[1] > 0 ? LA : LW) + (into ? 0.13 : 0.02)), 0]} rotation-z={pen} scale={into ? 1 : 0.7}>
           <mesh><cylinderGeometry args={[0.035, 0.035, 0.26, 16]} /><meshStandardMaterial color="#30363c" metalness={0.7} roughness={0.35} /></mesh>
           <mesh position={[0, 0.135, 0]}><cylinderGeometry args={[0.022, 0.03, 0.02, 12]} /><meshBasicMaterial color={RED} toneMapped={false} /></mesh>
         </group>
