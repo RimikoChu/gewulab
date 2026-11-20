@@ -1,6 +1,6 @@
 # 实验室总规划
 
-初期的目标：五个学科、大约 50 间实验室，把中学阶段最适合“动手做”的主要章节铺开。
+目标：五个学科、大约 70 间实验室，把中学阶段最适合“动手做”的主要章节铺开。先定的 50 间以初中为主；2026 年 11 月又补了 22 间高中的，它们比初中的那批更看重定量：多个量互相牵制、要算数、要看曲线。
 
 这张表是总览。每一间只写了方向：对应哪一章、想让学生弄懂什么、建议放在什么真实场景里。具体有哪几课、每课做什么，由认领的人在规格卡里定。
 
@@ -35,9 +35,9 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 
 教材位置按人教版写，只写到册和章的名称。**各版本、各年份的章节编号不一样，这张表里没有写章号。** 认领的人要对着现行教材核实，把准确的版本、册、章、节写进规格卡。高中的几间写的是必修或选择性必修的模块。
 
-## 物理（16 间）
+## 物理（24 间）
 
-初中物理按教材顺序基本铺满。
+初中物理按教材顺序基本铺满；高中八间，从抛体运动到光电效应。
 
 | 目录名 | 实验室 | 学段 · 教材位置 | 想让学生弄懂什么 | 场景建议 | 议题 |
 |---|---|---|---|---|---|
@@ -57,10 +57,18 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `ohm` | 欧姆定律 | 初中 · 九年级 欧姆定律 | 电流与电压、电阻的关系；伏安法测电阻 | 电子元件检测车间 | [#12](https://github.com/RimikoChu/gewulab/issues/12) |
 | `power` | 电功率和生活用电 | 初中 · 九年级 电功率、生活用电 | 电能、电功率；焦耳定律；家庭电路和安全用电 | 一户人家和小区配电房 | [#13](https://github.com/RimikoChu/gewulab/issues/13) |
 | `magnet` | 电与磁 | 初中 · 九年级 电与磁 | 磁场；电生磁；电动机和发电机 | 风力发电场 | [#14](https://github.com/RimikoChu/gewulab/issues/14) |
+| `projectile` | 抛体运动 | 高中 · 必修第二册 抛体运动 | 运动的合成与分解；平抛的规律；初速度、角度、高度怎样一起决定落点 | 山地消防：水炮和空投 | [#61](https://github.com/RimikoChu/gewulab/issues/61) |
+| `gravity` | 万有引力与航天 | 高中 · 必修第二册 万有引力与宇宙航行 | 开普勒三定律；第一宇宙速度；卫星怎样变轨；同步卫星 | 从发射场到轨道 | [#62](https://github.com/RimikoChu/gewulab/issues/62) |
+| `momentum` | 动量和碰撞 | 高中 · 选择性必修第一册 动量守恒定律 | 动量和冲量；动量守恒；弹性碰撞和非弹性碰撞的区别；反冲 | 冰球场和火箭试车台 | [#63](https://github.com/RimikoChu/gewulab/issues/63) |
+| `wave` | 机械振动和机械波 | 高中 · 选择性必修第一册 机械振动、机械波 | 单摆和弹簧振子；共振；波的叠加、干涉、衍射；多普勒效应 | 海港和防波堤 | [#64](https://github.com/RimikoChu/gewulab/issues/64) |
+| `efield` | 静电场 | 高中 · 必修第三册 静电场 | 电场线和等势面；带电粒子在电场里的加速和偏转；电容器 | 喷墨打印机工厂 | [#65](https://github.com/RimikoChu/gewulab/issues/65) |
+| `bfield` | 带电粒子在磁场中 | 高中 · 选择性必修第二册 安培力与洛伦兹力 | 洛伦兹力；圆周运动的半径和周期；速度选择器、质谱仪、回旋加速器 | 粒子加速器实验室 | [#66](https://github.com/RimikoChu/gewulab/issues/66) |
+| `induction` | 电磁感应和电网 | 高中 · 选择性必修第二册 电磁感应、交变电流 | 楞次定律和法拉第电磁感应定律；发电机；变压器；为什么要高压输电 | 从发电厂到城市的输电线 | [#67](https://github.com/RimikoChu/gewulab/issues/67) |
+| `light` | 光的波动性和光电效应 | 高中 · 选择性必修第一册 光、选择性必修第三册 原子结构和波粒二象性 | 双缝干涉的条纹间距；薄膜干涉；光电效应的截止频率和遏止电压 | 光学实验室 | [#68](https://github.com/RimikoChu/gewulab/issues/68) |
 
-## 化学（11 间）
+## 化学（16 间）
 
-初中九间，高中两间。
+初中九间，高中七间。
 
 | 目录名 | 实验室 | 学段 · 教材位置 | 想让学生弄懂什么 | 场景建议 | 议题 |
 |---|---|---|---|---|---|
@@ -75,8 +83,13 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `acid` | 酸、碱和中和 | 初中 · 九年级下册 酸和碱 | 酸和碱的性质；pH；中和反应 | 污水处理厂 | [#23](https://github.com/RimikoChu/gewulab/issues/23) |
 | `battery` | 原电池 | 高中 · 必修第二册 化学反应与能量 | 化学能怎样变成电能；电子和离子各往哪走 | 电池工厂 | [#24](https://github.com/RimikoChu/gewulab/issues/24) |
 | `ammonia` | 合成氨工厂 | 高中 · 选择性必修 1 化学反应速率与化学平衡 | 化学平衡怎样移动；工业上为什么这样选条件 | 化肥厂 | [#25](https://github.com/RimikoChu/gewulab/issues/25) |
+| `electrolysis` | 电解和金属防护 | 高中 · 选择性必修 1 化学反应与电能 | 电解池和原电池有什么不同；离子的放电顺序；电解精炼、电镀；金属的电化学防护 | 氯碱厂和电镀车间 | [#69](https://github.com/RimikoChu/gewulab/issues/69) |
+| `ionic` | 水溶液里的离子平衡 | 高中 · 选择性必修 1 水溶液中的离子反应与平衡 | 弱电解质的电离；水的电离和 pH；中和滴定曲线；盐类水解；沉淀溶解平衡 | 水质检测中心 | [#70](https://github.com/RimikoChu/gewulab/issues/70) |
+| `sulfuric` | 接触法制硫酸 | 高中 · 必修第二册 化工生产中的重要非金属元素、选择性必修 1 化学反应速率与化学平衡 | 硫怎样一步步变成硫酸；速率和平衡怎样取舍；工业上为什么选这个温度和压强；尾气怎样处理 | 硫酸厂 | [#71](https://github.com/RimikoChu/gewulab/issues/71) |
+| `crystal` | 分子的形状和晶体 | 高中 · 选择性必修 2 分子结构与性质、晶体结构与性质 | 价层电子对互斥模型；杂化轨道；晶胞里怎样数粒子；四类晶体的区别 | 晶体实验室 | [#72](https://github.com/RimikoChu/gewulab/issues/72) |
+| `petro` | 从石油到塑料 | 高中 · 必修第二册 有机化合物、选择性必修 3 有机化学基础 | 石油的分馏、裂化、裂解；官能团怎样一步步转化；加聚反应 | 炼油厂 | [#73](https://github.com/RimikoChu/gewulab/issues/73) |
 
-## 生物（9 间）
+## 生物（14 间）
 
 | 目录名 | 实验室 | 学段 · 教材位置 | 想让学生弄懂什么 | 场景建议 | 议题 |
 |---|---|---|---|---|---|
@@ -89,8 +102,13 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `nerve` | 神经调节 | 初中 · 七年级下册 人体生命活动的调节 | 反射和反射弧；眼和耳怎样感受刺激 | 人体内部：从指尖到大脑 | [#32](https://github.com/RimikoChu/gewulab/issues/32) |
 | `gene` | 遗传和变异 | 初中 · 八年级下册 生物的遗传与变异 | 基因在亲子代之间怎样传递；显性和隐性；性别决定 | 一座豌豆试验园 | [#33](https://github.com/RimikoChu/gewulab/issues/33) |
 | `eco` | 生态系统 | 初中 · 七年级上册 生物与环境 | 食物链和食物网；物质和能量怎样流动；生态平衡 | 一片草原，或一个湖泊 | [#34](https://github.com/RimikoChu/gewulab/issues/34) |
+| `chloroplast` | 光反应和暗反应 | 高中 · 必修 1 细胞的能量供应和利用 | 光反应和暗反应各在哪里进行、各做什么；两个阶段怎样联系；条件突变时各物质怎样变化 | 走进一个叶绿体 | [#74](https://github.com/RimikoChu/gewulab/issues/74) |
+| `expression` | 基因的表达 | 高中 · 必修 2 基因的本质、基因的表达 | DNA 的复制；转录和翻译；密码子；碱基改变对蛋白质的影响 | 从细胞核到核糖体 | [#75](https://github.com/RimikoChu/gewulab/issues/75) |
+| `meiosis` | 减数分裂和遗传规律 | 高中 · 必修 2 遗传因子的发现、基因和染色体的关系 | 减数分裂中染色体的行为；分离定律和自由组合定律；伴性遗传；概率的计算 | 果蝇实验室 | [#76](https://github.com/RimikoChu/gewulab/issues/76) |
+| `neuron` | 兴奋的传导和传递 | 高中 · 选择性必修 1 神经调节 | 静息电位和动作电位；兴奋在神经纤维上的传导；突触怎样传递；药物作用在哪一步 | 沿着一根神经纤维 | [#77](https://github.com/RimikoChu/gewulab/issues/77) |
+| `population` | 种群和生态系统 | 高中 · 选择性必修 2 种群及其动态、生态系统及其稳定性 | 种群的 J 形和 S 形增长；捕食者和猎物的数量波动；能量流动逐级递减 | 一座孤岛 | [#78](https://github.com/RimikoChu/gewulab/issues/78) |
 
-## 地理（8 间）
+## 地理（10 间）
 
 | 目录名 | 实验室 | 学段 · 教材位置 | 想让学生弄懂什么 | 场景建议 | 议题 |
 |---|---|---|---|---|---|
@@ -102,8 +120,10 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `watercycle` | 水循环 | 高中 · 必修第一册 地球上的水 | 水循环的环节；人类活动影响了哪一环 | 从海洋到雪山的一个流域 | [#40](https://github.com/RimikoChu/gewulab/issues/40) |
 | `wind` | 热力环流和风 | 高中 · 必修第一册 地球上的大气 | 大气怎样受热；热力环流；海陆风、山谷风 | 一座海滨城市 | [#41](https://github.com/RimikoChu/gewulab/issues/41) |
 | `quake` | 地震 | 高中 · 必修第一册 自然灾害 | 震级和烈度；地震波；预警；用地震波看地球内部 | 一次真实的地震 | [#42](https://github.com/RimikoChu/gewulab/issues/42) |
+| `circulation` | 大气环流 | 高中 · 选择性必修 1 大气的运动 | 三圈环流；气压带和风带的季节移动；季风的成因 | 整个地球的大气 | [#79](https://github.com/RimikoChu/gewulab/issues/79) |
+| `ocean` | 洋流和厄尔尼诺 | 高中 · 选择性必修 1 水的运动 | 世界洋流的分布规律；洋流对气候和渔场的影响；厄尔尼诺和拉尼娜 | 太平洋 | [#80](https://github.com/RimikoChu/gewulab/issues/80) |
 
-## 数学（6 间）
+## 数学（8 间）
 
 数学实验室的“动手”是量、拼、拖、数。场景可以是抽象的空间，但每一课仍然要有动作、读数和结论。
 
@@ -115,17 +135,19 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `transform` | 图形的变换 | 初中 · 七至九年级 平移、轴对称、旋转 | 三种变换各保持了什么；怎样用它们设计图案 | 一间瓷砖和窗花的工坊 | [#46](https://github.com/RimikoChu/gewulab/issues/46) |
 | `similar` | 相似和测量 | 初中 · 九年级下册 相似、锐角三角函数 | 相似三角形的比例；不上去也能量出旗杆和楼的高度 | 校园操场和一座塔 | [#47](https://github.com/RimikoChu/gewulab/issues/47) |
 | `chance` | 概率 | 初中 · 九年级上册 概率初步 | 随机事件；做足够多次，频率稳定在概率附近 | 一间做抽样检验的工厂 | [#48](https://github.com/RimikoChu/gewulab/issues/48) |
+| `conic` | 圆锥曲线 | 高中 · 选择性必修第一册 圆锥曲线的方程 | 椭圆、双曲线、抛物线是怎样切出来的；焦点和离心率；光学性质 | 行星轨道和抛物面天线 | [#81](https://github.com/RimikoChu/gewulab/issues/81) |
+| `derivative` | 导数 | 高中 · 选择性必修第二册 一元函数的导数及其应用 | 平均变化率到瞬时变化率；导数的几何意义；用导数研究单调性和最值 | 一条山路和一辆车 | [#82](https://github.com/RimikoChu/gewulab/issues/82) |
 
 ## 合计
 
 | 学科 | 间数 |
 |---|---|
-| 物理 | 16 |
-| 化学 | 11 |
-| 生物 | 9 |
-| 地理 | 8 |
-| 数学 | 6 |
-| 合计 | 50 |
+| 物理 | 24 |
+| 化学 | 16 |
+| 生物 | 14 |
+| 地理 | 10 |
+| 数学 | 8 |
+| 合计 | 72 |
 
 压强、浮力、地球的运动、光合作用和呼吸作用、水循环、细胞、原电池七间已完成。其余的都可以认领。
 

@@ -25,7 +25,7 @@
 | `src/labs.ts` | 首页的实验室清单和封面线稿 |
 | `docs/specs/<名字>.md` | 每间实验室的规格卡 |
 | `docs/lab-standard.md` | 规范 |
-| `docs/roadmap.md` | 总规划表：约 50 间实验室，哪些已完成、哪些有人在做、哪些可以认领 |
+| `docs/roadmap.md` | 总规划表：约 70 间实验室，哪些已完成、哪些有人在做、哪些可以认领 |
 | `DESIGN.md` | 颜色、字号、组件、封面画法 |
 | `scripts/` | 检查脚本、脚手架 |
 
