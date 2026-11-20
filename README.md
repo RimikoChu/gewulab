@@ -22,7 +22,7 @@
 | 一间实验室要做成什么样 | [`docs/lab-standard.md`](docs/lab-standard.md) |
 | 让 AI 助手来做 | [`docs/start-prompt.md`](docs/start-prompt.md)（给人贴的话）、[`AGENTS.md`](AGENTS.md)（助手读的规则） |
 | 怎么审别人的提交 | [`docs/review-checklist.md`](docs/review-checklist.md) |
-| 总规划：约 50 间，哪些可以认领 | [`docs/roadmap.md`](docs/roadmap.md) |
+| 总规划：约 70 间，哪些可以认领 | [`docs/roadmap.md`](docs/roadmap.md) |
 
 ## 目录
 

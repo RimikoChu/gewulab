@@ -11,7 +11,7 @@
 把仓库复刻（fork）到我的账号并下载到本地，然后按顺序读：
 1. AGENTS.md：写给 AI 助手的提要
 2. docs/lab-standard.md：规范正文
-3. docs/roadmap.md：总规划表，约 50 间实验室
+3. docs/roadmap.md：总规划表，约 70 间实验室
 4. docs/specs/pressure.md 和 src/labs/pressure/：参考实现
 
 【第二步：让我选】
