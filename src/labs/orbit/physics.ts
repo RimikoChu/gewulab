@@ -1,6 +1,8 @@
 // 地球的运动实验室的计算核心。画面、读数、任务判定都从这里取数，界面文件里不做计算。
 // 角度在函数里用“度”，方向向量用场景坐标（y 朝上）。取值约定写在规格卡 docs/specs/orbit.md 里。
 const RAD = Math.PI / 180
+/** 地轴和黄道面（公转轨道面）的夹角：和黄赤交角互余 */
+export const axisToOrbit = (tilt: number) => 90 - tilt
 export const TILT = 23.5                       // 地轴倾斜的角度（度）
 export const YEAR = 365                        // 一年的天数
 /** 四个节气：从春分起过了多少天、叫什么、教材上的日期 */

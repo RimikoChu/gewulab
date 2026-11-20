@@ -25,6 +25,9 @@ export const facing = (dir: [number, number, number], view: [number, number]) =>
   const [az, el] = view
   return dir[0] * Math.sin(az) * Math.cos(el) + dir[1] * Math.sin(el) + dir[2] * Math.cos(az) * Math.cos(el) > 0.12
 }
+/** 看两个面的机位：几乎顺着两个面的交线看过去，夹角才看得清 */
+export const V_PLANES: [number, number] = [0.16, 0.1]
+export const S_PLANES: [number, number] = [RE * 10.5, RE * 5.2]
 /** 从北极上空、南极上空看的机位 */
 export const V_NORTH: [number, number] = [0.6, 1.25], V_SOUTH: [number, number] = [0.6, -1.25]
 

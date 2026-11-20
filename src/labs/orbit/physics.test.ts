@@ -1,6 +1,6 @@
 // 地球的运动实验室的计算核对：这里的数字要和规格卡 docs/specs/orbit.md 里写的一致。
 import { describe, expect, it } from 'vitest'
-import { CITIES, YEAR, clockText, dayLength, geoDir, hoursText, isDay, localTime, noonAltitude, orbitDir, pendulumRate, shadowLength, subsolarLat, timeGap, utcForNoon, zones } from './physics'
+import { CITIES, TILT, YEAR, axisToOrbit, clockText, dayLength, geoDir, hoursText, isDay, localTime, noonAltitude, orbitDir, pendulumRate, shadowLength, subsolarLat, timeGap, utcForNoon, zones } from './physics'
 
 describe('地球的运动', () => {
   it('第 2 课：北京和伦敦的地方时相差约 7 小时 44 分；东边的早', () => {
@@ -8,6 +8,7 @@ describe('地球的运动', () => {
     expect(localTime(utcForNoon(CITIES.beijing.lon), CITIES.beijing.lon)).toBeCloseTo(12, 6)
     expect(clockText(localTime(utcForNoon(116), 0))).toBe('04:16')
   })
+  it('第 3 课：黄赤交角 23.5°，地轴和黄道面的夹角是它的余角 66.5°', () => { expect(TILT).toBe(23.5); expect(axisToOrbit(TILT)).toBe(66.5) })
   it('第 3 课：公转一圈回到原处；半年后在太阳的另一侧', () => {
     const a = orbitDir(0), b = orbitDir(YEAR), c = orbitDir(YEAR / 2)
     expect(b[0]).toBeCloseTo(a[0], 6); expect(b[2]).toBeCloseTo(a[2], 6); expect(c[2]).toBeCloseTo(-a[2], 6)
