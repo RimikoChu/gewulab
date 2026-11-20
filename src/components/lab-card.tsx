@@ -6,6 +6,10 @@ import { BorderBeam } from '@/components/ui/border-beam'
 import { ART, PLACEHOLDER, SUBJECTS, hasOffline, issueUrl, offlineUrl, type Lab } from '@/labs'
 import { cn } from '@/lib/utils'
 
+// 每间实验室有哪几课：直接从它自己的课次表里取，新做一间不用另外登记
+const TABLES = import.meta.glob<{ LESSONS: { no: string; name: string }[] }>('/src/labs/*/lessons.ts', { eager: true })
+const COURSES: Record<string, string[]> = Object.fromEntries(Object.entries(TABLES).map(([path, m]) => [path.split('/')[3], m.LESSONS.filter(l => /^\d+$/.test(l.no)).map(l => l.name)]))
+
 const subjectVars = (s: Lab['s']) => ({
   '--s-bg': `var(--${s}-bg)`, '--s-fg': `var(--${s}-fg)`, '--s-mid': `var(--${s}-mid)`, '--s-tile': `var(--${s}-tile)`,
 }) as CSSProperties
@@ -46,9 +50,14 @@ export function LabCard({ lab }: { lab: Lab }) {
         <div className="px-4 pt-3.5 pb-4">
           <h2 className={cn('text-[17px] leading-snug font-semibold', !live && 'text-muted-foreground')}>{lab.name}</h2>
           <p className="mt-1.5 text-sm leading-[1.65] text-muted-foreground">{lab.desc}</p>
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {lab.pts.map(p => <Badge key={p} variant="secondary" className="rounded-sm px-1.5 font-normal text-muted-foreground">{p}</Badge>)}
-          </div>
+          {live && COURSES[lab.id]
+            ? <ol className="mt-3 grid grid-cols-2 gap-x-3 gap-y-[5px] border-t pt-3 text-[13px] leading-snug text-muted-foreground">
+                {COURSES[lab.id].map((name, i) => <li key={name} className="flex gap-1.5"><span className="flex-none text-faint tabular-nums">{i + 1}</span><span className="min-w-0">{name}</span></li>)}
+                <li className="flex gap-1.5 text-faint"><span className="flex-none">+</span>拓展和随堂检测</li>
+              </ol>
+            : <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {lab.pts.map(p => <Badge key={p} variant="secondary" className="rounded-sm px-1.5 font-normal text-muted-foreground">{p}</Badge>)}
+              </div>}
           <div className="mt-3 flex items-center gap-2 overflow-hidden text-[13px] whitespace-nowrap text-muted-foreground">
             <Props lab={lab} />
             {!live && <span className="ml-auto text-faint group-hover:text-primary">{lab.issue != null ? '还没做，欢迎参与' : '即将上线'}</span>}
