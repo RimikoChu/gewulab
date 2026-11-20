@@ -61,6 +61,8 @@ export const EYES = {
 export type EyeKey = keyof typeof EYES
 /** 平行光进入眼睛后会聚在离晶状体多远的地方（cm）；戴上合适的眼镜就落回视网膜上 */
 export const focusAt = (eye: EyeKey, glasses: boolean) => glasses && EYES[eye].glasses ? EYE : EYES[eye].f
+/** 视网膜上的像有多糊（0 是清楚）：光会聚的地方离视网膜越远越糊 */
+export const retinaBlur = (eye: EyeKey, glasses: boolean) => Math.abs(focusAt(eye, glasses) - EYE)
 export const where = (eye: EyeKey, glasses: boolean) => { const d = focusAt(eye, glasses) - EYE; return Math.abs(d) < 1e-9 ? '视网膜上' : d < 0 ? '视网膜前面' : '视网膜后面' }
 
 // ---------- 第 7 课：望远镜和显微镜 ----------

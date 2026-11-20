@@ -4,17 +4,34 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
 import { Dark, Lens, Ray } from './optics'
-import { EYE, EYES, focusAt, where, type EyeKey } from './physics'
-import { AXIS, ST } from './world'
+import * as THREE from 'three'
+import { EYE, EYES, focusAt, retinaBlur, where, type EyeKey } from './physics'
+import { AXIS, ST, TOP } from './world'
 
 const KEYS = Object.keys(EYES) as EyeKey[], K = 0.42      // 模型放大：1 cm 画成 0.42 个单位
-const LX = ST.eye - 0.3, RX = LX + EYE * K, HS = [-0.22, 0, 0.22]
+const LX = ST.eye - 0.3, RX = LX + EYE * K, HS = [-0.15, 0, 0.15]
 const RE = (EYE * K + 0.12) / 2, CX = RX - RE        // 眼球的半径和球心
 const TASKS: Task[] = [
   { id: 'normal', text: '先看正常的眼睛：光会聚在哪里', note: '正好落在视网膜上，看得清楚' },
   { id: 'near', text: '换成近视眼，再给它戴上眼镜', note: '光会聚在视网膜前面；戴凹透镜，先把光发散一些，就落回视网膜上了' },
   { id: 'far', text: '换成远视眼，也戴上眼镜', note: '光要到视网膜后面才会聚；戴凸透镜，先把光会聚一些' },
 ]
+
+/** 面板上的小图：视网膜上成的像。看的是一张视力表；光没有正好会聚在视网膜上时，像是糊的 */
+function Retina({ blur }: { blur: number }) {
+  const b = blur * 14, E = (x: number, y: number, s: number) => <path key={`${x}${y}`} transform={`translate(${x} ${y}) scale(${s})`} d="M-5-6h10v2.400h-7.200v2.400h6v2.400h-6v2.400h7.200v2.400h-10z" fill="#f3ead8" />
+  return (
+    <svg viewBox="0 0 250 120" className="mt-2 w-full rounded-lg" role="img" aria-label="视网膜上的像">
+      <defs><filter id="lens-retina-blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation={b} /></filter>
+        <radialGradient id="lens-retina"><stop offset="0" stopColor="#8a2a20" /><stop offset="1" stopColor="#3c0f0b" /></radialGradient></defs>
+      <rect width={250} height={120} fill="url(#lens-retina)" />
+      {/* 视网膜上的像是倒的：整张表上下、左右都颠倒 */}
+      <g filter={b > 0.3 ? 'url(#lens-retina-blur)' : undefined} transform="rotate(180 125 60)">
+        {[-36, -12, 12, 36].map(x => E(125 + x, 34, 1.6))}{[-27, -9, 9, 27].map(x => E(125 + x, 62, 1.15))}{[-20, -10, 0, 10, 20].map(x => E(125 + x, 84, 0.75))}
+      </g>
+    </svg>
+  )
+}
 
 export default function Lesson6() {
   const [eye, setEye] = useState<EyeKey>('normal')
@@ -35,9 +52,9 @@ export default function Lesson6() {
     : eye !== task.id ? { hint: `换成“${EYES[task.id as EyeKey].name}”`, next: 'eye' } : { hint: `光会聚在${where(eye, false)}：按“戴上眼镜”`, next: 'wear' }
   const labels: Label[] = [
     { id: 'f', at: [fx, AXIS - 0.12, 0.3], ax: 0.5, className: 'scene-tag key', children: <><small>光会聚在</small>{where(eye, on)}</> },
-    { id: 'r', at: [RX - 0.02, AXIS + 0.5, 0.3], name: true, className: 'scene-name -translate-y-1/2', children: '视网膜' },
-    { id: 'l', at: [LX + 0.04, AXIS + 0.36, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '晶状体' },
-    { id: 'c', at: [CX - RE - 0.1, AXIS - 0.26, 0.3], ax: 1, name: true, className: 'scene-name', children: '角膜' },
+    { id: 'r', at: [RX - 0.06, AXIS + 0.56, 0.3], name: true, className: 'scene-name -translate-y-1/2', children: '视网膜' },
+    { id: 'l', at: [LX + 0.02, AXIS + 0.3, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '晶状体' },
+    { id: 'c', at: [CX - RE - 0.08, AXIS - 0.3, 0.3], ax: 1, name: true, className: 'scene-name', children: '角膜' },
     { id: 'nv', at: [RX + 0.28, AXIS - 0.2, 0.3], name: true, className: 'scene-name', children: '视神经' },
     ...(on ? [{ id: 'g', at: [LX - 0.55, AXIS + 0.5, 0.3] as [number, number, number], ax: 0.5, className: 'scene-tag -translate-y-full', children: e.glasses === 'concave' ? '凹透镜' : '凸透镜' }] : []),
   ]
@@ -46,14 +63,15 @@ export default function Lesson6() {
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="眼镜"
       stage={<Dark at="eye" labels={labels}>
         {/* 眼球：一个半透明的球，后壁是视网膜；前面的晶状体是一块凸透镜 */}
-        <mesh position={[CX, AXIS, -0.04]}><circleGeometry args={[RE, 56]} /><meshBasicMaterial color="#f6dccd" transparent opacity={0.1} toneMapped={false} /></mesh>
-        <mesh position={[CX, AXIS, 0]}><torusGeometry args={[RE, 0.014, 10, 72]} /><meshBasicMaterial color="#ecd9cc" toneMapped={false} /></mesh>
-        {/* 视网膜：眼球后壁内侧的一段；后面连着视神经 */}
-        <mesh position={[CX, AXIS, 0.005]} rotation-z={-Math.PI * 0.36}><torusGeometry args={[RE - 0.03, 0.022, 10, 48, Math.PI * 0.72]} /><meshBasicMaterial color="#ff8a6a" toneMapped={false} /></mesh>
-        <mesh position={[RX + 0.13, AXIS - 0.1, 0]} rotation-z={1.15}><cylinderGeometry args={[0.045, 0.06, 0.3, 12]} /><meshStandardMaterial color="#e3c2a8" roughness={0.7} /></mesh>
-        {/* 角膜：眼球最前面鼓出来的一小段 */}
-        <mesh position={[CX - RE + 0.12, AXIS, 0]} rotation-z={Math.PI * 0.62}><torusGeometry args={[0.2, 0.012, 8, 32, Math.PI * 0.76]} /><meshBasicMaterial color="#bfe3ff" toneMapped={false} /></mesh>
-        <Lens x={LX} y={AXIS} h={eye === 'near' ? 0.3 : eye === 'far' ? 0.3 : 0.3} tint="#ffe9a8" stand={false} />
+        {/* 眼球模型：一只透明的球，后半个内壁是红色的视网膜，前面鼓出一块角膜，里面是虹膜和晶状体；立在一只底座上 */}
+        <mesh position={[CX, AXIS, 0]}><sphereGeometry args={[RE, 48, 32]} /><meshPhysicalMaterial color="#f4ece6" transmission={0.94} thickness={0.2} ior={1.34} roughness={0.04} clearcoat={1} clearcoatRoughness={0.06} envMapIntensity={2.2} transparent opacity={0.9} /></mesh>
+        <mesh position={[CX, AXIS, 0]}><sphereGeometry args={[RE - 0.025, 48, 32, Math.PI * 0.62, Math.PI * 0.76]} /><meshStandardMaterial color="#b83a2e" roughness={0.75} side={THREE.BackSide} emissive="#6a1a12" emissiveIntensity={0.35} /></mesh>
+        <mesh position={[CX - RE + 0.13, AXIS, 0]}><sphereGeometry args={[0.24, 32, 20, Math.PI * 1.62, Math.PI * 0.76]} /><meshPhysicalMaterial color="#dff1ff" transmission={0.95} thickness={0.1} ior={1.38} roughness={0.02} clearcoat={1} envMapIntensity={2.6} transparent opacity={0.85} side={THREE.DoubleSide} /></mesh>
+        <mesh position={[LX - 0.045, AXIS, 0]} rotation-y={Math.PI / 2}><ringGeometry args={[0.2, 0.36, 40]} /><meshStandardMaterial color="#4a6f8f" roughness={0.6} side={THREE.DoubleSide} /></mesh>
+        <mesh position={[RX + 0.15, AXIS - 0.07, 0]} rotation-z={1.25}><cylinderGeometry args={[0.055, 0.07, 0.34, 14]} /><meshStandardMaterial color="#e6c9ae" roughness={0.7} /></mesh>
+        <mesh position={[CX, AXIS - RE - 0.16, 0]}><cylinderGeometry args={[0.03, 0.03, 0.32, 12]} /><meshStandardMaterial color="#c4cace" metalness={0.9} roughness={0.25} /></mesh>
+        <mesh position={[CX, TOP + 0.02, 0]} castShadow><cylinderGeometry args={[0.26, 0.3, 0.04, 32]} /><meshStandardMaterial color="#16191c" roughness={0.5} metalness={0.3} /></mesh>
+        <Lens x={LX} y={AXIS} h={0.21} bulge={eye === 'near' ? 0.52 : eye === 'far' ? 0.26 : 0.38} tint="#ffe9a8" stand={false} frame={false} />
         {on && e.glasses && <Lens x={LX - 0.55} y={AXIS} h={0.4} kind={e.glasses} />}
         {HS.map(h => { const t = (RX - LX) / (fx - LX); return <group key={h}>
           <Ray a={[LX - 1.25, AXIS + h]} b={[LX, AXIS + h]} />
@@ -82,7 +100,9 @@ export default function Lesson6() {
             <div className="mt-1 text-[30px] leading-none font-bold tracking-tight text-[#7fe3d4]">{where(eye, on)}</div>
             <div className="mt-2 text-[13px] text-white/55">{where(eye, on) === '视网膜上' ? '看得清楚' : '看到的是模糊的'}</div>
           </div>
-          <p className="mt-4 rounded-xl bg-white/6 px-3 py-3 text-[14px] leading-relaxed text-white/80">{e.say}</p>
+          <h2 className="mt-4 text-[12.5px] text-white/55">视网膜上的像（看的是远处的视力表）</h2>
+          <Retina blur={retinaBlur(eye, on)} />
+          <p className="mt-3 rounded-xl bg-white/6 px-3 py-3 text-[14px] leading-relaxed text-white/80">{e.say}</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <ParamTile symbol="晶状体" value={eye === 'near' ? '太厚' : eye === 'far' ? '太薄' : '正合适'} unit={eye === 'near' ? '折光太强' : eye === 'far' ? '折光太弱' : '折光正好'} />
             <ParamTile symbol="矫正" value={e.glasses === 'concave' ? '凹透镜' : e.glasses === 'convex' ? '凸透镜' : '不需要'} unit={e.glasses === 'concave' ? '先把光发散一些' : e.glasses === 'convex' ? '先把光会聚一些' : ''} />

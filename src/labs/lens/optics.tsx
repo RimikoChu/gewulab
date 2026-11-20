@@ -55,16 +55,17 @@ function concave(h: number) {
 }
 
 /** 一块透镜，立在 x 处，中心在主光轴上。凸透镜中间厚，凹透镜中间薄；外面一圈镜框。stand 是给它配上滑座 */
-export function Lens({ x, y, h = 0.5, kind = 'convex', tint = '#9fd8ff', stand = true }: { x: number; y: number; h?: number; kind?: 'convex' | 'concave'; tint?: string; stand?: boolean }) {
-  const m = <meshStandardMaterial color={tint} transparent opacity={0.38} roughness={0.02} metalness={0.1} side={THREE.DoubleSide} depthWrite={false} emissive={tint} emissiveIntensity={0.22} />
+export function Lens({ x, y, h = 0.5, kind = 'convex', tint = '#9fd8ff', stand = true, frame = true, bulge = 0.17 }: { x: number; y: number; h?: number; kind?: 'convex' | 'concave'; tint?: string; stand?: boolean; frame?: boolean; bulge?: number }) {
+  // 玻璃：通透、有反光，带一点点颜色
+  const m = <meshPhysicalMaterial color={tint} transmission={0.92} thickness={0.35} ior={1.5} roughness={0.03} metalness={0} clearcoat={1} clearcoatRoughness={0.05} attenuationColor={tint} attenuationDistance={1.2} envMapIntensity={2.4} transparent opacity={0.96} side={THREE.DoubleSide} />
   return (
     <group>
       <group position={[x, y, 0]}>
         {kind === 'convex'
-          ? <mesh scale={[0.17, 1, 1]}><sphereGeometry args={[h, 32, 32]} />{m}</mesh>
+          ? <mesh scale={[bulge, 1, 1]}><sphereGeometry args={[h, 32, 32]} />{m}</mesh>
           : <mesh geometry={concave(h)} rotation-z={Math.PI / 2}>{m}</mesh>}
         {/* 镜框：一圈黑色的塑料框，下面一截插进支杆的柄 */}
-        <mesh rotation-y={Math.PI / 2}><torusGeometry args={[h + 0.02, 0.028, 12, 56]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>
+        {frame && <mesh rotation-y={Math.PI / 2}><torusGeometry args={[h + 0.02, 0.028, 12, 56]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>}
         {stand && <mesh position={[0, -h - 0.08, 0]}><cylinderGeometry args={[0.02, 0.02, 0.1, 10]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>}
       </group>
       {stand && <Stand x={x} y={y - h - 0.12} />}
@@ -119,7 +120,7 @@ export function Axis({ x0, x1, y, marks = [] }: { x0: number; x1: number; y: num
 export function Screen({ x, y, h = 0.62 }: { x: number; y: number; h?: number }) {
   return <group>
     {/* 白屏：一块白色的板，背后一块黑底板，下面一截柄插进支杆 */}
-    <mesh position={[x + 0.008, y, 0]}><boxGeometry args={[0.014, h * 2, 0.9]} /><meshStandardMaterial color="#f6f5ef" roughness={0.95} emissive="#f6f5ef" emissiveIntensity={0.1} /></mesh>
+    <mesh position={[x + 0.008, y, 0]}><boxGeometry args={[0.014, h * 2, 0.9]} /><meshStandardMaterial color="#cfcdc4" roughness={1} /></mesh>
     <mesh position={[x + 0.024, y, 0]}><boxGeometry args={[0.018, h * 2 + 0.04, 0.94]} /><meshStandardMaterial color="#16191c" roughness={0.6} /></mesh>
     <mesh position={[x + 0.024, y - h - 0.07, 0]}><cylinderGeometry args={[0.02, 0.02, 0.1, 10]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>
     <Stand x={x + 0.024} y={y - h - 0.1} />

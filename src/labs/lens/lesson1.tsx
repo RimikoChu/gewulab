@@ -54,7 +54,7 @@ export default function Lesson1() {
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="激光笔"
       stage={<Dark at="tank" labels={labels}>
         {/* 水槽：水、槽壁、水面那条亮线 */}
-        <mesh position={[PX, PY - 0.45, 0]}><boxGeometry args={[2.9, 0.9, 0.56]} /><meshStandardMaterial color="#2f86c4" transparent opacity={0.34} roughness={0.08} depthWrite={false} /></mesh>
+        <mesh position={[PX, PY - 0.45, 0]}><boxGeometry args={[2.9, 0.9, 0.56]} /><meshPhysicalMaterial color="#3a8fd0" transmission={0.9} thickness={0.6} ior={1.33} roughness={0.03} attenuationColor="#2f7fc0" attenuationDistance={1.6} transparent opacity={0.72} envMapIntensity={1.8} /></mesh>
         <mesh position={[PX, PY - 0.32, 0]}><boxGeometry args={[2.96, 1.36, 0.62]} /><meshStandardMaterial color="#cfe6ee" transparent opacity={0.09} roughness={0.05} depthWrite={false} /></mesh>
         <Ray a={[PX - 1.45, PY]} b={[PX + 1.45, PY]} color="#9fd8ff" r={0.004} glow={false} z={0.28} />
         {/* 玻璃槽的棱：前后两个框，加四条连着的边 */}
