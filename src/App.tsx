@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { FeaturedLabCard, LabCard } from '@/components/lab-card'
+import { CHANGES } from '@/changelog'
 import { LABS, SUBJECTS, type SubjectKey, hasOffline, offlineUrl } from '@/labs'
 
 /** 瀑布流列数：跟着容器宽度走 */
@@ -24,6 +25,13 @@ export default function App() {
   const [grade, setGrade] = useState('all')
   const [q, setQ] = useState('')
   const [gridRef, cols] = useColumns()
+  const [log, setLog] = useState(false)
+  useEffect(() => {
+    if (!log) return
+    const on = (e: KeyboardEvent) => { if (e.key === 'Escape') setLog(false) }
+    window.addEventListener('keydown', on); return () => window.removeEventListener('keydown', on)
+  }, [log])
+  const day = (d: string) => `${Number(d.slice(5, 7))} 月 ${Number(d.slice(8, 10))} 日`
 
   const pool = useMemo(() => LABS.filter(l =>
     (grade === 'all' || l.grade === grade) &&
@@ -56,7 +64,7 @@ export default function App() {
         </a>
         <span className="flex-1" />
         <a href="#" className="flex h-8 items-center rounded-md px-2.5 text-sm text-muted-foreground hover:bg-accent">嵌入课件</a>
-        <a href="#" className="flex h-8 items-center rounded-md px-2.5 text-sm text-muted-foreground hover:bg-accent">更新日志</a>
+        <button type="button" onClick={() => setLog(true)} className="flex h-8 items-center rounded-md px-2.5 text-sm text-muted-foreground hover:bg-accent">更新记录</button>
       </header>
 
       <main className="mx-auto max-w-[1160px] px-4 pt-5 pb-24 sm:px-10 sm:pt-8">
@@ -64,6 +72,9 @@ export default function App() {
           <div>
             <h1 className="text-[30px] leading-tight font-bold tracking-tight sm:text-[36px]">实验室</h1>
             <p className="mt-1.5 text-base text-muted-foreground">课本里的每个单元，都有一间能动手的实验室。还没做的，欢迎一起来做。</p>
+            <button type="button" onClick={() => setLog(true)} className="mt-2 text-left text-[13.5px] text-muted-foreground underline-offset-2 hover:text-primary hover:underline">
+              最近更新 · {day(CHANGES[0].date)}：{CHANGES[0].title}
+            </button>
           </div>
           <dl className="flex gap-7 pb-0.5 text-sm text-muted-foreground">
             {[[LABS.filter(l => l.href).length, '间已上线'], [LABS.length, '间在规划'], [Object.keys(SUBJECTS).length, '个学科']].map(([n, t]) => (
@@ -110,6 +121,32 @@ export default function App() {
             : columns.map((col, i) => <div key={i} className="flex min-w-0 flex-1 flex-col gap-4">{col.map(l => <LabCard key={l.id} lab={l} />)}</div>)}
         </div>
       </main>
+      {log && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-4" onClick={() => setLog(false)}>
+          <div role="dialog" aria-modal="true" aria-label="更新记录" onClick={e => e.stopPropagation()} className="flex max-h-[84vh] w-full max-w-[600px] flex-col overflow-hidden rounded-xl border bg-background shadow-[0_18px_50px_rgb(15_15_15/0.2)]">
+            <div className="flex items-center justify-between border-b px-6 py-4">
+              <h2 className="text-[19px] font-bold tracking-tight">更新记录</h2>
+              <button type="button" onClick={() => setLog(false)} aria-label="关闭" className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-accent"><X className="size-4.5" /></button>
+            </div>
+            <ol className="overflow-y-auto px-6 py-2">
+              {CHANGES.map((c, i) => (
+                <li key={i} className="border-b py-4 last:border-b-0">
+                  <div className="flex items-baseline gap-3">
+                    <time dateTime={c.date} className="flex-none text-[13px] tabular-nums text-faint">{day(c.date)}</time>
+                    <h3 className="text-[15.5px] font-semibold">{c.title}</h3>
+                  </div>
+                  <ul className="mt-1.5 flex flex-col gap-1 text-[14px] leading-[1.65] text-muted-foreground">{c.notes.map(n => <li key={n}>{n}</li>)}</ul>
+                  {c.labs && (
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      {c.labs.map(id => LABS.find(l => l.id === id)).filter(l => l?.href).map(l => <a key={l!.id} href={l!.href} className="rounded-md border px-2.5 py-1 text-[13px] hover:border-primary hover:text-primary">{l!.name}</a>)}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      )}
     </>
   )
 }

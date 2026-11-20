@@ -24,6 +24,7 @@
 | `src/lab-kit/` | 公共部件：舞台、常驻画布、拼模型的工具、贴图、常用状态 |
 | `src/components/lab/lab-shell.tsx` | 界面外壳：顶栏、课程块、面板、按钮 |
 | `src/labs.ts` | 首页的实验室清单和封面线稿 |
+| `src/changelog.ts` | 首页“更新记录”里的内容。一间实验室上线时，在最前面加一条，写给老师和学生看 |
 | `docs/specs/<名字>.md` | 每间实验室的规格卡 |
 | `docs/lab-standard.md` | 规范 |
 | `docs/roadmap.md` | 总规划表：约 70 间实验室，哪些已完成、哪些有人在做、哪些可以认领 |
