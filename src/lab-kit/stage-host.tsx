@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { Stage, type Label } from './scene'
 
 export interface Feed<W = Record<string, unknown>> {
-  labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; fog?: [number, number]; sun?: number; env?: number; free?: boolean; sky?: boolean; backdrop?: string
+  labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; fog?: [number, number]; sun?: number; env?: number; free?: boolean; sky?: boolean; backdrop?: string; bloom?: number
   /** 这一课对整个世界的要求（比如水位），原样交给 StageHost 的 world */
   world?: W
   children: ReactNode
@@ -28,5 +28,5 @@ export function StageHost<W>({ world }: { world: (want: W | undefined) => ReactN
   const [, bump] = useReducer((x: number) => x + 1, 0)
   useEffect(() => { store.subs.add(bump); bump(); return () => { store.subs.delete(bump) } }, [])   // 订阅之前课次可能已经交过一次内容，补画一次
   const f = store.feed
-  return createPortal(f ? <Stage labels={f.labels} target={f.target} span={f.span} view={f.view} fog={f.fog} sun={f.sun} env={f.env} free={f.free} sky={f.sky} backdrop={f.backdrop}>{world(f.world as W | undefined)}{f.children}</Stage> : null, host)
+  return createPortal(f ? <Stage labels={f.labels} target={f.target} span={f.span} view={f.view} fog={f.fog} sun={f.sun} env={f.env} free={f.free} sky={f.sky} backdrop={f.backdrop} bloom={f.bloom}>{world(f.world as W | undefined)}{f.children}</Stage> : null, host)
 }

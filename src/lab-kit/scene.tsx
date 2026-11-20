@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Environment, OrbitControls, PerformanceMonitor, useTexture } from '@react-three/drei'
-import { EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
@@ -199,8 +199,9 @@ export interface Label extends Tag { className: string; style?: CSSProperties; n
 const VIEW: [number, number] = [-0.42, 0.2]
 /** view：默认机位的方位角和仰角；pan：平移时看向的点能离 target 多远 */
 /** target：镜头看向哪里；span：要装进画面的宽和高（m）；sky：背景要不要画天空（不画时用 backdrop 这个颜色）；fog：雾的起止距离；sun：阳光强度；env：天空给的环境光强度（太空、室内这类自己打光的场景调小）；free：镜头可以转到正上方和正下方（没有地面的场景用） */
-export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; env?: number; free?: boolean; children: ReactNode }
-export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, env = 1.15, free = false, children }: StageProps) {
+export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; env?: number; free?: boolean; bloom?: number; children: ReactNode }
+/** bloom：泛光的强度。大于 0 时，画面里很亮的东西（光线、火焰、屏幕）周围会溢出一圈光；暗室、太空这类场景用，默认不开 */
+export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, env = 1.15, free = false, bloom = 0, children }: StageProps) {
   const aim = useMemo(() => { const o = new THREE.Object3D(); o.position.set(target.x, 0, target.z); o.updateMatrixWorld(); return o }, [target])   // 阳光对着这一课的器材，影子才落在画面里
   const [home, setHome] = useState(0)                 // 每加一，镜头回到默认位置
   const [names, setNames] = useState(true)
@@ -232,12 +233,14 @@ export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125',
         <OrbitControls makeDefault enablePan enableDamping dampingFactor={0.08} rotateSpeed={0.6} minPolarAngle={free ? 0.02 : 0.25} maxPolarAngle={free ? Math.PI - 0.02 : 1.52} />
         {tier === 2 && <EffectComposer key="hi" multisampling={0}>
           <N8AO aoRadius={1.6} intensity={1.8} distanceFalloff={1} quality="medium" />
+          <Bloom intensity={bloom} luminanceThreshold={0.78} luminanceSmoothing={0.2} mipmapBlur radius={0.72} />
           <Vignette offset={0.3} darkness={0.36} />
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
           <SMAA />
         </EffectComposer>}
         {tier === 1 && <EffectComposer key="mid" multisampling={0}>
           <N8AO aoRadius={1.6} intensity={1.8} distanceFalloff={1} quality="low" halfRes />
+          <Bloom intensity={bloom * 0.8} luminanceThreshold={0.78} luminanceSmoothing={0.2} mipmapBlur radius={0.6} />
           <Vignette offset={0.3} darkness={0.36} />
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
           <SMAA />
