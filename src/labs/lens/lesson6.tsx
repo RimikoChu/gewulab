@@ -9,6 +9,7 @@ import { AXIS, ST } from './world'
 
 const KEYS = Object.keys(EYES) as EyeKey[], K = 0.42      // 模型放大：1 cm 画成 0.42 个单位
 const LX = ST.eye - 0.3, RX = LX + EYE * K, HS = [-0.22, 0, 0.22]
+const RE = (EYE * K + 0.12) / 2, CX = RX - RE        // 眼球的半径和球心
 const TASKS: Task[] = [
   { id: 'normal', text: '先看正常的眼睛：光会聚在哪里', note: '正好落在视网膜上，看得清楚' },
   { id: 'near', text: '换成近视眼，再给它戴上眼镜', note: '光会聚在视网膜前面；戴凹透镜，先把光发散一些，就落回视网膜上了' },
@@ -34,21 +35,28 @@ export default function Lesson6() {
     : eye !== task.id ? { hint: `换成“${EYES[task.id as EyeKey].name}”`, next: 'eye' } : { hint: `光会聚在${where(eye, false)}：按“戴上眼镜”`, next: 'wear' }
   const labels: Label[] = [
     { id: 'f', at: [fx, AXIS - 0.12, 0.3], ax: 0.5, className: 'scene-tag key', children: <><small>光会聚在</small>{where(eye, on)}</> },
-    { id: 'r', at: [RX + 0.06, AXIS + 0.5, 0.3], name: true, className: 'scene-name -translate-y-1/2', children: '视网膜' },
-    { id: 'l', at: [LX, AXIS + 0.62, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '晶状体' },
-    ...(on ? [{ id: 'g', at: [LX - 0.5, AXIS + 0.62, 0.3] as [number, number, number], ax: 0.5, className: 'scene-tag -translate-y-full', children: e.glasses === 'concave' ? '凹透镜' : '凸透镜' }] : []),
+    { id: 'r', at: [RX - 0.02, AXIS + 0.5, 0.3], name: true, className: 'scene-name -translate-y-1/2', children: '视网膜' },
+    { id: 'l', at: [LX + 0.04, AXIS + 0.36, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '晶状体' },
+    { id: 'c', at: [CX - RE - 0.1, AXIS - 0.26, 0.3], ax: 1, name: true, className: 'scene-name', children: '角膜' },
+    { id: 'nv', at: [RX + 0.28, AXIS - 0.2, 0.3], name: true, className: 'scene-name', children: '视神经' },
+    ...(on ? [{ id: 'g', at: [LX - 0.55, AXIS + 0.5, 0.3] as [number, number, number], ax: 0.5, className: 'scene-tag -translate-y-full', children: e.glasses === 'concave' ? '凹透镜' : '凸透镜' }] : []),
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="眼镜"
       stage={<Dark at="eye" labels={labels}>
         {/* 眼球：一个半透明的球，后壁是视网膜；前面的晶状体是一块凸透镜 */}
-        <mesh position={[LX + EYE * K / 2, AXIS, 0]} scale={[EYE * K / 2 + 0.08, EYE * K / 2 + 0.02, 0.3]}><sphereGeometry args={[1, 32, 20]} /><meshStandardMaterial color="#f3d9c9" transparent opacity={0.16} depthWrite={false} /></mesh>
-        <mesh position={[RX + 0.03, AXIS, 0]}><boxGeometry args={[0.03, 0.7, 0.3]} /><meshStandardMaterial color="#e08a6a" roughness={0.8} /></mesh>
-        <Lens x={LX} y={AXIS} h={0.34} tint="#ffe9a8" />
-        {on && e.glasses && <Lens x={LX - 0.5} y={AXIS} h={0.4} kind={e.glasses} />}
+        <mesh position={[CX, AXIS, -0.04]}><circleGeometry args={[RE, 56]} /><meshBasicMaterial color="#f6dccd" transparent opacity={0.1} toneMapped={false} /></mesh>
+        <mesh position={[CX, AXIS, 0]}><torusGeometry args={[RE, 0.014, 10, 72]} /><meshBasicMaterial color="#ecd9cc" toneMapped={false} /></mesh>
+        {/* 视网膜：眼球后壁内侧的一段；后面连着视神经 */}
+        <mesh position={[CX, AXIS, 0.005]} rotation-z={-Math.PI * 0.36}><torusGeometry args={[RE - 0.03, 0.022, 10, 48, Math.PI * 0.72]} /><meshBasicMaterial color="#ff8a6a" toneMapped={false} /></mesh>
+        <mesh position={[RX + 0.13, AXIS - 0.1, 0]} rotation-z={1.15}><cylinderGeometry args={[0.045, 0.06, 0.3, 12]} /><meshStandardMaterial color="#e3c2a8" roughness={0.7} /></mesh>
+        {/* 角膜：眼球最前面鼓出来的一小段 */}
+        <mesh position={[CX - RE + 0.12, AXIS, 0]} rotation-z={Math.PI * 0.62}><torusGeometry args={[0.2, 0.012, 8, 32, Math.PI * 0.76]} /><meshBasicMaterial color="#bfe3ff" toneMapped={false} /></mesh>
+        <Lens x={LX} y={AXIS} h={eye === 'near' ? 0.3 : eye === 'far' ? 0.3 : 0.3} tint="#ffe9a8" stand={false} />
+        {on && e.glasses && <Lens x={LX - 0.55} y={AXIS} h={0.4} kind={e.glasses} />}
         {HS.map(h => { const t = (RX - LX) / (fx - LX); return <group key={h}>
-          <Ray a={[LX - 1.4, AXIS + h]} b={[LX, AXIS + h]} />
+          <Ray a={[LX - 1.25, AXIS + h]} b={[LX, AXIS + h]} />
           <Ray a={[LX, AXIS + h]} b={[fx > RX ? RX : fx, AXIS + (fx > RX ? h * (1 - t) : 0)]} />
           {fx < RX - 0.005 && <Ray a={[fx, AXIS]} b={[RX, AXIS - h * (RX - fx) / (fx - LX)]} />}
         </group> })}

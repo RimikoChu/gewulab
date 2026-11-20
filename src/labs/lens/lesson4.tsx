@@ -25,13 +25,13 @@ export default function Lesson4() {
   const { hint, next }: { hint: string; next: 'u' | 'draw' | null } = !task ? { hint: '两次都画完了。其实画两条就够定出像的位置。', next: null }
     : us !== task.id ? { hint: `把物距换成 ${task.id} cm`, next: 'u' } : full ? { hint: '三条光线交在同一点：那里就是烛焰尖的像', next: null } : { hint: `${last ? `${last.name}，${last.say}。` : ''}按“画下一条光线”`, next: 'draw' }
   const labels: Label[] = [
-    { id: 'u', at: benchAt(-u / 2, -8.5), ax: 0.5, className: 'scene-tag', children: <><small>物距</small>{u} cm</> },
-    { id: 'v', at: benchAt(imageDistance(u), -6 * imageDistance(u) / u - 2.5), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: n >= 2 ? 1 : 0 }, children: <><small>交点就是像</small>像距 {imageDistance(u)} cm</> },
+    { id: 'u', at: benchAt(-u / 2, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>物距</small>{u} cm</> },
+    { id: 'v', at: benchAt(imageDistance(u), -7 * imageDistance(u) / u - 2.4), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: n >= 2 ? 1 : 0 }, children: <><small>交点就是像</small>像距 {imageDistance(u)} cm</> },
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光路图"
-      stage={<Bench u={u} rays={n} image={n >= 2} labels={labels} />}
+      stage={<Bench u={u} rays={n} image={n >= 2} beam={false} dims labels={labels} />}
       lesson={<LessonBlock no="4" title="三条光线画出像" concept="从同一点发出的光，穿过透镜后又交于一点" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>
           <p>从烛焰尖上发出的光有无数条，其中三条的去向一眼就知道：</p>

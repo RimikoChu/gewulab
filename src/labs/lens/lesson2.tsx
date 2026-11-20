@@ -12,7 +12,7 @@ const TASKS: Task[] = [
   { id: 'convex', text: '让一束平行光穿过凸透镜，记下它怎样了', note: `会聚到一点：这一点是焦点，它到透镜中心的距离是焦距，这里是 ${F} cm` },
   { id: 'concave', text: '换成凹透镜，再记一次', note: '散开了：凹透镜对光有发散作用' },
 ]
-const X = (cm: number) => ST.bench + cm * CM, Y = (cm: number) => AXIS + cm * CM, HS = [-5, -2.5, 0, 2.5, 5]
+const X = (cm: number) => ST.bench + cm * CM, Y = (cm: number) => AXIS + cm * CM, HS = [-6, -3, 0, 3, 6]
 
 export default function Lesson2() {
   const [kind, setKind] = useState<LensKey>('convex')
@@ -25,18 +25,20 @@ export default function Lesson2() {
   const { hint, next }: { hint: string; next: 'kind' | 'record' | null } = !task ? { hint: '两种透镜都看过了。中间厚的会聚，中间薄的发散。', next: null }
     : kind !== task.id ? { hint: `换成“${LENSES[task.id as LensKey].name}”`, next: 'kind' } : { hint: '看光通过透镜以后是聚拢还是散开，按“记录”', next: 'record' }
   const labels: Label[] = [
-    { id: 'f', at: [X(cx ? F : -F), Y(-1.5), 0.3], ax: 0.5, className: 'scene-tag key', children: cx ? <><small>焦点 F</small>焦距 {F} cm</> : <><small>虚焦点</small>反向延长才相交</> },
-    { id: 'n', at: [X(0), Y(13), 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: `${LENSES[kind].name}：${LENSES[kind].shape}` },
+    { id: 'f', at: [X(cx ? F : -F), Y(-1.6), 0.34], ax: 0.5, className: 'scene-tag key', children: cx ? <><small>焦点 F</small>焦距 {F} cm</> : <><small>虚焦点</small>反向延长才相交</> },
+    { id: 'n', at: [X(0), Y(9.5), 0.34], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: `${LENSES[kind].name}：${LENSES[kind].shape}` },
+    { id: 'src', at: [X(-34.5), Y(8.5), 0.34], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '平行光源' },
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="透镜"
       stage={<Dark at="bench" labels={labels}>
-        <Axis x0={X(-45)} x1={X(55)} y={AXIS} marks={[X(cx ? F : -F)]} />
+        <Axis x0={X(-36)} x1={X(36)} y={AXIS} marks={[X(cx ? F : -F)]} />
+        <mesh position={[X(-34.5), AXIS, 0]}><boxGeometry args={[0.16, 0.86, 0.4]} /><meshStandardMaterial color="#2b3136" metalness={0.5} roughness={0.5} /></mesh>
         <Lens x={X(0)} y={AXIS} kind={kind} />
         {HS.map(h => <group key={h}>
-          <Ray a={[X(-42), Y(h)]} b={[X(0), Y(h)]} />
-          {cx ? <Ray a={[X(0), Y(h)]} b={[X(30), Y(h - h * 30 / F)]} /> : <><Ray a={[X(0), Y(h)]} b={[X(30), Y(h + h * 30 / F)]} /><Ray a={[X(0), Y(h)]} b={[X(-F), Y(0)]} dash color="#9fd8ff" /></>}
+          <Ray a={[X(-33), Y(h)]} b={[X(0), Y(h)]} />
+          {cx ? <Ray a={[X(0), Y(h)]} b={[X(32), Y(h - h * 32 / F)]} /> : <><Ray a={[X(0), Y(h)]} b={[X(22), Y(h + h * 22 / F)]} /><Ray a={[X(0), Y(h)]} b={[X(-F), Y(0)]} dash color="#9fd8ff" /></>}
         </group>)}
       </Dark>}
       lesson={<LessonBlock no="2" title="聚拢还是散开" concept="凸透镜会聚光，凹透镜发散光" tasks={TASKS} done={T.done} current={task?.id}
