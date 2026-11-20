@@ -11,9 +11,16 @@ export interface Lab {
   href?: string; lessons?: string[]; vb?: string; wide?: boolean
   /** 首页“全部”视图里通栏主推的那一间（只标一间）；trail 是课目时间线上方的那句话 */
   featured?: boolean; trail?: string
+  /** 旧版的页面（不在 src/labs/ 里），等待重做，不出离线包 */
+  legacy?: boolean
   /** 还没做的：它在 GitHub 上的认领议题编号 */
   issue?: number
 }
+
+/** 离线包的下载地址。name 是实验室的目录名、学科的代号（phys、chem…）或 all；包由 scripts/build-offline.mjs 打出来，随 main 自动发布 */
+export const offlineUrl = (name: string) => `https://github.com/RimikoChu/gewulab/releases/download/offline/gewulab-${name}.zip`
+/** 这一间有没有离线包：能进去做、而且不是旧版的 */
+export const hasOffline = (lab: Lab) => !!lab.href && !lab.legacy
 
 /** 认领议题的地址 */
 export const issueUrl = (n: number) => `https://github.com/RimikoChu/gewulab/issues/${n}`
@@ -130,7 +137,7 @@ export const ART: Record<string, string> = {
 };
 
 export const LABS: Lab[] = [
-  { id: 'quake', name: '地震', hook: '一次真实的地震：发生、预警、看穿地球', desc: '用 2008 年汶川地震做主线：先分清震级和烈度，再跟着纵波和横波跑一趟，算出预警能抢到几秒，最后用地震波看穿地球内部。', pts: ['震级与烈度', '纵波与横波', '地震预警', '地球的圈层'], s: 'geo', grade: '高中', book: '必修一', n: 6, wide: true, href: '/labs/quake/index.html', lessons: ['地震发生', '纵波横波', '地震预警', '找到震中', '看穿地球', '房屋抗震'], issue: 42 },
+  { id: 'quake', name: '地震', hook: '一次真实的地震：发生、预警、看穿地球', desc: '用 2008 年汶川地震做主线：先分清震级和烈度，再跟着纵波和横波跑一趟，算出预警能抢到几秒，最后用地震波看穿地球内部。', pts: ['震级与烈度', '纵波与横波', '地震预警', '地球的圈层'], s: 'geo', grade: '高中', book: '必修一', n: 6, wide: true, legacy: true, href: '/labs/quake/index.html', lessons: ['地震发生', '纵波横波', '地震预警', '找到震中', '看穿地球', '房屋抗震'], issue: 42 },
   { id: 'float', name: '浮力', hook: '为什么钢铁做的船能浮在水上', desc: '在一座造船厂里做实验：用吊车把船锚放进港池，看吊秤读数少了多少；接住溢出来的水，称一称有多重。最后弄懂一块会沉的钢铁怎样变成能浮的船，再去太空看浮力为什么消失。', pts: ['称重法测浮力', '阿基米德原理', '浮沉条件'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/float/index.html' },
   { id: 'pressure', name: '压强', hook: '大坝为什么要做成上窄下宽', desc: '在一座水电站里做实验：把混凝土块压在沙地上、让卡车开上软土，弄懂压强；把探头伸进水库，量出越深压强越大；再自己开船闸、做托里拆利实验、吹风洞。所有的课都在同一个大场景里，换课时镜头飞过去。', pts: ['压强 p = F/S', '液体压强 p = ρgh', '大气压与流速'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/pressure/index.html' },
   { id: 'lens', name: '凸透镜成像', hook: '把蜡烛的像接到光屏上', desc: '移动蜡烛和光屏，找到清晰的像。物距由远到近，像从缩小变成放大，最后成了接不到的虚像。照相机、投影仪、放大镜都在这条线上。', pts: ['成像规律', '焦距', '实像与虚像'], vb: '0 14 320 164', s: 'phys', grade: '初中', book: '八年级上册', n: 6, issue: 5 },

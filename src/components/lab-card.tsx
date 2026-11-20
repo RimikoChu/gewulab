@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { BorderBeam } from '@/components/ui/border-beam'
-import { ART, PLACEHOLDER, SUBJECTS, issueUrl, type Lab } from '@/labs'
+import { ART, PLACEHOLDER, SUBJECTS, hasOffline, issueUrl, offlineUrl, type Lab } from '@/labs'
 import { cn } from '@/lib/utils'
 
 const subjectVars = (s: Lab['s']) => ({
@@ -38,6 +38,7 @@ export function LabCard({ lab }: { lab: Lab }) {
   const to = lab.href ?? (lab.issue != null ? issueUrl(lab.issue) : undefined)
   const Wrapper = to ? 'a' : 'div'
   return (
+    <div className="relative">
     <Wrapper href={to} {...(!live && to ? { target: '_blank', rel: 'noreferrer' } : null)} className="lab-card group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2" style={subjectVars(lab.s)}>
       <Card className={cn('gap-0 overflow-hidden rounded-xl py-0 shadow-none transition-[background,box-shadow] duration-150',
         'group-hover:bg-[#fbfbfa] group-hover:shadow-[0_3px_10px_rgb(15_15_15/0.07)]')}>
@@ -55,6 +56,9 @@ export function LabCard({ lab }: { lab: Lab }) {
         </div>
       </Card>
     </Wrapper>
+    {/* 离线包的下载放在卡片外面叠上去：卡片本身已经是一个链接，里面不能再套链接 */}
+    {hasOffline(lab) && <a href={offlineUrl(lab.id)} className="absolute right-4 bottom-[15px] rounded-sm text-[13px] text-faint underline-offset-2 hover:text-primary hover:underline">离线包</a>}
+    </div>
   )
 }
 

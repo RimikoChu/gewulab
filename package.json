@@ -10,7 +10,8 @@
     "test": "vitest run",
     "check:labs": "node scripts/check-labs.mjs",
     "check": "tsc --noEmit && node scripts/check-labs.mjs && vitest run && vite build",
-    "new-lab": "node scripts/new-lab.mjs"
+    "new-lab": "node scripts/new-lab.mjs",
+    "build:offline": "node scripts/build-offline.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
