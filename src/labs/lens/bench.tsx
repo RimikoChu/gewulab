@@ -17,10 +17,16 @@ export default function Bench({ u, screen, image = false, rays = 0, beam = true,
   const A: [number, number] = [x(-u), y(H * 0.92)], B: [number, number] = n ? [x(v), y((real ? -m : m) * H * 0.92)] : [0, 0], far = (RAIL - 1) / k, R = LENS_R
   // 光束：烛焰尖发出的光打满整块透镜；穿过透镜后，上下两条边各自的去向（实像：朝像点会聚再散开；虚像：一直散开）
   const edge = (side: number, cm: number) => { const y0 = side * R; return real ? y0 + ((-m * H * 0.92) - y0) * cm / v : y0 + (y0 - m * H * 0.92) * cm / -v }
-  const end = screen ?? far
+  // 光束和光线都只画到离主光轴 EDGE 厘米以内：再远就照到白屏外面、甚至台面下面去了
+  const EDGE = 13.5 / k, By = Math.abs(m * H * 0.92)
+  const end = Math.min(screen ?? far, real ? (screen ?? v * (1 + (EDGE - By) / (R + By))) : far)
+  // 虚像时下边那条边最先碰到 EDGE：从那里起沿着 EDGE 画
+  const cut = real ? end : Math.min(end, (EDGE - R) * -v / (R + By))
   // 三条特殊光线在透镜上的落点高度，和通过透镜以后的去向
   const hit = [H * 0.92, 0, (real ? -m : m) * H * 0.92]
-  const out = (i: number): [number, number] => real ? B : i === 0 ? [x(far), y(hit[0] - hit[0] * far / f)] : i === 1 ? [x(far), y(-hit[0] * far / u)] : [x(far), y(hit[2])]
+  // 虚像时三条光线穿过透镜后各自散开：画到 EDGE 为止
+  const f0 = Math.min(far, f * (1 + EDGE / hit[0])), f1 = Math.min(far, EDGE * u / hit[0])
+  const out = (i: number): [number, number] => real ? B : i === 0 ? [x(f0), y(hit[0] - hit[0] * f0 / f)] : i === 1 ? [x(f1), y(-hit[0] * f1 / u)] : [x(Math.min(far, 30 / k)), y(hit[2])]
   return (
     <Dark at="bench" labels={labels}>
       <Axis x0={X(-RAIL)} x1={X(RAIL)} y={AXIS} marks={[-2 * f, -f, f, 2 * f].map(c => x(c))} />
@@ -28,7 +34,8 @@ export default function Bench({ u, screen, image = false, rays = 0, beam = true,
         <Beam pts={[A, [X(0), y(R)], [X(0), y(-R)]]} />
         {real && end > v
           ? <><Beam pts={[[X(0), y(R)], [X(0), y(-R)], B]} /><Beam pts={[B, [x(end), y(edge(1, end))], [x(end), y(edge(-1, end))]]} opacity={0.06} /></>
-          : <Beam pts={[[X(0), y(R)], [X(0), y(-R)], [x(end), y(edge(-1, end))], [x(end), y(edge(1, end))]]} opacity={real ? 0.085 : 0.06} />}
+          : real ? <Beam pts={[[X(0), y(R)], [X(0), y(-R)], [x(end), y(edge(-1, end))], [x(end), y(edge(1, end))]]} />
+          : <Beam pts={[[X(0), y(R)], [X(0), y(-R)], [x(cut), y(-EDGE)], [x(end), y(-EDGE)], [x(end), y(Math.max(-EDGE, edge(1, end)))]]} opacity={0.06} />}
       </>}
       <Lens x={X(0)} y={AXIS} h={R * CM * Math.min(1, k + 0.25)} />
       <Candle x={x(-u)} y={AXIS} h={H * CM * k} />
@@ -42,8 +49,8 @@ export default function Bench({ u, screen, image = false, rays = 0, beam = true,
           {i === 2 && !real && <Ray a={[x(-f), y(0)]} b={A} color={TINT[i]} dash />}
         </group>
       ))}
-      {dims && <Dim a={x(-u)} b={X(0)} y={Y(-9.6)} />}
-      {dims && image && real && <Dim a={X(0)} b={x(v)} y={Y(-9.6)} color="#7fe3d4" />}
+      {dims && <Dim a={x(-u)} b={X(0)} y={Y(-13.2)} />}
+      {dims && image && real && <Dim a={X(0)} b={x(v)} y={Y(-13.2)} color="#7fe3d4" />}
       {children}
     </Dark>
   )

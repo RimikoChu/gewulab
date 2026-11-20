@@ -69,7 +69,7 @@ export default function Lesson6() {
         <mesh position={[CX - RE + 0.13, AXIS, 0]}><sphereGeometry args={[0.24, 32, 20, Math.PI * 1.62, Math.PI * 0.76]} /><meshPhysicalMaterial color="#dff1ff" transmission={0.95} thickness={0.1} ior={1.38} roughness={0.02} clearcoat={1} envMapIntensity={2.6} transparent opacity={0.85} side={THREE.DoubleSide} /></mesh>
         <mesh position={[LX - 0.045, AXIS, 0]} rotation-y={Math.PI / 2}><ringGeometry args={[0.2, 0.36, 40]} /><meshStandardMaterial color="#4a6f8f" roughness={0.6} side={THREE.DoubleSide} /></mesh>
         <mesh position={[RX + 0.15, AXIS - 0.07, 0]} rotation-z={1.25}><cylinderGeometry args={[0.055, 0.07, 0.34, 14]} /><meshStandardMaterial color="#e6c9ae" roughness={0.7} /></mesh>
-        <mesh position={[CX, AXIS - RE - 0.16, 0]}><cylinderGeometry args={[0.03, 0.03, 0.32, 12]} /><meshStandardMaterial color="#c4cace" metalness={0.9} roughness={0.25} /></mesh>
+        <mesh position={[CX, (TOP + 0.04 + AXIS - RE) / 2, 0]}><cylinderGeometry args={[0.03, 0.03, AXIS - RE - TOP - 0.04, 12]} /><meshStandardMaterial color="#c4cace" metalness={0.9} roughness={0.25} /></mesh>
         <mesh position={[CX, TOP + 0.02, 0]} castShadow><cylinderGeometry args={[0.26, 0.3, 0.04, 32]} /><meshStandardMaterial color="#16191c" roughness={0.5} metalness={0.3} /></mesh>
         <Lens x={LX} y={AXIS} h={0.21} bulge={eye === 'near' ? 0.52 : eye === 'far' ? 0.26 : 0.38} tint="#ffe9a8" stand={false} frame={false} />
         {on && e.glasses && <Lens x={LX - 0.55} y={AXIS} h={0.4} kind={e.glasses} />}

@@ -4,14 +4,14 @@ import { useMemo } from 'react'
 import * as THREE from 'three'
 import { Painted, mergeParts, type Part } from '@/lab-kit'
 
-export const TOP = 0.9, AXIS = TOP + 0.74, CM = 0.06      // 台面高度、主光轴的高度、1 cm 在画面里多长
+export const TOP = 0.9, AXIS = TOP + 1.0, CM = 0.06      // 台面高度、主光轴的高度、1 cm 在画面里多长
 /** 光具座导轨从透镜往两边各伸出多少厘米 */
 export const RAIL = 40
 export const ST = { tank: -9, bench: 0, eye: 8, scope: 14.5 }
 // 机位稍微偏一点、俯一点：器材看得出前后和厚薄，光路所在的平面仍然基本正对镜头
 const VIEW: [number, number] = [-0.2, 0.17]
 const at = (x: number, w: number, h: number, up = 0) => ({ target: new THREE.Vector3(x, AXIS + up, 0), span: [w, h] as [number, number], view: VIEW })
-export const SPOT = { tank: at(ST.tank, 3.6, 2.1, 0.08), bench: at(ST.bench, 5.3, 2.5, 0.1), eye: at(ST.eye, 3.6, 2.1, 0.12), scope: at(ST.scope, 4.5, 2.1, 0.12) }
+export const SPOT = { tank: at(ST.tank, 3.6, 2.3, -0.1), bench: at(ST.bench, 5.3, 2.75, -0.08), eye: at(ST.eye, 3.6, 2.3, -0.1), scope: at(ST.scope, 4.5, 2.3, -0.1) }
 /** 暗室里的舞台设置：不画天空，背景近黑，环境光调小，亮的东西带一圈泛光 */
 export const DARK = { sky: false, backdrop: '#07090c', env: 0.22, sun: 0, fog: [30, 120] as [number, number], bloom: 0.75 }
 const X0 = -13, X1 = 19, DEPTH = 2.6

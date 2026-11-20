@@ -28,11 +28,11 @@ export default function Lesson3() {
     : us !== task.id ? { hint: `把蜡烛移到离透镜 ${task.id} cm 的地方`, next: 'u' }
     : found && !dup ? { hint: n.real ? `像清楚了：${n.text}，按“记录”` : '光屏上始终没有像：这是虚像，按“记录”', next: 'record' } : { hint: '按“移动光屏找像”', next: 'find' }
   const labels: Label[] = [
-    { id: 'u', at: benchAt(-uNow / 2, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>物距 u</small>{uNow.toFixed(0)} cm</> },
-    { id: 'v', at: benchAt(n.real ? v / 2 : -v, n.real ? -12.4 : 16.5), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: found ? 1 : 0 }, children: n.real ? <><small>像距 v</small>{v} cm</> : <><small>虚像</small>和蜡烛在同一侧，光屏接不到</> },
+    { id: 'u', at: benchAt(-uNow / 2, -16.6), ax: 0.5, className: 'scene-tag', children: <><small>物距 u</small>{uNow.toFixed(0)} cm</> },
+    { id: 'v', at: benchAt(n.real ? v / 2 : -v, n.real ? -16.6 : 15), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: found ? 1 : 0 }, children: n.real ? <><small>像距 v</small>{v} cm</> : <><small>虚像</small>和蜡烛在同一侧，光屏接不到</> },
     ...(!n.real && found ? [{ id: 'eye', at: benchAt(31, 5), ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛从这边透过透镜看' } as Label] : []),
-    { id: 'f1', at: benchAt(-F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f2', at: benchAt(-2 * F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
-    { id: 'f3', at: benchAt(F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f4', at: benchAt(2 * F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
+    { id: 'f1', at: benchAt(-F, -1.5), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f2', at: benchAt(-2 * F, -1.5), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
+    { id: 'f3', at: benchAt(F, -1.5), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f4', at: benchAt(2 * F, -1.5), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
   ]
 
   return (

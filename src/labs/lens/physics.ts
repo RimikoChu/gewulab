@@ -35,7 +35,7 @@ export function nature(u: number, f = F): Image | null {
   return { real: false, upright: true, size: '放大', text: '正立、放大的虚像', use: '放大镜' }
 }
 /** 透镜的半径（cm）和蜡烛的高度（cm） */
-export const LENS_R = 8, CANDLE = 7
+export const LENS_R = 8, CANDLE = 6
 /** 光屏放在离透镜 screen 厘米处时，烛焰尖上发出的光在屏上摊成多大一片（cm）。正好在像的位置时是 0：像最清楚 */
 export const blurSize = (u: number, screen: number, f = F) => { const v = imageDistance(u, f); return v > 0 && Number.isFinite(v) ? 2 * LENS_R * Math.abs(screen - v) / v : 2 * LENS_R * (1 + screen * (f - u) / (u * f)) }
 

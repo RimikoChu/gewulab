@@ -117,7 +117,7 @@ export function Axis({ x0, x1, y, marks = [] }: { x0: number; x1: number; y: num
 }
 
 /** 光屏：一块带边框的白板，立在滑座上 */
-export function Screen({ x, y, h = 0.62 }: { x: number; y: number; h?: number }) {
+export function Screen({ x, y, h = 0.86 }: { x: number; y: number; h?: number }) {
   return <group>
     {/* 白屏：一块白色的板，背后一块黑底板，下面一截柄插进支杆 */}
     <mesh position={[x + 0.008, y, 0]}><boxGeometry args={[0.014, h * 2, 0.9]} /><meshStandardMaterial color="#cfcdc4" roughness={1} /></mesh>

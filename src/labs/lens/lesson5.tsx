@@ -21,7 +21,7 @@ export default function Lesson5() {
     : dev !== task.id ? { hint: `换成“${DEVICES[task.id as DeviceKey].name}”`, next: 'dev' } : { hint: `${d.where}，成${n.text}：按“记录”`, next: 'record' }
   const labels: Label[] = [
     { id: 'o', at: benchAt(-d.u, 9.5), ax: 0.5, className: 'scene-tag -translate-y-full', children: dev === 'camera' ? '被拍的景物' : dev === 'projector' ? '胶片（倒着放）' : '要看的小东西' },
-    { id: 'i', at: benchAt(v, n.real ? 2 : 17), ax: 0.5, className: 'scene-tag key -translate-y-full', children: dev === 'camera' ? '感光元件上的像' : dev === 'projector' ? '屏幕上的像' : '透过透镜看到的像' },
+    { id: 'i', at: benchAt(v, n.real ? 3 : 15), ax: 0.5, className: 'scene-tag key -translate-y-full', children: dev === 'camera' ? '感光元件上的像' : dev === 'projector' ? '屏幕上的像' : '透过透镜看到的像' },
   ]
 
   return (
