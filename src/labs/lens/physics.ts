@@ -35,7 +35,7 @@ export function nature(u: number, f = F): Image | null {
   return { real: false, upright: true, size: '放大', text: '正立、放大的虚像', use: '放大镜' }
 }
 /** 透镜的半径（cm）和蜡烛的高度（cm） */
-export const LENS_R = 8, CANDLE = 7
+export const LENS_R = 8, CANDLE = 6
 /** 光屏放在离透镜 screen 厘米处时，烛焰尖上发出的光在屏上摊成多大一片（cm）。正好在像的位置时是 0：像最清楚 */
 export const blurSize = (u: number, screen: number, f = F) => { const v = imageDistance(u, f); return v > 0 && Number.isFinite(v) ? 2 * LENS_R * Math.abs(screen - v) / v : 2 * LENS_R * (1 + screen * (f - u) / (u * f)) }
 
@@ -61,6 +61,8 @@ export const EYES = {
 export type EyeKey = keyof typeof EYES
 /** 平行光进入眼睛后会聚在离晶状体多远的地方（cm）；戴上合适的眼镜就落回视网膜上 */
 export const focusAt = (eye: EyeKey, glasses: boolean) => glasses && EYES[eye].glasses ? EYE : EYES[eye].f
+/** 视网膜上的像有多糊（0 是清楚）：光会聚的地方离视网膜越远越糊 */
+export const retinaBlur = (eye: EyeKey, glasses: boolean) => Math.abs(focusAt(eye, glasses) - EYE)
 export const where = (eye: EyeKey, glasses: boolean) => { const d = focusAt(eye, glasses) - EYE; return Math.abs(d) < 1e-9 ? '视网膜上' : d < 0 ? '视网膜前面' : '视网膜后面' }
 
 // ---------- 第 7 课：望远镜和显微镜 ----------

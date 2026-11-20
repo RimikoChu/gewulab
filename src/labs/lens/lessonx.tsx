@@ -6,7 +6,7 @@ import Bench, { benchAt } from './bench'
 import { LESSONS, goLesson } from './lessons'
 import { Dark, Ray } from './optics'
 import { ZOOM, imageDistance, magnify } from './physics'
-import { AXIS, ST } from './world'
+import { AXIS, ST, TOP } from './world'
 
 type Sub = 'prism' | 'mirage' | 'zoom'
 const SUBS: Record<Sub, { name: string; title: string; say: string; button: string }> = {
@@ -18,6 +18,13 @@ const ORDER: Sub[] = ['prism', 'mirage', 'zoom']
 const TASKS: Task[] = ORDER.map(k => ({ id: k, text: `${SUBS[k].name}：按“${SUBS[k].button}”`, note: SUBS[k].title }))
 const COLORS = ['#ff4a3a', '#ff8a2a', '#ffd92a', '#4ad24a', '#3aa0ff', '#4a5aff', '#a04aff'], NAMES = '红橙黄绿蓝靛紫'
 const PX = ST.tank, PY = AXIS
+// 海市蜃楼的摆法：地面的高度、树梢和眼睛的位置；光线画成一条抛物线，最低处离地面一点点
+const GY = TOP + 0.1, TREE: [number, number] = [PX + 1.35, GY + 0.95], EYE_AT: [number, number] = [PX - 1.35, GY + 0.5], LOW = GY + 0.05
+const CY = 2 * LOW - (TREE[1] + EYE_AT[1]) / 2
+/** 弯着走的那条光线：t = 0 在树梢，t = 1 在眼睛 */
+const bend = (t: number): [number, number] => [TREE[0] + (EYE_AT[0] - TREE[0]) * t, (1 - t) ** 2 * TREE[1] + 2 * t * (1 - t) * CY + t * t * EYE_AT[1]]
+/** 光线射进眼睛时的斜率：人顺着这个方向反着看过去 */
+const SLOPE = (2 * (EYE_AT[1] - CY)) / (EYE_AT[0] - TREE[0])
 
 export default function LessonX() {
   const [sub, setSub] = useState<Sub>('prism')
@@ -29,7 +36,7 @@ export default function LessonX() {
   const task = T.current
   const { hint, next }: { hint: string; next: 'sub' | 'act' | null } = !task ? { hint: '三个专题都看完了。', next: null }
     : sub !== task.id ? { hint: `接着看：${SUBS[task.id as Sub].name}`, next: 'sub' } : { hint: `按“${SUBS[sub].button}”`, next: 'act' }
-  const zl: Label[] = [{ id: 'f', at: benchAt(0, 9.5), ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>焦距</small>{f} cm</> }, { id: 'm', at: benchAt(imageDistance(ZOOM.u, f) * 0.56, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>像是物体的</small>{magnify(ZOOM.u, f).toFixed(1)} 倍</> }]
+  const zl: Label[] = [{ id: 'f', at: benchAt(0, 9.5), ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>焦距</small>{f} cm</> }, { id: 'm', at: benchAt(imageDistance(ZOOM.u, f) * 0.56, -16.6), ax: 0.5, className: 'scene-tag', children: <><small>像是物体的</small>{magnify(ZOOM.u, f).toFixed(1)} 倍</> }]
   const panel = (
     <Glass className="px-4 py-4">
       <div className="text-center">
@@ -45,18 +52,21 @@ export default function LessonX() {
     </Glass>
   )
   const stage = sub === 'zoom' ? <Bench u={ZOOM.u} f={f} k={0.56} image rays={2} labels={zl} /> : (
-    <Dark at="tank" labels={sub === 'prism' ? [{ id: 'p', at: [PX, PY + 0.75, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '三棱镜' }] : [{ id: 'g', at: [PX, PY - 0.72, 0.3], ax: 0.5, className: 'scene-name', name: true, children: on ? '很烫的地面：贴地的空气稀' : '地面' }, { id: 'e', at: [PX - 1.35, PY - 0.2, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛' }]}>
+    <Dark at="tank" labels={sub === 'prism' ? [{ id: 'p', at: [PX, PY + 0.75, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '三棱镜' }] : [{ id: 'g', at: [PX + 0.3, GY - 0.1, 0.34], ax: 0.5, className: 'scene-name', name: true, children: on ? '很烫的地面：贴地的空气稀' : '地面' }, { id: 'e', at: [EYE_AT[0], EYE_AT[1] + 0.14, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛' }, ...(on ? [{ id: 'm', at: [EYE_AT[0] + (GY - EYE_AT[1]) / SLOPE, GY + 0.02, 0.34] as [number, number, number], ax: 0.5, className: 'scene-tag key -translate-y-full', children: '看上去像这里有一片水' }] : [])]}>
       {sub === 'prism' ? <>
         <mesh position={[PX, PY, 0]} rotation-x={Math.PI / 2} rotation-y={Math.PI / 2}><cylinderGeometry args={[0.6, 0.6, 0.4, 3]} /><meshStandardMaterial color="#cfe6ee" transparent opacity={0.3} roughness={0.05} depthWrite={false} /></mesh>
         <Ray a={[PX - 1.5, PY - 0.25]} b={[PX - 0.28, PY + 0.08]} color="#ffffff" r={0.014} />
         {on ? COLORS.map((c, i) => <group key={c}><Ray a={[PX - 0.28, PY + 0.08]} b={[PX + 0.3, PY + 0.06 - i * 0.012]} color={c} r={0.006} /><Ray a={[PX + 0.3, PY + 0.06 - i * 0.012]} b={[PX + 1.5, PY - 0.2 - i * 0.085]} color={c} r={0.012} /></group>) : null}
       </> : <>
-        <mesh position={[PX, PY - 0.66, 0]}><boxGeometry args={[3, 0.06, 0.5]} /><meshStandardMaterial color={on ? '#b0603a' : '#5a5650'} roughness={1} emissive={on ? '#6a2a10' : '#000000'} /></mesh>
-        <mesh position={[PX + 1.3, PY + 0.2, 0]}><coneGeometry args={[0.16, 0.9, 8]} /><meshStandardMaterial color="#3f7a3c" flatShading /></mesh>
-        <mesh position={[PX - 1.35, PY - 0.3, 0]}><sphereGeometry args={[0.07, 14, 10]} /><meshStandardMaterial color="#f3e6da" /></mesh>
+        {/* 一条路面，右边远处一棵树，左边是眼睛 */}
+        <mesh position={[PX, GY - 0.03, 0]}><boxGeometry args={[3.2, 0.06, 0.6]} /><meshStandardMaterial color={on ? '#8a4a2c' : '#4a4a48'} roughness={1} emissive={on ? '#7a2a10' : '#000000'} emissiveIntensity={on ? 0.5 : 0} /></mesh>
+        <mesh position={[TREE[0], GY + 0.1, 0]}><cylinderGeometry args={[0.03, 0.04, 0.2, 8]} /><meshStandardMaterial color="#6b5236" /></mesh>
+        <mesh position={[TREE[0], GY + (TREE[1] - GY + 0.2) / 2, 0]}><coneGeometry args={[0.2, TREE[1] - GY - 0.2, 10]} /><meshStandardMaterial color="#3f8a45" flatShading /></mesh>
+        <mesh position={[EYE_AT[0], EYE_AT[1], 0]}><sphereGeometry args={[0.08, 16, 12]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh>
+        <mesh position={[EYE_AT[0] + 0.07, EYE_AT[1], 0]}><sphereGeometry args={[0.03, 12, 8]} /><meshStandardMaterial color="#30343a" /></mesh>
         {on
-          ? <>{Array.from({ length: 12 }, (_, i) => { const t0 = i / 12, t1 = (i + 1) / 12, y = (t: number) => PY + 0.45 - 1.0 * 4 * t * (1 - t) * 0.95 - 0.75 * t; return <Ray key={i} a={[PX + 1.3 - 2.65 * t0, y(t0)]} b={[PX + 1.3 - 2.65 * t1, y(t1)]} /> })}<Ray a={[PX - 1.35, PY - 0.3]} b={[PX + 0.2, PY - 0.86]} dash color="#9fd8ff" /></>
-          : <Ray a={[PX + 1.3, PY + 0.45]} b={[PX - 1.35, PY - 0.3]} />}
+          ? <>{Array.from({ length: 16 }, (_, i) => <Ray key={i} a={bend(i / 16)} b={bend((i + 1) / 16)} />)}<Ray a={EYE_AT} b={[EYE_AT[0] + (GY - EYE_AT[1]) / SLOPE, GY]} dash color="#9fd8ff" /></>
+          : <Ray a={TREE} b={EYE_AT} />}
       </>}
     </Dark>
   )

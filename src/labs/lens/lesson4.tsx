@@ -25,8 +25,8 @@ export default function Lesson4() {
   const { hint, next }: { hint: string; next: 'u' | 'draw' | null } = !task ? { hint: '两次都画完了。其实画两条就够定出像的位置。', next: null }
     : us !== task.id ? { hint: `把物距换成 ${task.id} cm`, next: 'u' } : full ? { hint: '三条光线交在同一点：那里就是烛焰尖的像', next: null } : { hint: `${last ? `${last.name}，${last.say}。` : ''}按“画下一条光线”`, next: 'draw' }
   const labels: Label[] = [
-    { id: 'u', at: benchAt(-u / 2, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>物距</small>{u} cm</> },
-    { id: 'v', at: benchAt(imageDistance(u), -7 * imageDistance(u) / u - 2.4), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: n >= 2 ? 1 : 0 }, children: <><small>交点就是像</small>像距 {imageDistance(u)} cm</> },
+    { id: 'u', at: benchAt(-u / 2, -16.6), ax: 0.5, className: 'scene-tag', children: <><small>物距</small>{u} cm</> },
+    { id: 'v', at: benchAt(imageDistance(u), -6 * imageDistance(u) / u - 2.2), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: n >= 2 ? 1 : 0 }, children: <><small>交点就是像</small>像距 {imageDistance(u)} cm</> },
   ]
 
   return (

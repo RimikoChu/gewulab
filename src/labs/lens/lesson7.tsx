@@ -5,7 +5,7 @@ import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
 import { Axis, Candle, Dark, Lens, Ray } from './optics'
 import { SCOPES, type ScopeKey } from './physics'
-import { AXIS, ST } from './world'
+import { AXIS, ST, TOP } from './world'
 
 const KEYS = Object.keys(SCOPES) as ScopeKey[]
 const TASKS: Task[] = KEYS.map(k => ({ id: k, text: `${SCOPES[k].name}：一步一步看两块透镜各做了什么`, note: SCOPES[k].steps.join('；') }))
@@ -38,7 +38,10 @@ export default function Lesson7() {
       stage={<Dark at="scope" labels={labels}>
         <Axis x0={X0 - 2.05} x1={X0 + 1.6} y={AXIS} />
         {/* 镜筒：一段半透明的筒，两头各装一块透镜 */}
-        <mesh position={[X0 + (L.ob + L.ey) / 2, AXIS, 0]} rotation-z={Math.PI / 2}><cylinderGeometry args={[0.4, kind === 'telescope' ? 0.56 : 0.34, L.ey - L.ob, 40, 1, true]} /><meshBasicMaterial color="#9fb0c0" transparent opacity={0.045} side={2} depthWrite={false} toneMapped={false} /></mesh>
+        <mesh position={[X0 + (L.ob + L.ey) / 2, AXIS, 0]} rotation-z={Math.PI / 2}><cylinderGeometry args={[0.42, kind === 'telescope' ? 0.6 : 0.36, L.ey - L.ob + 0.16, 48, 1, true, Math.PI, Math.PI]} /><meshStandardMaterial color="#3a4148" metalness={0.6} roughness={0.5} side={2} /></mesh>
+        {/* 支架：一根立柱和一只底座 */}
+        <mesh position={[X0 + (L.ob + L.ey) / 2, (TOP + AXIS - 0.55) / 2, -0.05]}><cylinderGeometry args={[0.035, 0.035, AXIS - 0.55 - TOP, 14]} /><meshStandardMaterial color="#c4cace" metalness={0.9} roughness={0.25} /></mesh>
+        <mesh position={[X0 + (L.ob + L.ey) / 2, TOP + 0.025, -0.05]} castShadow><cylinderGeometry args={[0.3, 0.36, 0.05, 32]} /><meshStandardMaterial color="#16191c" roughness={0.5} metalness={0.3} /></mesh>
         <Lens x={X0 + L.ob} y={AXIS} h={kind === 'telescope' ? 0.52 : 0.3} stand={false} />
         <Lens x={X0 + L.ey} y={AXIS} h={0.36} stand={false} />
         <mesh position={[X0 + L.ey + 0.56, AXIS + 0.06, 0]}><sphereGeometry args={[0.12, 20, 14]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh>
@@ -46,7 +49,7 @@ export default function Lesson7() {
         {L.ox != null && <Candle x={X0 + L.ox} y={AXIS} h={L.oh} />}
         {n >= 1 && <>
           {[0.32, -0.2].map(h => { const hh = kind === 'telescope' ? h : h * 0.5; const from: [number, number] = L.ox != null ? [X0 + L.ox, AXIS + L.oh] : [X0 - 2.05, AXIS + hh + 0.07]; return <group key={h}><Ray a={from} b={[X0 + L.ob, AXIS + hh]} /><Ray a={[X0 + L.ob, AXIS + hh]} b={tip} /></group> })}
-          <Candle x={X0 + L.ix} y={AXIS} h={L.ih} />
+          <Candle x={X0 + L.ix} y={AXIS} h={L.ih} image />
         </>}
         {n >= 2 && [0.2, -0.12].map(h => { const k = (L.ih) / (L.ix - L.ey); return <group key={h}><Ray a={tip} b={[X0 + L.ey, AXIS + h]} color="#7fe3d4" /><Ray a={[X0 + L.ey, AXIS + h]} b={[X0 + L.ey + 0.42, AXIS + h * 0.35 + k * 0.42 * 0.5]} color="#7fe3d4" /></group> })}
       </Dark>}
