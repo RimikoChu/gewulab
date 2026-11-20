@@ -20,13 +20,13 @@ export default function Lesson5() {
   const { hint, next }: { hint: string; next: 'dev' | 'record' | null } = !task ? { hint: '三样都对上了：同一块凸透镜，物体放的远近不同，用处就不同。', next: null }
     : dev !== task.id ? { hint: `换成“${DEVICES[task.id as DeviceKey].name}”`, next: 'dev' } : { hint: `${d.where}，成${n.text}：按“记录”`, next: 'record' }
   const labels: Label[] = [
-    { id: 'o', at: benchAt(-d.u, 9), ax: 0.5, className: 'scene-tag -translate-y-full', children: dev === 'camera' ? '被拍的景物' : dev === 'projector' ? '胶片（倒着放）' : '要看的小东西' },
-    { id: 'i', at: benchAt(v, n.real ? 6 * v / d.u + 3 : 15), ax: 0.5, className: 'scene-tag key -translate-y-full', children: dev === 'camera' ? '感光元件上的像' : dev === 'projector' ? '屏幕上的像' : '透过透镜看到的像' },
+    { id: 'o', at: benchAt(-d.u, 9.5), ax: 0.5, className: 'scene-tag -translate-y-full', children: dev === 'camera' ? '被拍的景物' : dev === 'projector' ? '胶片（倒着放）' : '要看的小东西' },
+    { id: 'i', at: benchAt(v, n.real ? 2 : 17), ax: 0.5, className: 'scene-tag key -translate-y-full', children: dev === 'camera' ? '感光元件上的像' : dev === 'projector' ? '屏幕上的像' : '透过透镜看到的像' },
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={d.name}
-      stage={<Bench u={d.u} image rays={2} screen={n.real ? v : undefined} labels={labels} />}
+      stage={<Bench u={d.u} image rays={2} screen={n.real ? v : undefined} dims labels={labels} />}
       lesson={<LessonBlock no="5" title="照相机、投影仪、放大镜" concept="同一块凸透镜，物体远近不同，用处就不同" tasks={TASKS} done={T.done} current={task?.id}
         theory={<ul className="flex flex-col gap-2 text-[14px] text-white/80">{KEYS.map(k => <li key={k}><b className="text-[#7fe3d4]">{DEVICES[k].name}（{DEVICES[k].where}）：</b>{DEVICES[k].say}</li>)}</ul>} />}
       finale={T.finale && (

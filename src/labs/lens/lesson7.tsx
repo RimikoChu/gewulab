@@ -30,23 +30,25 @@ export default function Lesson7() {
     { id: 'ob', at: [X0 + L.ob, AXIS + 0.66, 0.3], ax: 0.5, className: `scene-tag -translate-y-full${n === 1 ? ' key' : ''}`, children: '物镜' },
     { id: 'ey', at: [X0 + L.ey, AXIS + 0.5, 0.3], ax: 0.5, className: `scene-tag -translate-y-full${n === 2 ? ' key' : ''}`, children: '目镜' },
     { id: 'im', at: [X0 + L.ix, AXIS + L.ih - 0.06, 0.3], ax: 0.5, className: 'scene-name transition-opacity', style: { opacity: n >= 1 ? 1 : 0 }, children: kind === 'telescope' ? '倒立、缩小的实像' : '倒立、放大的实像' },
-    { id: 'e', at: [X0 + 1.75, AXIS + 0.2, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛' },
+    { id: 'e', at: [X0 + L.ey + 0.56, AXIS + 0.24, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛' },
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={s.name}
       stage={<Dark at="scope" labels={labels}>
-        <Axis x0={X0 - 2.05} x1={X0 + 1.9} y={AXIS} />
-        <Lens x={X0 + L.ob} y={AXIS} h={kind === 'telescope' ? 0.52 : 0.3} />
-        <Lens x={X0 + L.ey} y={AXIS} h={0.36} />
-        <mesh position={[X0 + 1.75, AXIS, 0]}><sphereGeometry args={[0.12, 20, 14]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh>
-        <mesh position={[X0 + 1.64, AXIS, 0]}><sphereGeometry args={[0.05, 14, 10]} /><meshStandardMaterial color="#30343a" /></mesh>
+        <Axis x0={X0 - 2.05} x1={X0 + 1.6} y={AXIS} />
+        {/* 镜筒：一段半透明的筒，两头各装一块透镜 */}
+        <mesh position={[X0 + (L.ob + L.ey) / 2, AXIS, 0]} rotation-z={Math.PI / 2}><cylinderGeometry args={[0.4, kind === 'telescope' ? 0.56 : 0.34, L.ey - L.ob, 40, 1, true]} /><meshBasicMaterial color="#9fb0c0" transparent opacity={0.045} side={2} depthWrite={false} toneMapped={false} /></mesh>
+        <Lens x={X0 + L.ob} y={AXIS} h={kind === 'telescope' ? 0.52 : 0.3} stand={false} />
+        <Lens x={X0 + L.ey} y={AXIS} h={0.36} stand={false} />
+        <mesh position={[X0 + L.ey + 0.56, AXIS + 0.06, 0]}><sphereGeometry args={[0.12, 20, 14]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh>
+        <mesh position={[X0 + L.ey + 0.45, AXIS + 0.06, 0]}><sphereGeometry args={[0.05, 14, 10]} /><meshStandardMaterial color="#30343a" /></mesh>
         {L.ox != null && <Candle x={X0 + L.ox} y={AXIS} h={L.oh} />}
         {n >= 1 && <>
           {[0.32, -0.2].map(h => { const hh = kind === 'telescope' ? h : h * 0.5; const from: [number, number] = L.ox != null ? [X0 + L.ox, AXIS + L.oh] : [X0 - 2.05, AXIS + hh + 0.07]; return <group key={h}><Ray a={from} b={[X0 + L.ob, AXIS + hh]} /><Ray a={[X0 + L.ob, AXIS + hh]} b={tip} /></group> })}
           <Candle x={X0 + L.ix} y={AXIS} h={L.ih} />
         </>}
-        {n >= 2 && [0.2, -0.12].map(h => { const k = (L.ih) / (L.ix - L.ey); return <group key={h}><Ray a={tip} b={[X0 + L.ey, AXIS + h]} color="#7fe3d4" /><Ray a={[X0 + L.ey, AXIS + h]} b={[X0 + 1.62, AXIS + h + k * (1.62 - L.ey)]} color="#7fe3d4" /></group> })}
+        {n >= 2 && [0.2, -0.12].map(h => { const k = (L.ih) / (L.ix - L.ey); return <group key={h}><Ray a={tip} b={[X0 + L.ey, AXIS + h]} color="#7fe3d4" /><Ray a={[X0 + L.ey, AXIS + h]} b={[X0 + L.ey + 0.42, AXIS + h * 0.35 + k * 0.42 * 0.5]} color="#7fe3d4" /></group> })}
       </Dark>}
       lesson={<LessonBlock no="7" title="两块透镜接力" concept="物镜先成一个实像，目镜再把它放大" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

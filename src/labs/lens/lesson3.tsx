@@ -2,39 +2,44 @@
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
-import Bench, { benchAt } from './bench'
+import Bench, { ScreenView, benchAt } from './bench'
 import { LESSONS, goLesson } from './lessons'
 import { F, US, imageDistance, nature } from './physics'
 
 type U = '30' | '20' | '15' | '5'
 const TASKS: Task[] = US.map(u => ({ id: String(u), text: `物距 ${u} cm：${nature(u)!.real ? '移动光屏找到清晰的像' : '看光屏上还接不接得到像'}`, note: `${nature(u)!.text}${nature(u)!.real ? `，像距 ${imageDistance(u)} cm` : '：光屏接不到，要透过透镜去看'}` }))
-const PARK = 44
+const PARK = 34
 
 export default function Lesson3() {
   const [us, setUs] = useState<U>('30')
   const [goal, setGoal] = useState(PARK)
   const [rows, setRows] = useState<U[]>([])
   const T = useTasks('gewu:lens:3', TASKS)
-  const u = Number(us), n = nature(u)!, v = imageDistance(u), want = n.real ? v : PARK - 2
-  const sx = useSlide(goal, 22), moving = Math.abs(sx - goal) > 0.05, found = goal === want && !moving, dup = rows.includes(us)
+  const u = Number(us), n = nature(u)!, v = imageDistance(u), want = n.real ? v : 22
+  const uNow = useSlide(u, 26), shifting = Math.abs(uNow - u) > 0.05
+  const sx = useSlide(goal, 14), moving = Math.abs(sx - goal) > 0.05, found = goal === want && !moving, dup = rows.includes(us)
   const pick = (k: U) => { if (moving) return; setUs(k); setGoal(PARK) }
   const record = () => { if (!found || dup) return; const next = [...rows, us]; setRows(next); T.check(id => next.includes(id as U)) }
   const resetAll = () => { setUs('30'); setGoal(PARK); setRows([]); T.reset() }
   const task = T.current
   const { hint, next }: { hint: string; next: 'u' | 'find' | 'record' | null } = !task ? { hint: '四个物距都记完了。二倍焦距分大小，一倍焦距分虚实。', next: null }
-    : moving ? { hint: '光屏在移：像从模糊变清楚的那一处就是像的位置', next: null }
+    : shifting ? { hint: '蜡烛在移…', next: null }
+    : moving ? { hint: '光屏在移：盯住右边的小图，像从模糊变清楚的那一处就是像的位置', next: null }
     : us !== task.id ? { hint: `把蜡烛移到离透镜 ${task.id} cm 的地方`, next: 'u' }
     : found && !dup ? { hint: n.real ? `像清楚了：${n.text}，按“记录”` : '光屏上始终没有像：这是虚像，按“记录”', next: 'record' } : { hint: '按“移动光屏找像”', next: 'find' }
   const labels: Label[] = [
-    { id: 'u', at: benchAt(-u / 2, -8.5), ax: 0.5, className: 'scene-tag', children: <><small>物距 u</small>{u} cm</> },
-    { id: 'v', at: benchAt(n.real ? v / 2 : -5, n.real ? -8.5 : 15), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: found ? 1 : 0 }, children: n.real ? <><small>像距 v</small>{v} cm</> : <><small>虚像</small>和蜡烛在同一侧</> },
-    { id: 'f1', at: benchAt(-F, -1.2), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f2', at: benchAt(-2 * F, -1.2), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
-    { id: 'f3', at: benchAt(F, -1.2), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f4', at: benchAt(2 * F, -1.2), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
+    { id: 'u', at: benchAt(-uNow / 2, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>物距 u</small>{uNow.toFixed(0)} cm</> },
+    { id: 'v', at: benchAt(n.real ? v / 2 : -v, n.real ? -12.4 : 16.5), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: found ? 1 : 0 }, children: n.real ? <><small>像距 v</small>{v} cm</> : <><small>虚像</small>和蜡烛在同一侧，光屏接不到</> },
+    ...(!n.real && found ? [{ id: 'eye', at: benchAt(31, 5), ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛从这边透过透镜看' } as Label] : []),
+    { id: 'f1', at: benchAt(-F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f2', at: benchAt(-2 * F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
+    { id: 'f3', at: benchAt(F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: 'F' }, { id: 'f4', at: benchAt(2 * F, -1.4), ax: 0.5, name: true, className: 'scene-name', children: '2F' },
   ]
 
   return (
     <LabShell title="折射和凸透镜" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光屏"
-      stage={<Bench u={u} screen={sx} image={found} labels={labels} />}
+      stage={<Bench u={uNow} screen={sx} image={found && !shifting} dims labels={labels}>
+        {!n.real && found && <><mesh position={benchAt(31, 0)}><sphereGeometry args={[0.1, 20, 14]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh><mesh position={[benchAt(31, 0)[0] - 0.085, benchAt(31, 0)[1], benchAt(31, 0)[2]]}><sphereGeometry args={[0.04, 14, 10]} /><meshStandardMaterial color="#30343a" /></mesh></>}
+      </Bench>}
       lesson={<LessonBlock no="3" title="像在哪里" concept="二倍焦距分大小，一倍焦距分虚实" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>
           <table className="w-full text-[13.5px]">
@@ -63,7 +68,9 @@ export default function Lesson3() {
             <div className="text-[13px] text-white/60">物距 {u} cm · 成的像</div>
             <div className="mt-1 text-[26px] leading-snug font-bold tracking-tight text-[#7fe3d4]">{found || dup ? n.text : '还没找到'}</div>
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2">
+          <h2 className="mt-4 text-[12.5px] text-white/55">光屏上看到的{goal !== PARK || found ? '' : '（光屏还在远处）'}</h2>
+          <ScreenView u={u} screen={sx} />
+          <div className="mt-3 grid grid-cols-3 gap-2">
             <ParamTile symbol="f" value={`${F}`} unit="cm · 焦距" />
             <ParamTile symbol="u" value={`${u}`} unit="cm · 物距" />
             <ParamTile symbol="v" value={found || dup ? (n.real ? `${v}` : '接不到') : '—'} unit={n.real ? 'cm · 像距' : '虚像'} />
@@ -78,8 +85,8 @@ export default function Lesson3() {
         </Glass>
       }
       actions={<>
-        <LabButton pulse={next === 'find'} onClick={() => setGoal(want)} disabled={moving || goal === want}>移动光屏找像</LabButton>
-        <LabButton primary pulse={next === 'record'} onClick={record} disabled={!found || dup}>记录</LabButton>
+        <LabButton pulse={next === 'find'} onClick={() => setGoal(want)} disabled={moving || shifting || goal === want}>移动光屏找像</LabButton>
+        <LabButton primary pulse={next === 'record'} onClick={record} disabled={!found || shifting || dup}>记录</LabButton>
       </>}
       extras={<Control label="物距"><Segmented label="物距" pulse={next === 'u'} want={next === 'u' ? task!.id as U : null} value={us} disabled={moving} onChange={pick} options={US.map(x => ({ value: String(x) as U, label: `${x} cm` }))} /></Control>}
     />

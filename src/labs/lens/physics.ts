@@ -8,6 +8,9 @@ export const ANGLES = [0, 30, 60] as const
 /** 光从空气斜射进水里：折射角（度）。sin i = n · sin r */
 export const refract = (i: number, n = N_WATER) => Math.asin(Math.sin(i * RAD) / n) / RAD
 
+/** 光从水里斜射向空气：折射角比入射角大。入射角太大时折射光线消失，光全部反射回水里（全反射，高中才学），这时返回 null */
+export const refractOut = (i: number, n = N_WATER) => { const x = Math.sin(i * RAD) * n; return x >= 1 ? null : Math.asin(x) / RAD }
+
 // ---------- 第 2 课：透镜对光的作用 ----------
 export const F = 10      // 这块凸透镜的焦距（cm）
 export const LENSES = {
@@ -31,6 +34,11 @@ export function nature(u: number, f = F): Image | null {
   if (u > f) return { real: true, upright: false, size: '放大', text: '倒立、放大的实像', use: '投影仪' }
   return { real: false, upright: true, size: '放大', text: '正立、放大的虚像', use: '放大镜' }
 }
+/** 透镜的半径（cm）和蜡烛的高度（cm） */
+export const LENS_R = 8, CANDLE = 7
+/** 光屏放在离透镜 screen 厘米处时，烛焰尖上发出的光在屏上摊成多大一片（cm）。正好在像的位置时是 0：像最清楚 */
+export const blurSize = (u: number, screen: number, f = F) => { const v = imageDistance(u, f); return v > 0 && Number.isFinite(v) ? 2 * LENS_R * Math.abs(screen - v) / v : 2 * LENS_R * (1 + screen * (f - u) / (u * f)) }
+
 export const RAYS = [
   { key: 'parallel', name: '平行于主光轴的光', say: '通过凸透镜后经过另一侧的焦点' },
   { key: 'center', name: '通过光心的光', say: '传播方向不变' },
@@ -47,8 +55,8 @@ export type DeviceKey = keyof typeof DEVICES
 export const EYE = 2.4     // 模型里晶状体到视网膜的距离（cm）
 export const EYES = {
   normal: { name: '正常的眼睛', f: 2.4, glasses: null, say: '远处来的平行光正好会聚在视网膜上' },
-  near: { name: '近视眼', f: 2.1, glasses: 'concave', say: '晶状体太厚，折光太强，光会聚在视网膜前面' },
-  far: { name: '远视眼', f: 2.8, glasses: 'convex', say: '晶状体太薄，折光太弱，光要到视网膜后面才会聚' },
+  near: { name: '近视眼', f: 2.1, glasses: 'concave', say: '晶状体太厚、折光太强，或者眼球前后方向太长，光会聚在视网膜前面' },
+  far: { name: '远视眼', f: 2.8, glasses: 'convex', say: '晶状体太薄、折光太弱，或者眼球前后方向太短，光要到视网膜后面才会聚' },
 } as const
 export type EyeKey = keyof typeof EYES
 /** 平行光进入眼睛后会聚在离晶状体多远的地方（cm）；戴上合适的眼镜就落回视网膜上 */

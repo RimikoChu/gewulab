@@ -29,7 +29,7 @@ export default function LessonX() {
   const task = T.current
   const { hint, next }: { hint: string; next: 'sub' | 'act' | null } = !task ? { hint: '三个专题都看完了。', next: null }
     : sub !== task.id ? { hint: `接着看：${SUBS[task.id as Sub].name}`, next: 'sub' } : { hint: `按“${SUBS[sub].button}”`, next: 'act' }
-  const zl: Label[] = [{ id: 'f', at: benchAt(0, 14), ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>焦距</small>{f} cm</> }, { id: 'm', at: benchAt(imageDistance(ZOOM.u, f) * 0.6, -9), ax: 0.5, className: 'scene-tag', children: <><small>像是物体的</small>{magnify(ZOOM.u, f).toFixed(1)} 倍</> }]
+  const zl: Label[] = [{ id: 'f', at: benchAt(0, 9.5), ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>焦距</small>{f} cm</> }, { id: 'm', at: benchAt(imageDistance(ZOOM.u, f) * 0.56, -12.4), ax: 0.5, className: 'scene-tag', children: <><small>像是物体的</small>{magnify(ZOOM.u, f).toFixed(1)} 倍</> }]
   const panel = (
     <Glass className="px-4 py-4">
       <div className="text-center">
@@ -44,7 +44,7 @@ export default function LessonX() {
       {on && <p className="row-in mt-4 rounded-xl bg-white/6 px-3 py-3 text-[14px] leading-relaxed text-white/80">{SUBS[sub].say}</p>}
     </Glass>
   )
-  const stage = sub === 'zoom' ? <Bench u={ZOOM.u} f={f} k={0.62} image rays={2} labels={zl} /> : (
+  const stage = sub === 'zoom' ? <Bench u={ZOOM.u} f={f} k={0.56} image rays={2} labels={zl} /> : (
     <Dark at="tank" labels={sub === 'prism' ? [{ id: 'p', at: [PX, PY + 0.75, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '三棱镜' }] : [{ id: 'g', at: [PX, PY - 0.72, 0.3], ax: 0.5, className: 'scene-name', name: true, children: on ? '很烫的地面：贴地的空气稀' : '地面' }, { id: 'e', at: [PX - 1.35, PY - 0.2, 0.3], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '眼睛' }]}>
       {sub === 'prism' ? <>
         <mesh position={[PX, PY, 0]} rotation-x={Math.PI / 2} rotation-y={Math.PI / 2}><cylinderGeometry args={[0.6, 0.6, 0.4, 3]} /><meshStandardMaterial color="#cfe6ee" transparent opacity={0.3} roughness={0.05} depthWrite={false} /></mesh>
