@@ -67,7 +67,7 @@ export function FeaturedLabCard({ lab }: { lab: Lab }) {
         <div className="flex flex-col px-5 py-5 md:px-8 md:py-7">
           <h2 className="text-[28px] leading-tight font-bold tracking-tight">{lab.name}</h2>
           <p className="mt-2 text-[15.5px] leading-[1.65] text-muted-foreground">{lab.desc}</p>
-          <p className="mt-6 text-[13.5px] text-muted-foreground">{lab.lessons!.length} 节课，跟着一次地震从头走到尾</p>
+          <p className="mt-6 text-[13.5px] text-muted-foreground">{lab.lessons!.length} 节课{lab.trail ? `，${lab.trail}` : ''}</p>
           <ol className="relative mt-3 flex before:absolute before:inset-x-0 before:top-[3px] before:h-px before:bg-border">
             {lab.lessons!.map(l => (
               <li key={l} className="relative flex-1 pt-4 pr-2 text-[13.5px] leading-snug before:absolute before:top-0 before:left-0 before:size-[7px] before:rounded-full before:bg-background before:shadow-[inset_0_0_0_1.5px_var(--faint)] first:before:bg-primary first:before:shadow-none">

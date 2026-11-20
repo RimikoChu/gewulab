@@ -9,6 +9,8 @@ export interface Lab {
   n?: number
   /** 入口：做出来以后才有 */
   href?: string; lessons?: string[]; vb?: string; wide?: boolean
+  /** 首页“全部”视图里通栏主推的那一间（只标一间）；trail 是课目时间线上方的那句话 */
+  featured?: boolean; trail?: string
   /** 还没做的：它在 GitHub 上的认领议题编号 */
   issue?: number
 }
@@ -101,6 +103,25 @@ export const ART: Record<string, string> = {
     <g class="m spin" style="--t:14s"><path class="t" d="M160 72v-8M160 140v-8M190 102h8M122 102h8M181 81l6-6M139 123l-6 6M181 123l6 6M139 81l-6-6"/></g>
     <g class="m orb" style="--t:9s"><circle class="w" r="13"/><path class="a" d="M0-13a13 13 0 0 0 0 26z"/><path d="M-6 20 6-20"/></g>
     <text x="246" y="170" font-size="13">23°26′</text>`,
+  // 水循环：左边是海，右边是山；海面蒸发、云飘到山上、下雨、顺着河流回海里
+  watercycle: `<path class="a" d="M20 150c12-5 24 5 36 0s24 5 36 0 24 5 36 0v26H20z"/>
+    <path class="w" d="M128 176l44-22 34-58 26-34 26 40 42 74z"/><path class="t" d="M222 76l10-14 12 18-10-6-6 8z"/>
+    <path class="c" d="M250 108c-10 18-34 26-52 40s-40 20-70 26"/>
+    <path class="w" d="M60 62a13 13 0 0 1 24-7 11 11 0 0 1 19 9 9 9 0 0 1-2 18H62a10 10 0 0 1-2-20z"/>
+    <path class="w" d="M196 40a13 13 0 0 1 24-7 11 11 0 0 1 19 9 9 9 0 0 1-2 18h-39a10 10 0 0 1-2-20z"/>
+    <path class="t d m flow" style="--t:1.6s" d="M52 142v-52M76 142v-52"/><path class="t" d="M47 97l5-8 5 8M71 97l5-8 5 8"/>
+    <path class="t d" d="M112 64c26-14 50-20 74-18"/><path class="t" d="M178 40l9 6-9 6"/>
+    <path class="t m flow" style="--t:.9s" d="M204 66l-4 14M216 66l-4 14M228 66l-4 14"/>
+    <text class="zh" x="30" y="122" font-size="11">蒸发</text><text class="zh" x="128" y="38" font-size="11">水汽输送</text><text class="zh" x="244" y="82" font-size="11">降水</text><text class="zh" x="150" y="190" font-size="11">径流</text>`,
+  // 细胞：左边一个方方正正的植物细胞，右边一个圆圆的动物细胞
+  cells: `<rect class="w" x="34" y="44" width="138" height="112" rx="10"/><rect class="t d" x="42" y="52" width="122" height="96" rx="7"/>
+    <ellipse class="a" cx="116" cy="104" rx="38" ry="30"/>
+    <circle class="s" cx="66" cy="78" r="11"/>
+    <ellipse class="a" cx="62" cy="126" rx="10" ry="6"/><ellipse class="a" cx="92" cy="140" rx="10" ry="5"/><ellipse class="a" cx="146" cy="66" rx="10" ry="5"/>
+    <path class="w" d="M240 52c30-2 50 20 50 48s-18 52-50 52-48-22-48-50 18-48 48-50z"/>
+    <circle class="s" cx="242" cy="102" r="12"/><path class="t" d="M214 80l10 4M266 128l8 6M268 78l-8 6M218 126l8-6"/>
+    <text class="zh" x="76" y="176" font-size="11">植物细胞</text><text class="zh" x="214" y="176" font-size="11">动物细胞</text>
+    <text class="zh" x="82" y="82" font-size="10">细胞核</text><text class="zh" x="100" y="108" font-size="10">液泡</text>`,
   leaf: `<path class="a" d="M92 158C86 96 138 44 232 46c6 78-50 128-140 112z"/>
     <path class="t" d="M92 158c40-40 84-76 140-112M122 132l-4-32M150 108l-2-36M180 84l0-30M128 126l34 6M156 102l40 4M184 80l36-2"/>
     <circle class="s" cx="62" cy="50" r="14"/><g class="m spin" style="--t:12s"><path class="t" d="M62 26v-7M62 81v-7M38 50h-7M93 50h-7M45 33l-5-5M84 72l-5-5M79 33l5-5M40 72l5-5" transform="translate(0 0)"/></g>
@@ -118,7 +139,7 @@ export const LABS: Lab[] = [
   { id: 'ammonia', name: '合成氨工厂', hook: '一座化肥厂里的化学平衡', desc: '走进一座化肥厂。温度高了反应快但产率低，压强大了产率高但设备贵。自己调条件，看一天能多产多少吨氨，理解工业上为什么这样选。', pts: ['化学平衡', '反应速率', '工业条件的选择'], vb: '0 0 320 190', s: 'chem', grade: '高中', book: '选必一', n: 7, issue: 25 },
   { id: 'blood', name: '血液循环', hook: '跟着一个红细胞走一圈', desc: '变成一个红细胞，从左心室出发，走遍全身再回到心脏，接着去肺里换一次气。留意血液的颜色在哪里变了。', pts: ['心脏的结构', '体循环', '肺循环'], vb: '0 34 320 140', s: 'bio', grade: '初中', book: '七年级下册', n: 7, issue: 31 },
   { id: 'leaf', name: '光合作用和呼吸作用', hook: '一片叶子怎样把阳光变成养分', desc: '在一座蔬菜大棚里把课本上的经典实验亲手做一遍：遮住半片叶子看淀粉在哪里生成，数金鱼藻冒出的氧气泡，比较萌发和煮熟的种子，再看大棚里一昼夜的二氧化碳怎么变。', pts: ['光合作用的条件和产物', '叶片的结构', '呼吸作用和增产'], vb: '0 -4 320 204', s: 'bio', grade: '初中', book: '七年级上册', n: 7, href: '/labs/leaf/index.html', issue: 27 },
-  { id: 'orbit', name: '地球的运动', hook: '为什么夏天的白天更长', desc: '让地球自己转、绕着太阳转。盯住北京，看它什么时候天亮、夏天的白天有多长、正午旗杆的影子有多短，再弄懂五带是怎么分出来的。所有的课都在同一个太阳和地球的大场景里。', pts: ['自转和公转', '太阳直射点', '昼夜长短和五带'], vb: '0 30 320 150', s: 'geo', grade: '初中', book: '七年级上册', n: 7, href: '/labs/orbit/index.html', issue: 36 },
+  { id: 'orbit', name: '地球的运动', hook: '为什么夏天的白天更长', desc: '让地球自己转、绕着太阳转。盯住北京，看它什么时候天亮、夏天的白天有多长、正午旗杆的影子有多短，再弄懂五带是怎么分出来的。所有的课都在同一个太阳和地球的大场景里。', pts: ['自转和公转', '太阳直射点', '昼夜长短和五带'], vb: '0 30 320 150', s: 'geo', grade: '初中', book: '七年级上册', n: 7, featured: true, trail: '从昼夜到四季，一路看到五带', lessons: ['自转', '时差', '公转', '直射点', '昼长', '影长', '五带'], href: '/labs/orbit/index.html', issue: 36 },
   // ---------- 以下是总规划表里还没有做的实验室：没有封面线稿，卡片上用占位图，点开是它的认领议题 ----------
   { id: 'motion', name: '机械运动', hook: '怎样量长度和时间', desc: '怎样量长度和时间；速度是什么；运动是相对的。场景设想：高铁站和一段铁路。', pts: ['长度和时间的测量', '速度', '参照物'], s: 'phys', grade: '初中', book: '八年级上册', issue: 1 },
   { id: 'sound', name: '声现象', hook: '声音怎样产生和传播', desc: '声音怎样产生和传播；音调、响度、音色各由什么决定。场景设想：音乐厅和后台。', pts: ['声音的产生和传播', '音调 响度 音色', '噪声'], s: 'phys', grade: '初中', book: '八年级上册', issue: 2 },
@@ -155,7 +176,7 @@ export const LABS: Lab[] = [
   { id: 'sulfuric', name: '接触法制硫酸', hook: '反应要快，又要彻底，工厂怎么选条件', desc: '硫怎样一步步变成硫酸；速率和平衡怎样取舍；工业上为什么选这个温度和压强；尾气怎样处理。场景设想：硫酸厂。', pts: ['硫及其化合物', '速率和平衡的取舍', '工业条件的选择'], s: 'chem', grade: '高中', book: '必修第二册', issue: 71 },
   { id: 'crystal', name: '分子的形状和晶体', hook: '几对电子，决定了分子长什么样', desc: '价层电子对互斥模型；杂化轨道；晶胞里怎样数粒子；四类晶体的区别。场景设想：晶体实验室。', pts: ['分子的空间结构', '晶胞', '晶体的类型'], s: 'chem', grade: '高中', book: '选择性必修 2', issue: 72 },
   { id: 'petro', name: '从石油到塑料', hook: '一桶原油怎样变成汽油、酒精和塑料', desc: '石油的分馏、裂化、裂解；官能团怎样一步步转化；加聚反应。场景设想：炼油厂。', pts: ['石油的炼制', '官能团的转化', '加聚反应'], s: 'chem', grade: '高中', book: '必修第二册', issue: 73 },
-  { id: 'cells', name: '细胞', hook: '怎样才能看见细胞，看见了什么', desc: '在一间生物实验室里学会用显微镜：对光、调焦、把偏掉的物像移回来；亲手做一张洋葱表皮的临时装片；再把放大的植物细胞和动物细胞一个结构一个结构地点亮，看一个细胞怎样分裂成两个。', href: '/labs/cells/index.html', pts: ['显微镜', '细胞的结构', '细胞分裂'], s: 'bio', grade: '初中', book: '七年级上册', issue: 26 },
+  { id: 'cells', name: '细胞', hook: '怎样才能看见细胞，看见了什么', desc: '在一间生物实验室里学会用显微镜：对光、调焦、把偏掉的物像移回来；亲手做一张洋葱表皮的临时装片；再把放大的植物细胞和动物细胞一个结构一个结构地点亮，看一个细胞怎样分裂成两个。', n: 7, href: '/labs/cells/index.html', pts: ['显微镜', '细胞的结构', '细胞分裂'], s: 'bio', grade: '初中', book: '七年级上册', issue: 26 },
   { id: 'plant', name: '植物的一生', hook: '种子萌发的条件', desc: '种子萌发的条件；根的生长；开花和结果。场景设想：一块试验田，从播种到收获。', pts: ['种子的萌发', '根的生长', '开花和结果'], s: 'bio', grade: '初中', book: '七年级上册', issue: 28 },
   { id: 'digest', name: '消化和吸收', hook: '食物在消化道里经历了什么', desc: '食物在消化道里经历了什么；营养在哪里吸收。场景设想：人体内部：沿消化道走一遍。', pts: ['消化系统', '营养物质', '吸收'], s: 'bio', grade: '初中', book: '七年级下册', issue: 29 },
   { id: 'breath', name: '呼吸', hook: '胸廓怎样带动吸气呼气', desc: '胸廓怎样带动吸气呼气；肺泡里怎样换气。场景设想：人体内部：胸腔和肺。', pts: ['呼吸运动', '肺泡', '气体交换'], s: 'bio', grade: '初中', book: '七年级下册', issue: 30 },
@@ -171,7 +192,7 @@ export const LABS: Lab[] = [
   { id: 'contour', name: '等高线地形图', hook: '等高线怎样表示地形', desc: '等高线怎样表示地形；山峰、山脊、山谷、鞍部、陡崖。场景设想：一座可以切片的山。', pts: ['等高线', '地形部位', '地形剖面'], s: 'geo', grade: '初中', book: '七年级上册', issue: 37 },
   { id: 'plate', name: '板块运动', hook: '大陆漂移', desc: '大陆漂移；板块怎样运动；火山和地震带。场景设想：海底到高原的一条大剖面。', pts: ['大陆漂移', '板块构造', '火山和地震带'], s: 'geo', grade: '初中', book: '七年级上册', issue: 38 },
   { id: 'climate', name: '天气和气候', hook: '气温和降水怎样量、怎样分布', desc: '气温和降水怎样量、怎样分布；影响气候的因素。场景设想：一座气象站和一条跨越山脉的路线。', pts: ['气温', '降水', '气候类型'], s: 'geo', grade: '初中', book: '七年级上册', issue: 39 },
-  { id: 'watercycle', name: '水循环', hook: '跟着一滴水走遍一个流域', desc: '一块从海洋到雪山的地块：一个环节一个环节地打开水循环，比较雨落在林地和水泥地上的不同，修一座水库，给城市下一场暴雨，最后算一算全球一年的水账。', href: '/labs/watercycle/index.html', pts: ['水循环的环节', '陆地水体', '人类活动的影响'], s: 'geo', grade: '高中', book: '必修第一册', issue: 40 },
+  { id: 'watercycle', name: '水循环', hook: '跟着一滴水走遍一个流域', desc: '一块从海洋到雪山的地块：一个环节一个环节地打开水循环，比较雨落在林地和水泥地上的不同，修一座水库，给城市下一场暴雨，最后算一算全球一年的水账。', n: 7, href: '/labs/watercycle/index.html', pts: ['水循环的环节', '陆地水体', '人类活动的影响'], s: 'geo', grade: '高中', book: '必修第一册', issue: 40 },
   { id: 'wind', name: '热力环流和风', hook: '大气怎样受热', desc: '大气怎样受热；热力环流；海陆风、山谷风。场景设想：一座海滨城市。', pts: ['大气受热过程', '热力环流', '海陆风'], s: 'geo', grade: '高中', book: '必修第一册', issue: 41 },
   { id: 'circulation', name: '大气环流', hook: '风带为什么会跟着太阳南北搬家', desc: '三圈环流；气压带和风带的季节移动；季风的成因。场景设想：整个地球的大气。', pts: ['三圈环流', '气压带和风带', '季风'], s: 'geo', grade: '高中', book: '选择性必修 1', issue: 79 },
   { id: 'ocean', name: '洋流和厄尔尼诺', hook: '信风一弱，半个地球的天气跟着变', desc: '世界洋流的分布规律；洋流对气候和渔场的影响；厄尔尼诺和拉尼娜。场景设想：太平洋。', pts: ['洋流的分布', '洋流的影响', '厄尔尼诺'], s: 'geo', grade: '高中', book: '选择性必修 1', issue: 80 },

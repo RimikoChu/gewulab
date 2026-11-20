@@ -28,9 +28,10 @@ export default function App() {
   const pool = useMemo(() => LABS.filter(l =>
     (grade === 'all' || l.grade === grade) &&
     (!q.trim() || (l.name + l.desc + l.pts.join('') + l.book + SUBJECTS[l.s]).includes(q.trim()))), [grade, q])
-  const list = pool.filter(l => subject === 'all' || l.s === subject)
+  // 已经能进去做的排在前面，还没做的排在后面；各自保持清单里的顺序
+  const list = pool.filter(l => subject === 'all' || l.s === subject).sort((a, b) => Number(!!b.href) - Number(!!a.href))
   // 只有“全部”视图才放主推卡
-  const featured = subject === 'all' && grade === 'all' && !q.trim() ? list.find(l => l.href && l.lessons) : undefined
+  const featured = subject === 'all' && grade === 'all' && !q.trim() ? list.find(l => l.featured && l.href && l.lessons) : undefined
   const columns = useMemo(() => {
     const out: (typeof LABS)[] = Array.from({ length: cols }, () => [])
     list.filter(l => l !== featured).forEach((l, i) => out[i % cols].push(l))   // 轮流分列，阅读顺序仍是从左到右
