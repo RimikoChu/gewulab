@@ -65,6 +65,16 @@ npm run build
 
 产物在 `dist/`，是纯静态文件。
 
+## 离线使用
+
+每间实验室都能打成**一个独立的网页文件**：脚本、样式、字体、贴图全写在里面，拷到 U 盘、双击就能打开，不用联网，也不用装任何东西。
+
+- **直接下载**：首页每张已上线的卡片上有“离线包”，标签栏下面有按学科和全部的离线包。也可以到[发布页](https://github.com/RimikoChu/gewulab/releases/tag/offline)自己挑：`gewulab-<目录名>.zip` 是单间，`gewulab-phys.zip` 这类是一个学科，`gewulab-all.zip` 是全部。
+- **自己打**：`npm run build:offline`（只打一间：`npm run build:offline -- leaf`），结果在 `dist-offline/`。
+- **怎么用**：解压，双击 `index.html` 进目录，或者直接双击某一间的 `.html`。用新一些的 Chrome、Edge 或 Safari。
+
+离线包跟着 `main` 自动更新。
+
 ## 说明
 
 - 实验里的地形、烈度公式等为教学示意，数据来源和待核实项见各实验的规格文档。

@@ -5,7 +5,7 @@ import { NumberTicker } from '@/components/ui/number-ticker'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { FeaturedLabCard, LabCard } from '@/components/lab-card'
-import { LABS, SUBJECTS, type SubjectKey } from '@/labs'
+import { LABS, SUBJECTS, type SubjectKey, hasOffline, offlineUrl } from '@/labs'
 
 /** 瀑布流列数：跟着容器宽度走 */
 function useColumns() {
@@ -37,6 +37,10 @@ export default function App() {
     list.filter(l => l !== featured).forEach((l, i) => out[i % cols].push(l))   // 轮流分列，阅读顺序仍是从左到右
     return out
   }, [list, cols, featured])
+  // 离线包的下载入口：看着哪个学科就给哪个学科的包；看“全部”时给全部和各学科的
+  const packs: [string, string][] = subject === 'all'
+    ? [['all', '全部'], ...(Object.keys(SUBJECTS) as SubjectKey[]).filter(k => LABS.some(l => l.s === k && hasOffline(l))).map((k): [string, string] => [k, SUBJECTS[k]])]
+    : LABS.some(l => l.s === subject && hasOffline(l)) ? [[subject, `${SUBJECTS[subject]}（${LABS.filter(l => l.s === subject && hasOffline(l)).length} 间）`]] : []
   const count = (k: 'all' | SubjectKey) => pool.filter(l => k === 'all' || l.s === k).length
 
   return (
@@ -93,6 +97,12 @@ export default function App() {
           </label>
         </div>
 
+        {packs.length > 0 && (
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
+            <span>离线包：下载后解压，双击就能用，不用联网</span>
+            {packs.map(([k, t]) => <a key={k} href={offlineUrl(k)} className="text-foreground underline-offset-2 hover:text-primary hover:underline">{t}</a>)}
+          </p>
+        )}
         {featured && <div className="mt-5"><FeaturedLabCard lab={featured} /></div>}
         <div ref={gridRef} className="mt-4 flex items-start gap-4">
           {list.length === 0

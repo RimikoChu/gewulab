@@ -3,6 +3,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ArrowLeft, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+/** 顶栏左上角回到哪里：线上是站点首页；离线包里是包内的目录页（打包脚本设 VITE_GEWU_HOME） */
+const HOME: string = import.meta.env.VITE_GEWU_HOME || '/'
+
 export interface LessonTab { key: string; no: string; name: string; disabled?: boolean }
 export interface Task { id: string; text: string; note: string }
 
@@ -45,7 +48,7 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
       </div>
 
       <header className="absolute inset-x-0 top-0 z-30 flex h-14 items-center gap-2 px-3 sm:px-4">
-        <a href="/" className="flex h-10 flex-none items-center gap-2 rounded-lg px-2.5 text-[15px] font-semibold hover:bg-white/10"><ArrowLeft className="size-4" />{title}</a>
+        <a href={HOME} className="flex h-10 flex-none items-center gap-2 rounded-lg px-2.5 text-[15px] font-semibold hover:bg-white/10"><ArrowLeft className="size-4" />{title}</a>
         <nav className="glass flex min-w-0 items-center gap-0.5 overflow-x-auto rounded-xl p-1 [scrollbar-width:none]" aria-label="课次">
           {lessons.map(l => (
             <button key={l.key} disabled={l.disabled} aria-current={l.key === current} onClick={() => l.key !== current && onLesson(l.key)}

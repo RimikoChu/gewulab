@@ -1,0 +1,30 @@
+# 打离线包并发布：main 上的实验室一变，就重新打一遍，放到名叫 offline 的发布里。
+# 首页上“离线包”的链接指向这里，所以地址是固定的：.../releases/download/offline/gewulab-<名字>.zip
+name: 离线包
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'labs/**', 'public/**', 'scripts/build-offline.mjs', 'package.json', 'package-lock.json', '.github/workflows/offline.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: offline
+  cancel-in-progress: true
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:offline
+      - name: 发布
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view offline >/dev/null 2>&1 || gh release create offline --title "离线包" --notes "每间实验室一个独立的网页文件，解压后双击就能用，不需要联网。按单间、按学科、全部三种范围打包，跟着 main 自动更新。怎么用见包里的 README.txt。"
+          gh release upload offline dist-offline/*.zip dist-offline/packs.json --clobber
