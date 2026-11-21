@@ -2,7 +2,7 @@
 // 每一处头顶有一盏射灯，背后是一道遮光帘。整个实验室只有这一个世界，换课时画布不重建，镜头沿着平台飞过去。画面里 1 cm 画成 CM 个单位。
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { Painted, mergeParts, type Part } from '@/lab-kit'
+import { Metal, Painted, bolts, disc, mergeParts, type Part } from '@/lab-kit'
 
 export const TOP = 0.9, AXIS = TOP + 1.0, CM = 0.06      // 台面高度、主光轴的高度、1 cm 在画面里多长
 /** 光具座导轨从透镜往两边各伸出多少厘米 */
@@ -73,11 +73,19 @@ export function World() {
     const rail = RAIL * 2 * CM + 0.24
     parts.push({ p: [ST.bench, TOP + 0.075, 0], s: [rail, 0.07, 0.17], c: '#23282d' })
     for (const z of [-0.06, 0.06]) parts.push({ p: [ST.bench, TOP + 0.118, z], s: [rail, 0.016, 0.022], c: '#3b4248' })
-    for (const s of [-1, 1]) { parts.push({ p: [ST.bench + s * (rail / 2 - 0.09), TOP + 0.02, 0], s: [0.16, 0.04, 0.4], c: '#2b3136' }); parts.push({ p: [ST.bench + s * (rail / 2 - 0.09), TOP + 0.045, 0], s: [0.1, 0.03, 0.2], c: '#3b4248' }) }
+    for (const s of [-1, 1]) parts.push({ p: [ST.bench + s * (rail / 2 - 0.09), TOP + 0.03, 0], s: [0.14, 0.024, 0.44], c: '#2b3136' })   // 两端各一根横梁，两头落在调平脚上
     return mergeParts(parts)
   }, [])
+  // 导轨的调平脚：一只带倒角的圆脚，上面一圈螺栓，中间一颗调平螺丝
+  const foot = useMemo(() => ({ pad: disc(0.07, 0.018), nuts: bolts(4, 0.048, 0.016, 0.008), screw: disc(0.022, 0.03, { chamfer: 0.004 }) }), [])
+  const railLen = RAIL * 2 * CM + 0.24
   return (
     <group>
+      {[-1, 1].flatMap(s => [-1, 1].map(z => <group key={`${s}${z}`} position={[ST.bench + s * (railLen / 2 - 0.09), TOP, z * 0.19]}>
+        <mesh geometry={foot.pad} castShadow><Metal kind="iron" grain="cast" env={3} /></mesh>
+        <mesh geometry={foot.nuts} position-y={0.018}><Metal kind="steel" env={4} /></mesh>
+        <mesh geometry={foot.screw} position-y={0.018}><Metal kind="stainless" grain="turned" env={4} /></mesh>
+      </group>))}
       <mesh rotation-x={-Math.PI / 2} position={[3, 0, 0]} receiveShadow><planeGeometry args={[60, 24]} /><meshStandardMaterial color="#0d1013" roughness={0.9} /></mesh>
       <mesh geometry={geo} castShadow receiveShadow><Painted rough={0.6} metal={0.35} /></mesh>
       <mesh rotation-x={-Math.PI / 2} position={[(X0 + X1) / 2, TOP + 0.001, 0]} receiveShadow><planeGeometry args={[X1 - X0, DEPTH]} /><meshStandardMaterial map={board} roughness={0.5} metalness={0.45} envMapIntensity={1.2} /></mesh>
