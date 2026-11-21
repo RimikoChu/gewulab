@@ -2,7 +2,7 @@
 // 各实验室只从 '@/lab-kit' 引用，不要互相引用别的实验室目录里的文件。
 import { Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
-import { Environment, OrbitControls, PerformanceMonitor, useTexture } from '@react-three/drei'
+import { Environment, Lightformer, OrbitControls, PerformanceMonitor, useTexture } from '@react-three/drei'
 import { Bloom, EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
@@ -197,11 +197,26 @@ export interface Label extends Tag { className: string; style?: CSSProperties; n
 
 /** 舞台：画布、天空、灯光、镜头控制、文字标签、后期和画质分档都在这里。children 是场景里的东西（整个世界和这一课的器材） */
 const VIEW: [number, number] = [-0.42, 0.2]
+/** 摄影棚式的环境光：黑底上几块柔光板。头顶一块大的，左前一条暖色主灯，右后一条冷色轮廓灯，前下方一块很暗的补光，身后一条窄的。板与板之间是黑的，金属上才有明暗相间的亮带 */
+function Studio({ env }: { env: number }) {
+  return (
+    <Environment resolution={256} frames={1} environmentIntensity={env}>
+      <color attach="background" args={['#020203']} />
+      <Lightformer form="rect" intensity={2.6} color="#ffffff" position={[0, 9, 1]} scale={[12, 8, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={4.5} color="#ffe9cf" position={[-9, 3, 6]} scale={[2.2, 9, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={6} color="#cfe0ff" position={[9, 4, -6]} scale={[1.6, 9, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={1.2} color="#ffffff" position={[2, -3, 9]} scale={[10, 3, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={3} color="#ffffff" position={[-3, 2, -10]} scale={[1.2, 7, 1]} target={[0, 0, 0]} />
+    </Environment>
+  )
+}
+
 /** view：默认机位的方位角和仰角；pan：平移时看向的点能离 target 多远 */
 /** target：镜头看向哪里；span：要装进画面的宽和高（m）；sky：背景要不要画天空（不画时用 backdrop 这个颜色）；fog：雾的起止距离；sun：阳光强度；env：天空给的环境光强度（太空、室内这类自己打光的场景调小）；free：镜头可以转到正上方和正下方（没有地面的场景用） */
-export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; env?: number; free?: boolean; bloom?: number; children: ReactNode }
+export interface StageProps { labels: Label[]; target: THREE.Vector3; span: [number, number]; view?: [number, number]; backdrop?: string; sky?: boolean; fog?: [number, number]; sun?: number; env?: number; free?: boolean; bloom?: number; studio?: boolean; children: ReactNode }
+/** studio：室内自己打光的场景用。环境光不取天空，改成摄影棚那样的几块柔光板：金属、玻璃上会映出长条的亮带，没有天空的蓝色。只影响反射和环境光，背景仍按 sky、backdrop 画 */
 /** bloom：泛光的强度。大于 0 时，画面里很亮的东西（光线、火焰、屏幕）周围会溢出一圈光；暗室、太空这类场景用，默认不开 */
-export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, env = 1.15, free = false, bloom = 0, children }: StageProps) {
+export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125', sky = true, fog = [70, 420], sun = 3.4, env = 1.15, free = false, bloom = 0, studio = false, children }: StageProps) {
   const aim = useMemo(() => { const o = new THREE.Object3D(); o.position.set(target.x, 0, target.z); o.updateMatrixWorld(); return o }, [target])   // 阳光对着这一课的器材，影子才落在画面里
   const [home, setHome] = useState(0)                 // 每加一，镜头回到默认位置
   const [names, setNames] = useState(true)
@@ -225,8 +240,8 @@ export function Stage({ labels, target, span, view = VIEW, backdrop = '#1c2125',
         </directionalLight>
         <Suspense fallback={null}>
           {/* 实拍天空（Poly Haven，CC0）：背景、环境光、反射都用它 */}
-          <Environment files="/assets/env/sky_1k.hdr" background={sky} backgroundBlurriness={0.04} environmentIntensity={env}
-            backgroundRotation={[0, SKY_ROT, 0]} environmentRotation={[0, SKY_ROT, 0]} />
+          {studio ? <Studio env={env} /> : <Environment files="/assets/env/sky_1k.hdr" background={sky} backgroundBlurriness={0.04} environmentIntensity={env}
+            backgroundRotation={[0, SKY_ROT, 0]} environmentRotation={[0, SKY_ROT, 0]} />}
           {children}
         </Suspense>
         <TagProjector tags={labels} els={els} />
