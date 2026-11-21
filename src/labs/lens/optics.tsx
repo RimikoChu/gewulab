@@ -2,11 +2,13 @@
 // 光路都画在正对镜头的那个竖直平面里（z = 0）。器材都立在导轨上的滑座上。
 import { useMemo, type ReactNode } from 'react'
 import * as THREE from 'three'
-import { LabStage, Rod, type Label } from '@/lab-kit'
+import { LabStage, Metal, Rod, lathe, shell, type Label } from '@/lab-kit'
 import { DARK, SPOT, TOP } from './world'
 
 type V2 = [number, number]
 const RAIL_Y = TOP + 0.126
+/** 暗室里环境光很弱，金属件把反射调亮一些才显得出金属的样子 */
+const ENV = 4
 /** 这一课的舞台：选一处机位，暗室的设置都一样 */
 export function Dark({ at, labels, children = null }: { at: keyof typeof SPOT; labels: Label[]; children?: ReactNode }) {
   const v = SPOT[at]
@@ -30,16 +32,21 @@ export function Beam({ pts, color = '#ffe6b8', opacity = 0.085 }: { pts: V2[]; c
   return <mesh geometry={geo} position={[0, 0, -0.012]}><meshBasicMaterial color={color} transparent opacity={opacity} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} toneMapped={false} /></mesh>
 }
 
+// 滑座上反复用到的几个零件，只做一次
+const SLEEVE = lathe([[0, 0], [0.034, 0], [0.036, 0.003], [0.036, 0.018], [0.03, 0.024], [0.028, 0.084], [0.026, 0.09], [0, 0.09]])                 // 插支杆的套管：下面一圈台肩
+const KNOB = lathe([[0, 0], [0.008, 0], [0.008, 0.012], [0.024, 0.012], [0.027, 0.015], [0.027, 0.027], [0.024, 0.03], [0, 0.03]], { segs: 20 })   // 紧固手轮：细颈加一个带倒角的轮
+const SCREW = lathe([[0, 0], [0.005, 0], [0.005, 0.014], [0.012, 0.014], [0.013, 0.016], [0.013, 0.026], [0.012, 0.028], [0, 0.028]], { segs: 16 }) // 套管侧面的小顶丝
+const Plastic = () => <meshStandardMaterial color="#16191c" roughness={0.5} />
 /** 立在导轨上的滑座和立杆：从导轨一直顶到 y 处 */
 export function Stand({ x, y }: { x: number; y: number }) {
   return <>
-    {/* 滑块：骑在导轨上的一块铝座，两侧的裙边卡住导轨；正面一颗紧固螺丝；上面是插支杆的套管 */}
-    <mesh position={[x, RAIL_Y + 0.02, 0]} castShadow><boxGeometry args={[0.15, 0.05, 0.24]} /><meshStandardMaterial color="#8d969d" metalness={0.75} roughness={0.35} /></mesh>
-    {[-1, 1].map(s => <mesh key={s} position={[x, RAIL_Y - 0.035, s * 0.104]}><boxGeometry args={[0.15, 0.07, 0.03]} /><meshStandardMaterial color="#7d868d" metalness={0.75} roughness={0.4} /></mesh>)}
-    <mesh position={[x, RAIL_Y - 0.03, 0.135]} rotation-x={Math.PI / 2}><cylinderGeometry args={[0.03, 0.03, 0.03, 14]} /><meshStandardMaterial color="#1c2024" roughness={0.6} /></mesh>
-    <mesh position={[x, RAIL_Y + 0.085, 0]}><cylinderGeometry args={[0.026, 0.03, 0.09, 14]} /><meshStandardMaterial color="#6f787f" metalness={0.8} roughness={0.3} /></mesh>
-    <mesh position={[x + 0.034, RAIL_Y + 0.09, 0]} rotation-z={Math.PI / 2}><cylinderGeometry args={[0.011, 0.011, 0.03, 10]} /><meshStandardMaterial color="#1c2024" roughness={0.6} /></mesh>
-    <mesh position={[x, (RAIL_Y + 0.12 + y) / 2, 0]}><cylinderGeometry args={[0.013, 0.013, Math.max(0.01, y - RAIL_Y - 0.12), 12]} /><meshStandardMaterial color="#c4cace" metalness={0.9} roughness={0.22} /></mesh>
+    {/* 滑块：骑在导轨上的一块铝座，两侧的裙边卡住导轨；正面一只紧固手轮；上面是插支杆的套管，侧面一颗顶丝 */}
+    <mesh position={[x, RAIL_Y + 0.02, 0]} castShadow><boxGeometry args={[0.15, 0.05, 0.24]} /><Metal kind="aluminum" grain="brushed" env={ENV} /></mesh>
+    {[-1, 1].map(s => <mesh key={s} position={[x, RAIL_Y - 0.035, s * 0.104]}><boxGeometry args={[0.15, 0.07, 0.03]} /><Metal kind="aluminum" grain="brushed" env={ENV} /></mesh>)}
+    <mesh geometry={KNOB} position={[x, RAIL_Y - 0.03, 0.119]} rotation-x={Math.PI / 2}><Plastic /></mesh>
+    <mesh geometry={SLEEVE} position={[x, RAIL_Y + 0.045, 0]} castShadow><Metal kind="stainless" grain="turned" env={ENV} /></mesh>
+    <mesh geometry={SCREW} position={[x + 0.026, RAIL_Y + 0.1, 0]} rotation-z={-Math.PI / 2}><Plastic /></mesh>
+    <mesh position={[x, (RAIL_Y + 0.12 + y) / 2, 0]} castShadow><cylinderGeometry args={[0.013, 0.013, Math.max(0.01, y - RAIL_Y - 0.12), 16]} /><Metal kind="chrome" rough={0.14} env={ENV} /></mesh>
   </>
 }
 
@@ -54,6 +61,17 @@ function concave(h: number) {
   return concaves.get(h)!
 }
 
+/** 镜框：一圈黑色的铝环，截面是带倒角的方条，把镜片夹在中间；里沿一道亮的压圈 */
+const frames = new Map<number, THREE.BufferGeometry>(), lips = new Map<number, THREE.BufferGeometry>()
+function frameOf(h: number) {
+  if (!frames.has(h)) { const a = h - 0.012, b = h + 0.04, t = 0.03, c = 0.006; frames.set(h, lathe([[a, -t], [b - c, -t], [b, -t + c], [b, t - c], [b - c, t], [a, t]], { segs: 64, closed: true })) }
+  return frames.get(h)!
+}
+function lipOf(h: number) {
+  if (!lips.has(h)) { const a = h - 0.02, b = h - 0.004, t = 0.034; lips.set(h, lathe([[a, -t], [b, -t], [b, t], [a, t]], { segs: 64, closed: true })) }
+  return lips.get(h)!
+}
+
 /** 一块透镜，立在 x 处，中心在主光轴上。凸透镜中间厚，凹透镜中间薄；外面一圈镜框。stand 是给它配上滑座 */
 export function Lens({ x, y, h = 0.5, kind = 'convex', tint = '#9fd8ff', stand = true, frame = true, bulge = 0.17 }: { x: number; y: number; h?: number; kind?: 'convex' | 'concave'; tint?: string; stand?: boolean; frame?: boolean; bulge?: number }) {
   // 玻璃：通透、有反光，带一点点颜色
@@ -65,12 +83,20 @@ export function Lens({ x, y, h = 0.5, kind = 'convex', tint = '#9fd8ff', stand =
           ? <mesh scale={[bulge, 1, 1]}><sphereGeometry args={[h, 32, 32]} />{m}</mesh>
           : <mesh geometry={concave(h)} rotation-z={Math.PI / 2}>{m}</mesh>}
         {/* 镜框：一圈黑色的塑料框，下面一截插进支杆的柄 */}
-        {frame && <mesh rotation-y={Math.PI / 2}><torusGeometry args={[h + 0.02, 0.028, 12, 56]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>}
-        {stand && <mesh position={[0, -h - 0.08, 0]}><cylinderGeometry args={[0.02, 0.02, 0.1, 10]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>}
+        {frame && <mesh geometry={frameOf(h)} rotation-z={-Math.PI / 2} castShadow><meshStandardMaterial color="#1b1e22" metalness={0.7} roughness={0.42} envMapIntensity={ENV} /></mesh>}
+        {frame && <mesh geometry={lipOf(h)} rotation-z={-Math.PI / 2}><Metal kind="stainless" env={ENV} /></mesh>}
+        {stand && <mesh position={[0, -h - 0.085, 0]}><cylinderGeometry args={[0.016, 0.016, 0.11, 14]} /><Metal kind="stainless" env={ENV} /></mesh>}
       </group>
       {stand && <Stand x={x} y={y - h - 0.12} />}
     </group>
   )
+}
+
+/** 烛台：一只黄铜小碟，有壁厚，边上翻出一道沿；中间一截短柄接到支杆上 */
+const dishes = new Map<number, THREE.BufferGeometry>()
+function dishOf(w: number) {
+  if (!dishes.has(w)) dishes.set(w, shell([[0, -0.03], [w * 0.9, -0.03], [w * 1.1, -0.018], [w * 2.3, -0.008], [w * 2.5, 0.004], [w * 2.7, 0.006]], 0.006, { segs: 40 }))
+  return dishes.get(w)!
 }
 
 /** 一支蜡烛：底在主光轴上，高 h；h 是负数就倒过来画（倒立的像）。image 表示这是像而不是实物：不发光、没有底座；ghost 再画成半透明（虚像） */
@@ -86,9 +112,9 @@ export function Candle({ x, y, h, image = false, ghost = false }: { x: number; y
         {!image && <pointLight position={[0, len * 0.9, 0.25]} intensity={0.9} distance={2.2} decay={1.6} color="#ffb060" />}
         {!image && <Glow y={len * 0.86} s={len * 1.5} />}
         {/* 烛台：一只带沿的金属小碟，蜡烛立在上面 */}
-        {!image && <><mesh position={[0, -0.012, 0]}><cylinderGeometry args={[w * 2.4, w * 1.9, 0.024, 24]} /><meshStandardMaterial color="#b9a26a" metalness={0.85} roughness={0.3} /></mesh><mesh position={[0, 0.004, 0]} rotation-x={Math.PI / 2}><torusGeometry args={[w * 2.4, 0.008, 8, 28]} /><meshStandardMaterial color="#b9a26a" metalness={0.85} roughness={0.3} /></mesh></>}
+        {!image && <mesh geometry={dishOf(w)} castShadow><Metal kind="brass" grain="turned" rough={0.5} env={ENV * 2} /></mesh>}
       </group>
-      {!image && <Stand x={x} y={y - 0.024} />}
+      {!image && <Stand x={x} y={y - 0.03} />}
     </group>
   )
 }
@@ -122,7 +148,7 @@ export function Screen({ x, y, h = 0.86 }: { x: number; y: number; h?: number })
     {/* 白屏：一块白色的板，背后一块黑底板，下面一截柄插进支杆 */}
     <mesh position={[x + 0.008, y, 0]}><boxGeometry args={[0.014, h * 2, 0.9]} /><meshStandardMaterial color="#cfcdc4" roughness={1} /></mesh>
     <mesh position={[x + 0.024, y, 0]}><boxGeometry args={[0.018, h * 2 + 0.04, 0.94]} /><meshStandardMaterial color="#16191c" roughness={0.6} /></mesh>
-    <mesh position={[x + 0.024, y - h - 0.07, 0]}><cylinderGeometry args={[0.02, 0.02, 0.1, 10]} /><meshStandardMaterial color="#16191c" roughness={0.55} /></mesh>
+    <mesh position={[x + 0.024, y - h - 0.07, 0]}><cylinderGeometry args={[0.016, 0.016, 0.1, 14]} /><Metal kind="stainless" env={ENV} /></mesh>
     <Stand x={x + 0.024} y={y - h - 0.1} />
   </group>
 }
