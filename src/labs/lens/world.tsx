@@ -13,7 +13,7 @@ const VIEW: [number, number] = [-0.2, 0.17]
 const at = (x: number, w: number, h: number, up = 0) => ({ target: new THREE.Vector3(x, AXIS + up, 0), span: [w, h] as [number, number], view: VIEW })
 export const SPOT = { tank: at(ST.tank, 3.6, 2.3, -0.1), bench: at(ST.bench, 5.3, 2.75, -0.08), eye: at(ST.eye, 3.6, 2.3, -0.1), scope: at(ST.scope, 4.5, 2.3, -0.1) }
 /** 暗室里的舞台设置：不画天空，背景近黑，环境光调小，亮的东西带一圈泛光 */
-export const DARK = { sky: false, backdrop: '#07090c', env: 0.22, sun: 0, fog: [30, 120] as [number, number], bloom: 0.75 }
+export const DARK = { sky: false, backdrop: '#07090c', env: 0.6, sun: 0, fog: [30, 120] as [number, number], bloom: 0.75, studio: true }
 const X0 = -13, X1 = 19, DEPTH = 2.6
 
 /** 光学平台的台面：深色阳极氧化铝板，上面一格一格的螺纹孔 */
