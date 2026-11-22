@@ -1,7 +1,7 @@
 // 原电池 · 第 7 课 只排出水的电池（氢氧燃料电池）
 import { useEffect, useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@/components/lab/lab-shell'
-import { LabStage, useTasks, type Label } from '@/lab-kit'
+import { LabStage, useTasks, type Label, lathe } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
 import { Bubbles, Bulb, Wire } from './parts'
 import { FUEL, fuelRuns } from './physics'
@@ -14,6 +14,9 @@ const TASKS: Task[] = [
 ]
 const X = ST.four
 
+// 气瓶：圆肩、细颈、底下一圈底座；瓶口一只黄铜阀
+const BOTTLE = lathe([[0, 0], [0.1, 0], [0.11, 0.012], [0.11, 0.66], [0.1, 0.72], [0.07, 0.775], [0.04, 0.8], [0.036, 0.84], [0, 0.84]], { segs: 32 })
+const VALVE = lathe([[0, 0], [0.03, 0], [0.03, 0.02], [0.02, 0.024], [0.02, 0.05], [0.026, 0.054], [0.026, 0.07], [0, 0.07]], { segs: 16 })
 export default function Lesson7() {
   const [h2, setH2] = useState(false)
   const [o2, setO2] = useState(false)
@@ -43,7 +46,9 @@ export default function Lesson7() {
             <mesh position={[s * 0.11, 0.5, 0]}><boxGeometry args={[0.05, 0.7, 0.42]} /><meshStandardMaterial color="#30343a" roughness={0.8} /></mesh>
             <mesh position={[s * 0.26, 0.5, 0]}><boxGeometry args={[0.24, 0.7, 0.42]} /><meshStandardMaterial color={s < 0 ? '#bfe3ff' : '#ffd0c8'} transparent opacity={(s < 0 ? h2 : o2) ? 0.45 : 0.14} roughness={0.1} depthWrite={false} /></mesh>
             <mesh position={[s * 0.62, 0.72, 0]} rotation-z={Math.PI / 2}><cylinderGeometry args={[0.025, 0.025, 0.5, 10]} /><meshStandardMaterial color="#9aa3a6" metalness={0.6} roughness={0.4} /></mesh>
-            <mesh position={[s * 0.98, 0.42, 0]} castShadow><cylinderGeometry args={[0.11, 0.11, 0.84, 20]} /><meshStandardMaterial color={s < 0 ? '#3f8fd9' : '#d9534a'} metalness={0.5} roughness={0.4} /></mesh>
+            <mesh geometry={BOTTLE} position={[s * 0.98, 0, 0]} castShadow><meshPhysicalMaterial color={s < 0 ? '#3f8fd9' : '#d9534a'} metalness={0.4} roughness={0.35} clearcoat={0.6} clearcoatRoughness={0.25} /></mesh>
+            <mesh geometry={VALVE} position={[s * 0.98, 0.82, 0]}><meshStandardMaterial color="#c9b06a" metalness={1} roughness={0.3} /></mesh>
+            <mesh position={[s * 0.98, 0.9, 0]} rotation-x={Math.PI / 2}><torusGeometry args={[0.04, 0.008, 8, 20]} /><meshStandardMaterial color="#22272b" roughness={0.6} /></mesh>
             <Bubbles at={[s * 0.26, 0.2, 0.1]} top={0.8} rate={(s < 0 ? h2 : o2) ? 0.9 : 0} n={8} />
           </group>)}
           <mesh position={[0, 0.1, 0]}><boxGeometry args={[0.8, 0.1, 0.5]} /><meshStandardMaterial color="#20262b" roughness={0.6} /></mesh>

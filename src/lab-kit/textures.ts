@@ -14,6 +14,20 @@ export function makeCaustics() {
   const t = new THREE.DataTexture(data, N, N); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true
   return t
 }
+/** 杂色的地面：base 是底色，a、b 是掺进去的深浅两种颜色（写成 "r,g,b"）。草地、泥土、砂石都能用，四边能拼接 */
+export function makeGround(base: string, a: string, b: string, seed = 7) {
+  const S = 512, c = document.createElement('canvas'); c.width = c.height = S
+  const g = c.getContext('2d')!
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296
+  g.fillStyle = base; g.fillRect(0, 0, S, S)
+  for (let i = 0; i < 240; i++) {
+    const x = rnd() * S, y = rnd() * S, r = 14 + rnd() * 46, col = rnd() < 0.5 ? a : b
+    for (const [ox, oy] of [[0, 0], [S, 0], [-S, 0], [0, S], [0, -S]]) { const q = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r); q.addColorStop(0, `rgba(${col},0.45)`); q.addColorStop(1, `rgba(${col},0)`); g.fillStyle = q; g.fillRect(x + ox - r, y + oy - r, r * 2, r * 2) }
+  }
+  for (let i = 0; i < 9000; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? a : b},${0.12 + rnd() * 0.2})`; g.fillRect(rnd() * S, rnd() * S, 1 + rnd() * 2, 1 + rnd() * 2) }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8
+  return t
+}
 /** 剖开的岸：一层层的土和碎石 */
 export function makeStrata(bands = ['#6f6a55', '#8a7a5c', '#7b6a4e', '#6a5a44', '#5c5142', '#54493d']) {
   const c = document.createElement('canvas'); c.width = 1024; c.height = 512
