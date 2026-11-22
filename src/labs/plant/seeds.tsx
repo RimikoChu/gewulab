@@ -26,7 +26,8 @@ function deform(g: THREE.BufferGeometry, f: (x: number, y: number, z: number) =>
 // ---------- 菜豆 ----------
 /** 半粒菜豆（一片子叶，或半张种皮）：肾形，一侧凹进去的地方是种脐。flat：要不要封上平的那一面 */
 export function kidney(flat: boolean, s: 1 | -1, c0: string, c1: string, grow = 1) {
-  const f = (x: number, y: number, z: number): V3 => [x * grow, y * 0.37 * grow, (z * 0.6 + s * (0.26 * x * x - 0.1)) * grow]
+  // 肾形：整体往一侧弯，弯进去的那一侧正中再凹下去一块（种脐所在的缺口）
+  const f = (x: number, y: number, z: number): V3 => [x * grow, y * 0.37 * grow, (z * 0.58 + s * (0.3 * x * x - 0.1) - s * 0.26 * Math.exp(-(x * x) / 0.09) * Math.max(0, s * z)) * grow]
   const dome = tint(deform(new THREE.SphereGeometry(1, 44, 14, 0, Math.PI * 2, 0, Math.PI / 2), f), c0, c1)
   const cap = flat ? tint(deform(new THREE.CircleGeometry(1, 44).rotateX(Math.PI / 2), f), c1) : null
   if (s < 0) { dome.rotateX(Math.PI); cap?.rotateX(Math.PI) }

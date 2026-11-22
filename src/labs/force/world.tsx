@@ -23,15 +23,15 @@ const spot = (x: number, y: number, z: number, w: number, h: number, view: [numb
 /** 各课的机位：每一处的远近和角度都不一样 */
 export const SPOT = {
   l1: spot(RINK.push + 5, 1.3, LANE, 18.5, 6.5, [-0.22, 0.3], false),
-  l2: spot(ST.l2 + 0.1, TOP + 1.0, BENCH_Z, 4.5, 1.7, [0.14, 0.3], true),
+  l2: spot(ST.l2 + 0.1, TOP + 1.3, BENCH_Z, 4.3, 1.5, [0.14, 0.3], true),
   l3: spot(ST.l3 + 0.35, TOP + 2.0, BENCH_Z, 3.6, 4.3, [-0.2, 0.08], true),
-  l4: spot(ST.l4 - 1.3, TOP + 1.5, BENCH_Z, 9.2, 2.6, [0.06, 0.46], true),
+  l4: spot(ST.l4 - 1.3, TOP + 1.75, BENCH_Z, 8.2, 1.7, [0.06, 0.46], true),
   l5: spot(RINK.sled + 7.2, 1.6, LANE - 1.6, 22, 8, [0.2, 0.3], false),
-  l6: spot(ST.l6, TOP + 1.25, BENCH_Z, 4.6, 2.9, [-0.12, 0.1], true),
-  l7: spot(ST.l7 + 0.2, TOP + 1.1, BENCH_Z, 5.6, 2.1, [-0.2, 0.4], true),
+  l6: spot(ST.l6, TOP + 1.5, BENCH_Z, 4.4, 2.7, [-0.12, 0.1], true),
+  l7: spot(ST.l7 + 0.2, TOP + 1.45, BENCH_Z, 5.2, 1.7, [-0.2, 0.4], true),
   xa: spot(RINK.push + 3.4, 1.3, LANE, 14, 6, [0.2, 0.32], false),
   xb: spot(HOUSE - 9, 1.2, LANE, 25, 8, [0.1, 0.34], false),
-  xc: spot(ST.l7 + 0.2, TOP + 1.1, BENCH_Z, 5.6, 2.1, [0.22, 0.44], true),
+  xc: spot(ST.l7 + 0.2, TOP + 1.45, BENCH_Z, 5.2, 1.7, [0.22, 0.44], true),
   q: spot(ST.l3 + 0.5, TOP + 1.9, BENCH_Z, 4.6, 4.3, [0.3, 0.12], true),
 }
 export type SpotKey = keyof typeof SPOT
