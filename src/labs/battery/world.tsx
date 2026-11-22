@@ -23,7 +23,10 @@ export function World() {
     for (let x = -13; x <= 13; x += 3.25) parts.push({ p: [x, 1.9, -3.35], s: [0.08, 3.8, 0.7], c: '#6d777d' })
     const tint = ['#a99a6e', '#6f8798', '#9a7670', '#74897c', '#868b90']
     let k = 0
-    for (const y of [0.53, 1.43, 2.33, 3.23]) for (let x = -12.6; x <= 12.6; x += 0.36) { k++; if (k % 9 === 0) continue; parts.push({ p: [x, y + 0.2, -3.3], s: [0.24, 0.4, 0.24], c: tint[(k * 7 + Math.floor(x)) % 5 < 0 ? 0 : Math.abs((k * 7 + Math.floor(x)) % 5)], cyl: true }) }
+    for (const y of [0.53, 1.43, 2.33, 3.23]) for (let x = -12.6; x <= 12.6; x += 0.36) { k++; if (k % 9 === 0) continue; const c = tint[Math.abs((k * 7 + Math.floor(x)) % 5)]; parts.push({ p: [x, y + 0.2, -3.3], s: [0.24, 0.4, 0.24], c, cyl: true }); parts.push({ p: [x, y + 0.415, -3.3], s: [0.2, 0.03, 0.2], c: '#c9cdd0', cyl: true }); parts.push({ p: [x, y + 0.445, -3.3], s: [0.07, 0.03, 0.07], c: '#c9cdd0', cyl: true }); parts.push({ p: [x, y + 0.2, -3.3], s: [0.244, 0.1, 0.244], c: '#e6e3d8', cyl: true }) }
+    // 实验台的拉手、柜门中缝、踢脚和台面收边；后墙的踢脚
+    for (let x = -9.75; x <= 9.75; x += 1.625) { parts.push({ p: [x + 0.72, TOP - 0.22, 0.462], s: [0.3, 0.025, 0.025], c: '#8f989c' }); parts.push({ p: [x + 0.81, 0.45, 0.455], s: [1.58, 0.012, 0.012], c: '#b9c0c0' }) }
+    parts.push({ p: [0, 0.05, 0.4], s: [19.6, 0.1, 0.06], c: '#4a5358' }); parts.push({ p: [0, TOP - 0.03, 0.71], s: [20.04, 0.07, 0.03], c: '#20272b' }); parts.push({ p: [0, 0.08, -3.68], s: [28, 0.16, 0.06], c: '#b6bbb8' })
     return mergeParts(parts)
   }, [])
   return (

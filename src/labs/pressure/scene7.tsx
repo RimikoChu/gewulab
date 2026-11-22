@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { paperGap, type solve7 } from './physics'
 import { ST } from './hydro'
-import { LabStage, Painted, mergeParts, type Label, type Part } from '@/lab-kit'
+import { LabStage, Metal, Painted, bolts, disc, mergeParts, shell, type Label, type Part } from '@/lab-kit'
 
 const X0 = ST.tunnel, Z0 = -3
 const CY = 1.9                                           // 试验段中心的高度
@@ -23,18 +23,34 @@ function Shed() {
     for (const x of [-6.5, 9]) for (const z of [-3.2, 2.6]) P.push({ p: [x, 2.5, z + Z0 + 0.3], s: [0.18, 5, 0.18], c: '#56616b' })
     P.push({ p: [1.25, 5.1, Z0], s: [16.2, 0.16, 6.6], c: '#3c5964' }, { p: [1.25, 2.5, Z0 - 3.1], s: [15.5, 5, 0.1], c: '#c9cdd0' }, { p: [1.25, 0.03, Z0], s: [16, 0.06, 6.2], c: '#b7b5ab' })
     // 风洞：进风的大喇叭口、风机段、收缩段、试验段的钢框和支架
-    P.push({ p: [-5.2, CY, Z0], s: [1.25, 0.8, 1.25], c: '#d8d4c8', cyl: true, r: [0, 0, Math.PI / 2] }, { p: [-4.3, CY, Z0], s: [1.05, 1.0, 1.05], c: '#3f5a66', cyl: true, r: [0, 0, Math.PI / 2] })
-    P.push({ p: [-3.3, CY, Z0], s: [0.95, 1.0, 0.95], c: '#d8d4c8', cyl: true, r: [0, 0, Math.PI / 2] })
     for (const x of [-2.75, 3.25]) P.push({ p: [x, CY, Z0], s: [0.12, 1.9, 1.9], c: '#59626b' })
     for (const y of [CY - 0.9, CY + 0.9]) for (const z of [-0.9, 0.9]) P.push({ p: [0.25, y, Z0 + z], s: [6, 0.08, 0.08], c: '#59626b' })
     for (const x of [-4.8, -3, -1.5, 2]) P.push({ p: [x, (CY - 0.95) / 2, Z0], s: [0.14, CY - 0.95, 1.2], c: Y })
-    P.push({ p: [4.3, CY, Z0], s: [0.9, 2, 0.9], c: '#d8d4c8', cyl: true, r: [0, 0, Math.PI / 2] })
     // 右边吊纸的架子和朝下的吹风管
     P.push({ p: [PX, 3.3, Z0 - 0.6], s: [1.6, 0.08, 0.08], c: '#59626b' }, { p: [PX - 0.8, 1.65, Z0 - 0.6], s: [0.08, 3.3, 0.08], c: '#59626b' }, { p: [PX + 0.8, 1.65, Z0 - 0.6], s: [0.08, 3.3, 0.08], c: '#59626b' })
     P.push({ p: [PX, 3.3, Z0 - 0.3], s: [0.06, 0.06, 0.6], c: '#59626b' }, { p: [PX, 3.55, Z0], s: [0.11, 0.7, 0.11], c: '#3f5a66', cyl: true }, { p: [PX, 3.16, Z0], s: [0.07, 0.14, 0.07], c: '#22262a', cyl: true })
     return mergeParts(P)
   }, [])
-  return <mesh geometry={geo} castShadow receiveShadow><Painted rough={0.65} metal={0.3} /></mesh>
+  // 风洞的筒身是钣金卷的：进风口是一只向外翻的喇叭口，接风机段，再收缩到试验段；试验段后面是慢慢张开的扩散段。各段之间用法兰和一圈螺栓接起来
+  const duct = useMemo(() => ({
+    inlet: shell([[1.5, -5.78], [1.42, -5.7], [1.2, -5.5], [1.08, -5.2], [1.05, -4.85]], 0.04, { segs: 56 }),
+    fan: shell([[1.05, -4.85], [1.05, -3.8]], 0.05, { segs: 56 }),
+    cone: shell([[1.05, -3.8], [0.98, -3.4], [0.92, -3.0], [0.9, -2.8]], 0.04, { segs: 56 }),
+    tail: shell([[0.9, 3.3], [0.93, 3.8], [1.02, 4.6], [1.14, 5.3]], 0.04, { segs: 56 }),
+    flange: disc(1.17, 0.06, { hole: 1.04 }), flangeS: disc(1.02, 0.06, { hole: 0.89 }), nuts: bolts(16, 1.11, 0.07, 0.04), nutsS: bolts(14, 0.96, 0.07, 0.04),
+  }), [])
+  const paint = (c: string) => <meshPhysicalMaterial color={c} roughness={0.42} metalness={0.25} clearcoat={0.5} clearcoatRoughness={0.3} side={THREE.DoubleSide} />
+  return <>
+    <mesh geometry={geo} castShadow receiveShadow><Painted rough={0.65} metal={0.3} /></mesh>
+    <group position={[0, CY, Z0]} rotation-z={-Math.PI / 2}>
+      <mesh geometry={duct.inlet} castShadow>{paint('#e3dfd3')}</mesh>
+      <mesh geometry={duct.fan} castShadow>{paint('#3f5a66')}</mesh>
+      <mesh geometry={duct.cone} castShadow>{paint('#e3dfd3')}</mesh>
+      <mesh geometry={duct.tail} castShadow>{paint('#e3dfd3')}</mesh>
+      {[-4.88, -3.83].map(y => <group key={y} position={[0, y, 0]}><mesh geometry={duct.flange}><Metal kind="steel" grain="turned" /></mesh><mesh geometry={duct.nuts} position={[0, 0.06, 0]}><Metal kind="stainless" /></mesh></group>)}
+      {[-2.86, 3.3].map(y => <group key={y} position={[0, y, 0]}><mesh geometry={duct.flangeS}><Metal kind="steel" grain="turned" /></mesh><mesh geometry={duct.nutsS} position={[0, 0.06, 0]}><Metal kind="stainless" /></mesh></group>)}
+    </group>
+  </>
 }
 
 /** 风机的叶片：风越大转得越快 */
