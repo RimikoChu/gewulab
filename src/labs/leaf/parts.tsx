@@ -8,52 +8,128 @@ export const GLASS = { color: '#cfe6ee', transparent: true, opacity: 0.2, roughn
 export const C = { leaf: '#3f9b4b', leafDark: '#2f7d3c', pale: '#e9dfb0', blue: '#27357f', stem: '#6f8f4a', pot: '#b5613c', soil: '#4a3524', water: '#7fc4dc', wood: '#8b6a45' }
 type V3 = [number, number, number]
 
-/** 叶片的轮廓：边缘一圈圆圆的波浪，叶柄那里凹进去一个小缺口。half 只取左半或右半 */
-const blades = new Map<string, THREE.ShapeGeometry>()
-function blade(half?: 'l' | 'r') {
-  const key = half ?? 'all'
-  if (!blades.has(key)) {
-    const a0 = half === 'l' ? Math.PI / 2 : half === 'r' ? -Math.PI / 2 : -Math.PI, a1 = half === 'l' ? Math.PI * 1.5 : half === 'r' ? Math.PI / 2 : Math.PI, N = half ? 40 : 80, sh = new THREE.Shape()
-    for (let i = 0; i <= N; i++) {
-      const t = a0 + (a1 - a0) * i / N, notch = Math.exp(-((Math.abs(((t + Math.PI * 1.5) % (Math.PI * 2)) - Math.PI)) ** 2) / 0.05)   // 缺口朝下（−y）
-      const r = 1 + 0.07 * Math.cos(t * 9) - 0.42 * notch, x = Math.cos(t) * r, y = Math.sin(t) * r
-      if (i) sh.lineTo(x, y); else sh.moveTo(x, y)
+// ---------- 叶片 ----------
+/** 叶缘到叶心的距离：一圈圆圆的波浪，叶柄那里凹进去一个缺口（朝 −y） */
+const edgeR = (t: number) => { const d = Math.abs(((t + Math.PI * 1.5) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI); return 1 + 0.07 * Math.cos(t * 9) - 0.42 * Math.exp(-(d * d) / 0.05) }
+/** 叶面不是平的：整片微微向上兜着，边缘一圈起伏，叶尖略往下垂 */
+const lift = (x: number, y: number, t: number, q: number) => 0.2 * (x * x + y * y) + 0.05 * Math.sin(t * 9 + 0.6) * q ** 3 - 0.1 * Math.max(0, y) ** 2 * q
+/** 叶脉：从叶柄那一点放射出去的几条主脉，各带几条细的侧脉。画成一张贴图，叶面的颜色乘上它 */
+let veinTex: THREE.CanvasTexture | null = null
+function veins() {
+  if (!veinTex) {
+    const S = 256, c = document.createElement('canvas'); c.width = c.height = S
+    const g = c.getContext('2d')!, px = (x: number, y: number): [number, number] => [(x / 2.3 + 0.5) * S, (0.5 - y / 2.3) * S]
+    g.fillStyle = '#cfcfcf'; g.fillRect(0, 0, S, S)
+    let sd = 5; const rnd = () => (sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296
+    for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '255,255,255' : '120,120,120'},0.07)`; g.fillRect(rnd() * S, rnd() * S, 2, 2) }   // 叶肉上细细的斑驳
+    const base: [number, number] = [0, -0.58]
+    g.lineCap = 'round'
+    for (const [ang, len] of [[90, 1.5], [52, 1.35], [128, 1.35], [18, 1.05], [162, 1.05], [-16, 0.7], [196, 0.7]] as const) {
+      const a = ang * Math.PI / 180, tip: [number, number] = [base[0] + Math.cos(a) * len, base[1] + Math.sin(a) * len]
+      g.strokeStyle = '#ffffff'; g.lineWidth = 3.2; g.beginPath(); g.moveTo(...px(...base)); g.lineTo(...px(...tip)); g.stroke()
+      for (let k = 1; k <= 4; k++) for (const s of [-1, 1]) {
+        const f = k / 5, o: [number, number] = [base[0] + (tip[0] - base[0]) * f, base[1] + (tip[1] - base[1]) * f], b2 = a + s * 0.75, l2 = len * 0.3 * (1 - f * 0.5)
+        g.strokeStyle = 'rgba(255,255,255,0.75)'; g.lineWidth = 1.3; g.beginPath(); g.moveTo(...px(...o)); g.lineTo(...px(o[0] + Math.cos(b2) * l2, o[1] + Math.sin(b2) * l2)); g.stroke()
+      }
     }
-    if (half) sh.lineTo(0, a1 > Math.PI ? -0.58 : 1.07)
-    blades.set(key, new THREE.ShapeGeometry(sh))
+    veinTex = new THREE.CanvasTexture(c); veinTex.colorSpace = THREE.SRGBColorSpace; veinTex.anisotropy = 8
+  }
+  return veinTex
+}
+/**
+ * 叶片的模型：从叶心往外一圈圈铺开的曲面，每个顶点带颜色。
+ * 颜色从叶心到叶缘慢慢变浅；中间有一道马蹄形的深色环纹（天竺葵叶子上常见）；edge 给最外面一圈另一种颜色（银边）。half 只取左半或右半
+ */
+const blades = new Map<string, THREE.BufferGeometry>()
+function blade(color: string, half?: 'l' | 'r', edge?: string) {
+  const key = `${color}|${half ?? ''}|${edge ?? ''}`
+  if (!blades.has(key)) {
+    const a0 = half === 'l' ? Math.PI / 2 : half === 'r' ? -Math.PI / 2 : -Math.PI, a1 = half === 'l' ? Math.PI * 1.5 : half === 'r' ? Math.PI / 2 : Math.PI
+    const NT = half ? 48 : 96, NR = 10, pos: number[] = [], col: number[] = [], uv: number[] = [], idx: number[] = []
+    const base = new THREE.Color(color), dark = base.clone().multiplyScalar(0.62), light = base.clone().lerp(new THREE.Color('#dfe9b4'), 0.28), rim = edge ? new THREE.Color(edge) : null, c = new THREE.Color()
+    for (let i = 0; i <= NT; i++) for (let j = 0; j <= NR; j++) {
+      const t = a0 + (a1 - a0) * i / NT, q = j / NR, r = edgeR(t) * q, x = Math.cos(t) * r, y = Math.sin(t) * r
+      pos.push(x, y, lift(x, y, t, q)); uv.push(x / 2.3 + 0.5, y / 2.3 + 0.5)
+      const zone = Math.exp(-((q - 0.56) ** 2) / 0.012) * (0.55 + 0.45 * Math.sin(t))          // 深色环纹，靠叶柄那一侧淡下去
+      c.copy(base).lerp(light, q * q * 0.7).lerp(dark, Math.max(0, zone) * 0.55)
+      if (rim && q > 0.72) c.lerp(rim, Math.min(1, (q - 0.72) / 0.06))
+      col.push(c.r, c.g, c.b)
+    }
+    for (let i = 0; i < NT; i++) for (let j = 0; j < NR; j++) { const p = i * (NR + 1) + j, n = p + NR + 1; idx.push(p, p + 1, n, n, p + 1, n + 1) }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+    g.setIndex(idx); g.computeVertexNormals()
+    blades.set(key, g)
   }
   return blades.get(key)!
 }
-/** 一片叶子：波浪边的圆叶，中间一道主脉和几条侧脉。half 只画左半或右半（第 1 课一片叶子两半颜色不同） */
-export function Leaf({ r = 0.12, color = C.leaf, half, ...rest }: { r?: number; color?: string; half?: 'l' | 'r' } & Record<string, unknown>) {
-  const vein = useMemo(() => new THREE.Color(color).lerp(new THREE.Color('#f2f5d8'), 0.35), [color])
+/** 一片叶子：波浪边的圆叶，叶面微微兜着，正面看得见放射状的叶脉，背面颜色浅一些。half 只画左半或右半（第 1 课一片叶子两半颜色不同）；edge 是叶缘那一圈的颜色（银边） */
+export function Leaf({ r = 0.12, color = C.leaf, half, edge, ...rest }: { r?: number; color?: string; half?: 'l' | 'r'; edge?: string } & Record<string, unknown>) {
+  const geo = blade(color, half, edge), map = useMemo(veins, [])
+  const back = useMemo(() => new THREE.Color(color).lerp(new THREE.Color('#e3e8c9'), 0.45), [color])
   return (
     <group {...rest} scale={r}>
-      <mesh geometry={blade(half)} castShadow><meshStandardMaterial color={color} roughness={0.62} side={THREE.DoubleSide} /></mesh>
-      {!half && [[0, -0.5, 0, 1.4], [0.28, 0.05, -0.8, 0.7], [-0.28, 0.05, 0.8, 0.7], [0.3, -0.3, -1.2, 0.55], [-0.3, -0.3, 1.2, 0.55]].map(([x, y, rot, len], i) => (
-        <mesh key={i} position={[x, y + len / 2 * Math.cos(rot) * (i ? 1 : 1), 0.004]} rotation-z={rot}><planeGeometry args={[i ? 0.022 : 0.035, len]} /><meshBasicMaterial color={vein} transparent opacity={0.55} side={THREE.DoubleSide} /></mesh>
-      ))}
+      <mesh geometry={geo} castShadow><meshStandardMaterial vertexColors map={map} color="#ffffff" roughness={0.55} side={THREE.FrontSide} /></mesh>
+      <mesh geometry={geo}><meshStandardMaterial color={back} roughness={0.8} side={THREE.BackSide} /></mesh>
     </group>
   )
 }
 
-/** 一盆天竺葵：花盆、茎、一圈叶子。leaf 是叶子的颜色；rim 给叶子加一圈浅色的边（银边天竺葵） */
-export function Plant({ position, s = 1, leaf = C.leaf, rim, n = 9 }: { position: V3; s?: number; leaf?: string; rim?: string; n?: number }) {
-  const leaves = useMemo(() => Array.from({ length: n }, (_, i) => { const a = i * 2.4, h = 0.3 + (i % 4) * 0.07, d = 0.11 + (i % 3) * 0.04; return { p: [Math.cos(a) * d, h, Math.sin(a) * d] as V3, ry: -a, tilt: 0.9 + (i % 3) * 0.2 } }), [n])
+/** 一条弯的细杆（茎、叶柄、花梗）：经过几个点 */
+function Stalk({ pts, r0, r1, color }: { pts: V3[]; r0: number; r1: number; color: string }) {
+  const geo = useMemo(() => {
+    const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p))), 14, 1, 7), p = g.attributes.position, n = g.attributes.normal, u = g.attributes.uv
+    for (let i = 0; i < p.count; i++) { const k = r0 + (r1 - r0) * u.getX(i) - 1; p.setXYZ(i, p.getX(i) + n.getX(i) * k, p.getY(i) + n.getY(i) * k, p.getZ(i) + n.getZ(i) * k) }   // 管子本来半径是 1，沿法线收到要的粗细，根粗梢细
+    return g
+  }, [pts, r0, r1])
+  return <mesh geometry={geo} castShadow><meshStandardMaterial color={color} roughness={0.7} /></mesh>
+}
+
+/**
+ * 一盆天竺葵：花盆里一根主茎分出两三枝，每个节上伸出一根叶柄托着一片叶子，叶子大小、朝向、俯仰各不相同；顶上一簇红花。
+ * leaf 是叶子的颜色；rim 给叶子加一圈浅色的边（银边天竺葵）；n 是叶子的片数；compact 是长得紧凑一些（要罩进钟罩里的那几盆）
+ */
+export function Plant({ position, s = 1, leaf = C.leaf, rim, n = 9, compact = false }: { position: V3; s?: number; leaf?: string; rim?: string; n?: number; compact?: boolean }) {
+  const P = useMemo(() => {
+    let sd = Math.floor(Math.abs(position[0] * 97 + position[2] * 31 + n * 13 + (rim ? 7 : 0)) * 10) + 3
+    const rnd = () => (sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296
+    const top = (compact ? 0.4 : 0.5) + rnd() * 0.05, lean = (rnd() - 0.5) * 0.06, K = compact ? 0.62 : 1
+    const stem: V3[] = [[0, 0.17, 0], [lean * 0.4, 0.3, lean * 0.3], [lean, 0.42, -lean * 0.5], [lean * 1.3, top, -lean]]
+    const at = (t: number): V3 => { const k = t * (stem.length - 1), i = Math.min(stem.length - 2, Math.floor(k)), f = k - i; return [stem[i][0] + (stem[i + 1][0] - stem[i][0]) * f, stem[i][1] + (stem[i + 1][1] - stem[i][1]) * f, stem[i][2] + (stem[i + 1][2] - stem[i][2]) * f] }
+    const leaves = Array.from({ length: n }, (_, i) => {
+      const a = i * 2.39996 + rnd() * 0.5, t = 0.12 + 0.8 * (i / Math.max(1, n - 1)) * (0.85 + rnd() * 0.15), o = at(t), len = (0.13 + rnd() * 0.07 + (1 - t) * 0.05) * K, up = 0.04 + rnd() * 0.06 + t * 0.04
+      const tip: V3 = [o[0] + Math.cos(a) * len, o[1] + up, o[2] + Math.sin(a) * len], mid: V3 = [o[0] + Math.cos(a) * len * 0.5, o[1] + up * 0.8 + 0.015, o[2] + Math.sin(a) * len * 0.5]
+      return { a, o, mid, tip, r: (0.092 + rnd() * 0.035 + (1 - t) * 0.015) * (compact ? 0.8 : 1), tilt: 0.12 + rnd() * 0.4, roll: (rnd() - 0.5) * 0.4, dark: rnd() < 0.4 }
+    })
+    const head: V3 = [stem[3][0] + 0.02, top + (compact ? 0.09 : 0.15), stem[3][2] + 0.01]
+    const buds = Array.from({ length: 11 }, (_, i) => { const a = i * 2.39996, q = 0.3 + (i % 4) * 0.2; return { p: [Math.cos(a) * 0.045 * q + (rnd() - 0.5) * 0.01, 0.02 - q * 0.02 + rnd() * 0.012, Math.sin(a) * 0.045 * q] as V3, a } })
+    return { stem, leaves, head, buds }
+  }, [position[0], position[2], n, rim, compact])   // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <group position={position} scale={s}>
       <mesh geometry={POT.saucer} castShadow><meshStandardMaterial color="#a4552f" roughness={0.85} /></mesh>
       <mesh geometry={POT.pot} position={[0, 0.012, 0]} castShadow><meshStandardMaterial color={C.pot} roughness={0.85} /></mesh>
       <mesh position={[0, 0.172, 0]}><cylinderGeometry args={[0.116, 0.116, 0.012, 24]} /><meshStandardMaterial color={C.soil} roughness={1} /></mesh>
-      <mesh position={[0, 0.32, 0]}><cylinderGeometry args={[0.012, 0.016, 0.3, 8]} /><meshStandardMaterial color={C.stem} /></mesh>
-      {leaves.map((l, i) => (
-        <group key={i} position={l.p} rotation={[0, l.ry, 0]}>
-          <group rotation={[-l.tilt, 0, 0]}>
-            {rim && <Leaf r={0.1} color={rim} position={[0, 0, -0.002]} />}
-            <Leaf r={rim ? 0.068 : 0.1} color={i % 2 ? leaf : leaf === C.leaf ? C.leafDark : leaf} />
+      <Stalk pts={P.stem} r0={0.017} r1={0.009} color={C.stem} />
+      {P.leaves.map((l, i) => (
+        <group key={i}>
+          <Stalk pts={[l.o, l.mid, l.tip]} r0={0.0065} r1={0.004} color="#7fa055" />
+          {/* 叶片的缺口接在叶柄的顶上，叶面朝上略向外倾 */}
+          <group position={l.tip} rotation-y={-(l.a + Math.PI / 2)}>
+            <group rotation={[-Math.PI / 2 + l.tilt, 0, l.roll]}>
+              <Leaf r={l.r} color={l.dark && leaf === C.leaf ? C.leafDark : leaf} edge={rim} position={[0, 0.58 * l.r, 0]} />
+            </group>
           </group>
         </group>
       ))}
+      {/* 花：一根长花梗顶着一簇小红花，每朵五片花瓣 */}
+      <Stalk pts={[P.stem[3], [P.head[0] - 0.01, (P.stem[3][1] + P.head[1]) / 2, P.head[2]], P.head]} r0={0.006} r1={0.004} color="#7fa055" />
+      <group position={P.head}>
+        {P.buds.map((b, i) => <group key={i} position={b.p} rotation={[0.5 * Math.sin(b.a), b.a, 0.5 * Math.cos(b.a)]}>
+          {[0, 1, 2, 3, 4].map(k => <mesh key={k} position={[Math.cos(k * 1.2566) * 0.011, 0.004, Math.sin(k * 1.2566) * 0.011]} rotation-y={-k * 1.2566} scale={[1, 0.25, 0.7]}><sphereGeometry args={[0.011, 8, 6]} /><meshStandardMaterial color={i % 3 ? '#d83a4a' : '#e85a66'} roughness={0.6} /></mesh>)}
+          <mesh position-y={0.005}><sphereGeometry args={[0.0035, 6, 5]} /><meshStandardMaterial color="#f4d35e" /></mesh>
+        </group>)}
+      </group>
     </group>
   )
 }

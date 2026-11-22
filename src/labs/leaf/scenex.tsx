@@ -29,7 +29,7 @@ export default function SceneX({ sub, burn, years, rim }: { sub: Sub; burn: numb
         {sub === 'jars' && XJARS.map((j, i) => (
           <BellJar key={j.key} position={[(i - 1) * 0.9, 0, 0]} r={0.33} h={0.5} shade={!j.light}>
             <Candle position={[j.plant ? 0.16 : 0, 0, 0.08]} lit={burn > 0 && (candleKeeps(j) || burn < 0.62)} h={0.16} />
-            {j.plant && <Plant position={[-0.1, 0, 0]} s={1.15} />}
+            {j.plant && <Plant position={[-0.1, 0, 0]} s={1.15} compact />}
           </BellJar>
         ))}
         {sub === 'willow' && <>

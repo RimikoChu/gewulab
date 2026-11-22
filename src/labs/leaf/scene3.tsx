@@ -21,7 +21,7 @@ export default function Scene3({ lit, pick, tested }: { lit: boolean; pick: JarK
         {(Object.keys(JARS) as JarKey[]).map(k => (
           <group key={k} position={[AT[k], 0, 0]}>
             <BellJar position={[0, 0, 0]} r={0.36} h={0.52}>
-              <Plant position={[-0.07, 0, 0]} s={1.25} />
+              <Plant position={[-0.07, 0, 0]} s={1.25} compact />
               <Beaker position={[0.2, 0, 0.12]} r={0.07} h={0.11} fill={0.65} liquid={k === 'naoh' ? '#e8e2f5' : C.water} />
             </BellJar>
             {/* 选中的那一罩，底下亮一圈 */}
