@@ -18,8 +18,8 @@ const DEPTH = 3
 const VIEW: [number, number] = [-0.2, 0.24]
 const at = (x: number, w: number, h: number, up: number, view = VIEW) => ({ target: new THREE.Vector3(x, TOP + up, 0), span: [w, h] as [number, number], view })
 export const SPOT: Record<Spot, ReturnType<typeof at>> = {
-  fork: at(ST.fork, 6.2, 4.2, 2.1), jar: at(ST.jar, 6.2, 4.4, 2.0), hall: at(ST.hall, 8.2, 4.2, 1.9), ruler: at(ST.ruler, 7.7, 4.2, 1.9),
-  drum: at(ST.drum, 6.6, 4.4, 1.9), tone: at(ST.tone, 9.6, 5, 2.3), noise: at(ST.noise, 12.6, 7.6, 0.6, [-0.16, 0.16]),
+  fork: at(ST.fork, 6.2, 4.2, 2.1), jar: at(ST.jar, 6.2, 4.4, 2.0), hall: at(ST.hall, 8.0, 3.3, 1.45), ruler: at(ST.ruler, 7.7, 4.2, 1.9),
+  drum: at(ST.drum, 6.6, 4.4, 1.9), tone: at(ST.tone, 9.6, 5, 2.3), noise: at(ST.noise - 1.9, 13.4, 7.6, 0.6, [-0.16, 0.16]),
 }
 /** 舞台上的设置：不画天空，背景近黑，环境光调小，屏幕和声波带一点泛光 */
 export const ROOM = { sky: false, backdrop: '#090708', env: 0.55, sun: 0, fog: [70, 240] as [number, number], bloom: 0.22, studio: true }

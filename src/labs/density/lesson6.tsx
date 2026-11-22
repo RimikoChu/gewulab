@@ -44,10 +44,10 @@ function Bench({ mode, k, live }: { mode: Mode; k: number; live: RefObject<Live>
     <Balance at={BASE} left={Wg.left} right={Wg.right} rider={Wg.rider} live={live} />
     <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />
     <Cylinder at={CYL_AT} V={V} color={mode === 'stone' ? WATER : BRINE_TINT} />
-    <Carry at={rock === 2 ? [CYL_AT[0], TOP + CYL_IN + STONE_H + 0.004, CYL_AT[2]] : rock === 1 ? panAt(BASE, -1) : ROCK_AT} ride={rock === 1 ? 'L' : null} live={live} lift={0.52} speed={2.4}>
+    <Carry at={rock === 2 ? [CYL_AT[0], TOP + CYL_IN + STONE_H + 0.004, CYL_AT[2]] : rock === 1 ? panAt(BASE, -1) : ROCK_AT} ride={rock === 1 ? 'L' : null} live={live} lift={0.52} speed={2.4} grip={rock === 2 ? [0.012, RIM - CYL_IN - STONE_H + 0.004, 0.11] : [0.17, 0.07]}>
       <Stone thread={rock === 2 ? 'hook' : rock === 1 ? 'wrap' : 'coil'} up={RIM - CYL_IN - STONE_H} />
     </Carry>
-    <Carry at={pouring ? TIP : cupOnPan ? panAt(BASE, -1) : CUP_AT} ride={cupOnPan ? 'L' : null} live={live} lift={0.78} speed={2.6}>
+    <Carry at={pouring ? TIP : cupOnPan ? panAt(BASE, -1) : CUP_AT} ride={cupOnPan ? 'L' : null} live={live} lift={0.78} speed={2.6} grip={[BEAKER_R * 2 + 0.02, BEAKER_H * 0.62]} held={pouring}>
       <Beaker V={(mode === 'stone' ? WATER_ML : BRINE.v) - Math.min(V, goal)} color={mode === 'stone' ? WATER : BRINE_TINT} pour={P.ph === 2} drop={RIM + 0.03 - levelY(V)} />
     </Carry>
   </>

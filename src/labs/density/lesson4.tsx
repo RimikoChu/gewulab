@@ -7,7 +7,7 @@ import { Balance, WeightSet, panAt, useWeigh } from './balance'
 import { LESSONS, goLesson } from './lessons'
 import { Block, Carry, Room, newLive, useSettled, type V3 } from './parts'
 import { BLOCK_V, CAPACITY, RHO, blocks, density } from './physics'
-import { ST, TOP } from './world'
+import { ST, TOP, CM } from './world'
 
 type M = 'al' | 'cu'
 const METALS: M[] = ['al', 'cu'], TINT: Record<M, string> = { al: '#d5dce2', cu: '#e8a07a' }
@@ -75,7 +75,7 @@ export default function Lesson4() {
         <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />
         {/* 垫子上的六块金属：截面都是 2 cm × 2 cm，长短不同 */}
         <RoundedBox args={[1.5, 0.02, 0.86]} radius={0.008} smoothness={2} position={[X - 1.62, TOP + 0.01, 1.12]} receiveShadow><meshStandardMaterial color="#2e4a44" roughness={0.95} /></RoundedBox>
-        {METALS.flatMap(m => BLOCK_V.map((V, k) => { const up = cur === key(m, k); return <Carry key={key(m, k)} at={up ? panAt(BASE, -1) : home(m, k)} ride={up ? 'L' : null} live={live}><Block kind={m} size={[V / 4, 2, 2]} /></Carry> }))}
+        {METALS.flatMap(m => BLOCK_V.map((V, k) => { const up = cur === key(m, k); return <Carry key={key(m, k)} at={up ? panAt(BASE, -1) : home(m, k)} ride={up ? 'L' : null} live={live} grip={[V / 4 * CM, 1.3 * CM]}><Block kind={m} size={[V / 4, 2, 2]} /></Carry> }))}
       </Room>}
       lesson={<LessonBlock no="4" title="质量和体积成正比" concept="同种物质，质量与体积成正比" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

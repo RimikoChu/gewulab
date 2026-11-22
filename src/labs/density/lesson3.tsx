@@ -71,8 +71,8 @@ export default function Lesson3() {
     <LabShell title="质量与密度" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="量筒"
       stage={<Room at="s3" labels={labels}>
         <Cylinder at={CYL_AT} V={V} />
-        <Carry at={sunk ? [CYL_AT[0], TOP + CYL_IN + STONE_H + 0.004, CYL_AT[2]] : ROCK_AT} lift={1.14} speed={2.4}><Stone thread={sunk ? 'hook' : 'coil'} up={RIM - CYL_IN - STONE_H} /></Carry>
-        <Carry at={P.ph === 1 || P.ph === 2 ? TIP : CUP_AT} lift={0.3} speed={2.2}><Beaker V={CUP_ML - Math.min(V, V1)} pour={P.ph === 2} drop={RIM + 0.03 - levelY(V)} /></Carry>
+        <Carry at={sunk ? [CYL_AT[0], TOP + CYL_IN + STONE_H + 0.004, CYL_AT[2]] : ROCK_AT} lift={1.14} speed={2.4} grip={sunk ? [0.012, RIM - CYL_IN - STONE_H + 0.004, 0.11] : [0.17, 0.07]}><Stone thread={sunk ? 'hook' : 'coil'} up={RIM - CYL_IN - STONE_H} /></Carry>
+        <Carry at={P.ph === 1 || P.ph === 2 ? TIP : CUP_AT} lift={0.3} speed={2.2} grip={[BEAKER_R * 2 + 0.02, BEAKER_H * 0.62]} held={P.ph === 1 || P.ph === 2}><Beaker V={CUP_ML - Math.min(V, V1)} pour={P.ph === 2} drop={RIM + 0.03 - levelY(V)} /></Carry>
         {steady && <>
           <group position={eye} rotation-z={Math.atan2(yL - eye[1], CYL_AT[0] - eye[0])}><Eye /></group>
           <Line a={[eye[0] + 0.09, eye[1] - slope * 0.09, eye[2]]} b={[CYL_AT[0], yL, CYL_AT[2]]} dash={look !== 'level'} />

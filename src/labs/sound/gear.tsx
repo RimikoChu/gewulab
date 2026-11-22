@@ -144,10 +144,24 @@ export function Mallet({ rest, hit, t0 }: { rest: Pose; hit: Pose; t0: number | 
 export function Glove({ rest, hold, k }: { rest: Pose; hold: Pose; k: number }) {
   const e = ease(k), m = <meshStandardMaterial color="#e6e2d6" roughness={0.95} />
   return <group position={[rest.p[0] + (hold.p[0] - rest.p[0]) * e, rest.p[1] + (hold.p[1] - rest.p[1]) * e + Math.sin(e * Math.PI) * 0.5, rest.p[2] + (hold.p[2] - rest.p[2]) * e]} rotation={[(rest.rx ?? 0) + ((hold.rx ?? 0) - (rest.rx ?? 0)) * e, 0, rest.a + (hold.a - rest.a) * e]}>
-    <RoundedBox args={[0.46, 0.4, 0.2]} radius={0.08} castShadow>{m}</RoundedBox>
-    {[-0.165, -0.055, 0.055, 0.165].map((x, i) => <mesh key={x} position={[x, -0.3 - (i === 1 || i === 2 ? 0.03 : 0), 0.03]} rotation-x={0.25} castShadow><capsuleGeometry args={[0.048, 0.22 + (i === 1 || i === 2 ? 0.06 : 0), 6, 12]} />{m}</mesh>)}
-    <mesh position={[-0.27, -0.1, 0.06]} rotation-z={-0.7} castShadow><capsuleGeometry args={[0.052, 0.16, 6, 12]} />{m}</mesh>
-    <mesh position-y={0.27}><cylinderGeometry args={[0.2, 0.23, 0.16, 20]} /><meshStandardMaterial color="#cfcabb" roughness={1} /></mesh>
+    {/* 手掌：扁的，往手腕收窄；手背上三道缝线 */}
+    <RoundedBox args={[0.44, 0.4, 0.15]} radius={0.07} smoothness={5} castShadow>{m}</RoundedBox>
+    <RoundedBox args={[0.36, 0.14, 0.14]} radius={0.06} smoothness={4} position-y={0.22} castShadow>{m}</RoundedBox>
+    {[-0.1, 0, 0.1].map(x => <mesh key={x} position={[x, 0.02, 0.077]}><boxGeometry args={[0.006, 0.24, 0.004]} /><meshStandardMaterial color="#bdb8a8" roughness={1} /></mesh>)}
+    {/* 四根手指：各两节，指尖略往里弯；中指、无名指长一些，手指之间留缝 */}
+    {[-0.162, -0.055, 0.052, 0.158].map((x, i) => { const L = [0.17, 0.21, 0.2, 0.15][i]; return <group key={x} position={[x, -0.2, 0.01]} rotation-x={0.18} rotation-z={(i - 1.5) * -0.045}>
+      <mesh position-y={-L / 2} castShadow><capsuleGeometry args={[0.046, L, 6, 14]} />{m}</mesh>
+      <group position-y={-L - 0.03} rotation-x={0.35}><mesh position-y={-0.07} castShadow><capsuleGeometry args={[0.041, 0.1, 6, 14]} />{m}</mesh></group>
+    </group> })}
+    {/* 拇指：从掌根斜着伸出去，也是两节 */}
+    <group position={[-0.2, 0.02, 0.03]} rotation-z={-0.85}>
+      <mesh position-y={-0.09} castShadow><capsuleGeometry args={[0.052, 0.14, 6, 14]} />{m}</mesh>
+      <group position-y={-0.2} rotation-z={0.3}><mesh position-y={-0.05} castShadow><capsuleGeometry args={[0.045, 0.08, 6, 14]} />{m}</mesh></group>
+    </group>
+    {/* 袖口：一圈罗纹，口上一道卷边 */}
+    <mesh position-y={0.36}><cylinderGeometry args={[0.165, 0.175, 0.16, 28]} /><meshStandardMaterial color="#d6d1c2" roughness={1} /></mesh>
+    {[0.3, 0.34, 0.38, 0.42].map(y => <mesh key={y} position-y={y} rotation-x={Math.PI / 2}><torusGeometry args={[0.172, 0.006, 6, 28]} /><meshStandardMaterial color="#c4bfae" roughness={1} /></mesh>)}
+    <mesh position-y={0.445} rotation-x={Math.PI / 2}><torusGeometry args={[0.168, 0.016, 8, 28]} /><meshStandardMaterial color="#e6e2d6" roughness={0.95} /></mesh>
   </group>
 }
 

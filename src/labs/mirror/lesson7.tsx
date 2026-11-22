@@ -61,7 +61,7 @@ export default function Lesson7() {
           </group>
         })}
         {drawn && <Dot at={focus} r={0.02} color="#ffffff" z={0.012} />}
-        {uk > 0 && <group position={[X0 + 1.3, TOP * (1 - uk), 0]} scale={uk}>{kind === 'concave' ? <SolarCooker x={0} /> : <StreetMirror x={0} />}</group>}
+        {uk > 0 && <group position={[X0 + 1.3, TOP * (1 - uk * (kind === 'concave' ? 1.5 : 1)), 0]} scale={uk * (kind === 'concave' ? 1.5 : 1)}>{kind === 'concave' ? <SolarCooker x={0} /> : <StreetMirror x={0} />}</group>}
       </Dark>}
       lesson={<LessonBlock no="7" title="凹面镜 · 凸面镜" concept="凹面镜使光会聚，凸面镜使光发散" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>
