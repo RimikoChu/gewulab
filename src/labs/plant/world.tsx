@@ -1,7 +1,7 @@
 // 植物的一生实验室的大场景：一块菜豆试验田（六垄，从刚出苗到结荚），田边的小路上立着两只观察箱（看萌发、看根），
 // 右边是育苗棚和两张工作台，左边是一棵开花的桃树。整个实验室只有这一个世界，换课时画布不重建，镜头飞过去。
 // 画面里 1 个单位约等于 10 cm；工作台上的近景、桃树伸向镜头的那两根枝是放大了画的（见规格卡“画面上的约定”）。
-import { useMemo, type ReactNode } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { LabStage, Metal, Painted, lathe, makeGround, mergeParts, shell, type Label, type Part } from '@/lab-kit'
@@ -320,7 +320,10 @@ const BLOSSOM = (() => {
 })()
 function Peach() {
   const bark = useMemo(() => { const t = makeBark(); t.repeat.set(3, 6); return t }, [])
-  const { wood, hero, flowers } = useMemo(() => {
+  // 托着叶芽的那根枝只在讲叶芽的那一课画出来：别的课里它是一根伸向镜头的光枝，很突兀
+  const [lesson, setLesson] = useState(() => location.hash.slice(1))
+  useEffect(() => { const on = () => setLesson(location.hash.slice(1)); window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on) }, [])
+  const { wood, hero, twig, flowers } = useMemo(() => {
     const r = rng(404), wood: THREE.BufferGeometry[] = [], spots: { p: THREE.Vector3; n: THREE.Vector3 }[] = []
     const T = new THREE.Vector3(TREE.x, 0, TREE.z), V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z).add(T)
     wood.push(tube([V(0, -0.3, 0), V(0.25, 3.5, 0.1), V(-0.1, 6.5, 0.25), V(0.2, 9, 0.2)], 1.25, 0.95, '#6b5548', '#6b5548', 12, 12))
@@ -348,16 +351,19 @@ function Peach() {
     const hero = [
       tube([V(0.4, 8, 0.2), new THREE.Vector3(-35.6, 9.5, -13), new THREE.Vector3(-33.2, 9.2, -9.85), new THREE.Vector3(FLOWER_A[0], FLOWER_A[1] - 0.14, FLOWER_A[2]), new THREE.Vector3(FLOWER_B[0], FLOWER_B[1] - 0.12, FLOWER_B[2]), new THREE.Vector3(-25.2, 10.1, -8.2)], 0.55, 0.07, '#7a5f4e', '#9a6a52', 10, 40, 0.5),
       tube([V(-0.3, 7.6, 0.3), new THREE.Vector3(-42, 8.5, -12.6), new THREE.Vector3(-45.6, 8.6, -8.7), new THREE.Vector3(BUD_AT[0], BUD_AT[1] - 0.4, BUD_AT[2]), new THREE.Vector3(-50.6, 8.7, -3.1), new THREE.Vector3(-52, 9.2, -1.4)], 0.64, 0.3, '#7a5f4e', '#8f6a55', 12, 44, 0.6),
+      // 这根枝不在半空中断掉：再往前伸一截，越来越细，梢头翘起来
+      tube([new THREE.Vector3(-52, 9.2, -1.4), new THREE.Vector3(-53.5, 9.9, 0.4), new THREE.Vector3(-54.6, 11.0, 2.0), new THREE.Vector3(-55.2, 12.4, 3.2)], 0.3, 0.04, '#8f6a55', '#9a7a5c', 10, 24, 0.6),
     ]
     const mesh = new THREE.InstancedMesh(BLOSSOM, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, side: THREE.FrontSide }), spots.length)
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0), c = new THREE.Color()
     spots.forEach((s, i) => { q.setFromUnitVectors(up, s.n); const k = 1.1 + r() * 0.9; m.compose(s.p, q, new THREE.Vector3(k, k, k)); mesh.setMatrixAt(i, m); mesh.setColorAt(i, c.setHSL(0.94 + r() * 0.04, 0.5, 0.82 + r() * 0.16)) })
     mesh.castShadow = true; mesh.instanceMatrix.needsUpdate = true
-    return { wood: fuse(wood), hero: fuse(hero), flowers: mesh }
+    return { wood: fuse(wood), hero: fuse([hero[0]]), twig: fuse(hero.slice(1)), flowers: mesh }
   }, [])
   return <>
     <mesh geometry={wood} castShadow receiveShadow><meshStandardMaterial vertexColors map={bark} roughness={0.95} /></mesh>
     <mesh geometry={hero} castShadow receiveShadow><meshStandardMaterial vertexColors map={bark} roughness={0.92} /></mesh>
+    {lesson === '5' && <mesh geometry={twig} castShadow receiveShadow><meshStandardMaterial vertexColors map={bark} roughness={0.92} /></mesh>}
     <primitive object={flowers} />
   </>
 }

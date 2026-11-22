@@ -22,7 +22,7 @@ const axisLen = (G: number) => lerp(1.02, 7.6, ease(G))
 const nodeY = (i: number, G: number) => axisLen(G) * (0.26 + 0.7 * i / (N - 1))
 const side = (i: number) => (i % 2 ? 1 : -1)
 // 芽的外形：下面圆、上面尖。t 从 −90°（基部）到 90°（尖端）
-const SH = { rx: 0.52, ry: 0.84, y0: 0.8, bulge: 0.5 }
+const SH = { rx: 0.46, ry: 0.92, y0: 0.86, bulge: 0.62 }
 const shellAt = (t: number): [number, number] => [SH.rx * Math.cos(t) * (1 - SH.bulge * Math.max(0, Math.sin(t))), SH.y0 + SH.ry * Math.sin(t)]
 /** 芽鳞：贴在芽外面的一片片，下面一圈压着上面一圈。a 是朝向，t0–t1 是从哪到哪，w 是半宽（弧度） */
 const SCALES = [0, 1, 2, 3, 4].map(i => ({ a: i * 1.2566 + 0.2, t0: -1.45, t1: 0.25, w: 0.78 }))
@@ -33,7 +33,7 @@ function scalePatch(a0: number, t0: number, t1: number, w: number) {
   for (let i = 0; i <= NU; i++) for (let j = 0; j <= NV; j++) {
     const u = i / NU, v = j / NV * 2 - 1, [r, y] = shellAt(lerp(t0, t1, u)), half = w * Math.pow(Math.max(0, 1 - Math.pow(u, 2.4)), 0.55), a = a0 + v * half, lift = 0.02 + 0.07 * (1 - u) * (1 - u) + 0.02 * v * v
     pos.push((r + lift) * Math.cos(a), y + (u === 1 ? 0.03 : 0), -(r + lift) * Math.sin(a))
-    c.copy(dark).lerp(mid, u * 0.8).lerp(light, Math.pow(Math.abs(v), 5) * 0.55 + Math.pow(u, 5) * 0.6); col.push(c.r, c.g, c.b)
+    c.copy(dark).lerp(mid, u * 0.8).lerp(light, Math.pow(Math.abs(v), 6) * 0.16 + Math.pow(u, 5) * 0.35); col.push(c.r, c.g, c.b)
   }
   for (let i = 0; i < NU; i++) for (let j = 0; j < NV; j++) { const p = i * (NV + 1) + j, q = p + NV + 1; idx.push(p, q, p + 1, p + 1, q, q + 1) }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals()

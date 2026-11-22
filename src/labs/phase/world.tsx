@@ -226,7 +226,7 @@ export function World({ x = ST.s1, out = false, fridge = 0, power = false, cycle
     const floor = makeBoards([150, 112, 74]); floor.repeat.set(14, 5)
     const wood = makeBoards([126, 92, 58], 4); wood.repeat.set(10, 1)
     const wall = makeGround('#d8d4c6', '196,190,176', '226,222,212', 11); wall.repeat.set(16, 4)
-    const soil = makeGround('#f4f4f0', '196,200,186', '255,255,255', 31)
+    const soil = makeGround('#f0f0ea', '166,174,152', '255,255,255', 31)
     return { top: makeSpeckle(), floor, wood, wall, soil, sky: makeSky(), poster: makePoster(), dial: makeDial() }
   }, [])
   const ripple = useRipple(9, 0.012)

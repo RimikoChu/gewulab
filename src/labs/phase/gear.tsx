@@ -213,10 +213,10 @@ function makeScale() {
 export function Thermo({ at, T, cotton = false, wet = 0 }: { at?: V3; T: number; cotton?: boolean; wet?: number }) {
   const scale = useMemo(makeScale, [])
   const top = thermoY(T), span = (THERMO.max - THERMO.min) * TH.per
-  return <group position={at} scale={[1.3, 1, 1.3]}>
+  return <group position={at} scale={[1.9, 1, 1.9]}>
     <mesh position={[0, TH.y0 + span / 2, -0.012]}><boxGeometry args={[0.034, span + 0.1, 0.006]} /><meshStandardMaterial color="#f1eee2" roughness={0.6} /></mesh>
     <mesh geometry={BULB}><meshStandardMaterial color="#c62922" roughness={0.3} emissive="#5a0d0a" emissiveIntensity={0.6} /></mesh>
-    <mesh position={[0, (0.13 + top) / 2, 0]}><cylinderGeometry args={[0.0075, 0.0075, top - 0.13, 8]} /><meshBasicMaterial color="#e2332a" /></mesh>
+    <mesh position={[0, (0.13 + top) / 2, 0]}><cylinderGeometry args={[0.0095, 0.0095, top - 0.13, 10]} /><meshBasicMaterial color="#e2332a" /></mesh>
     <mesh position={[0, TH.y0 + span / 2, 0]} renderOrder={4}><cylinderGeometry args={[TH.r + 0.0006, TH.r + 0.0006, span, 20, 1, true, -1.0, 2.0]} /><meshBasicMaterial map={scale} transparent depthWrite={false} toneMapped={false} /></mesh>
     <mesh geometry={STEM} renderOrder={3} castShadow><Glass3 o={0.2} /></mesh>
     <mesh position={[0, TH.len + 0.022, 0]}><torusGeometry args={[0.024, 0.007, 8, 20]} /><Glass3 o={0.45} /></mesh>
