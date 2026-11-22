@@ -85,6 +85,23 @@ export const ART: Record<string, string> = {
     <path class="w" d="M60 120h48a24 10 0 0 1-48 0zM212 110h48a24 10 0 0 1-48 0z"/>
     <rect class="a" x="74" y="102" width="20" height="18" rx="2"/><g class="m bob" style="--t:2.4s"><rect class="w" x="226" y="96" width="8" height="14" rx="1"/><rect class="w" x="238" y="100" width="6" height="10" rx="1"/></g>
     <text x="126" y="40">ρ = m / V</text>`,
+  phase: `<path class="w" d="M124 60h72l-6 96a10 10 0 0 1-10 9h-40a10 10 0 0 1-10-9z"/><path class="a" d="M128 104h64l-4 52a10 10 0 0 1-10 9h-36a10 10 0 0 1-10-9z"/>
+    <g class="m bob" style="--t:1.8s"><circle class="t" cx="146" cy="140" r="4"/><circle class="t" cx="166" cy="124" r="6"/><circle class="t" cx="176" cy="146" r="3"/></g>
+    <path class="t d" d="M148 52c-6-8 6-12 0-20M166 52c-6-8 6-12 0-20M184 52c-6-8 6-12 0-20"/>
+    <path class="w" d="M226 40v96"/><circle class="s n" cx="226" cy="144" r="8"/><path class="c" d="M226 138V84"/><path class="t" d="M232 60h6M232 76h6M232 92h6M232 108h6"/>
+    <path d="M96 172h128"/><text x="40" y="100">100 ℃</text>`,
+  force: `<path d="M30 150h260"/><rect class="w" x="96" y="112" width="64" height="38" rx="4"/>
+    <path class="c" d="M160 131h70M220 123l12 8-12 8"/><path d="M96 131H50M60 123l-12 8 12 8"/>
+    <g class="m flow" style="--t:1.6s"><path class="t c" d="M168 131h54"/></g>
+    <path class="t" d="M128 150v26M120 168l8 9 8-9"/><circle class="s n" cx="128" cy="131" r="3"/>
+    <text x="236" y="118">F</text><text x="36" y="118">f</text><text x="140" y="186">G</text>
+    <text x="196" y="52">G = mg</text>`,
+  plant: `<path class="t d" d="M30 132h260"/><path class="a" d="M30 132h260v36H30z"/>
+    <ellipse class="w" cx="78" cy="150" rx="13" ry="9"/>
+    <path class="w" d="M150 150c-8 0-13-4-13-9M138 141c0 10 0 22-4 30M138 160l-8 6"/><path class="c" d="M137 141c0-10 2-14 8-18"/>
+    <g class="m bob" style="--t:2.6s"><path class="c" d="M222 168V84"/><path class="w" d="M222 112c-14-2-24-10-28-22 14 0 24 8 28 22zM222 96c12-2 22-10 26-22-12 0-22 8-26 22z"/>
+      <circle class="s" cx="222" cy="76" r="7"/><path class="w" d="M222 62a8 8 0 0 1 0 0M210 70l-6-6M234 70l6-6M222 62v-8"/></g>
+    <path class="t" d="M222 168c-4 6-10 8-14 14M222 168c4 6 10 8 14 14M222 168v16"/>`,
   lens: `<path class="t d" d="M26 108h268"/>
     <ellipse class="a" cx="160" cy="108" rx="10" ry="60"/>
     <rect class="w" x="68" y="80" width="12" height="28" rx="2"/><path class="s m flick" style="--t:1.1s" d="M74 60c7 7 6 17 0 19-6-2-7-12 0-19z"/>
@@ -165,10 +182,10 @@ export const LABS: Lab[] = [
   // ---------- 以下是总规划表里还没有做的实验室：没有封面线稿，卡片上用占位图，点开是它的认领议题 ----------
   { id: 'motion', name: '机械运动', hook: '动还是没动，要看跟谁比', desc: '在一座高铁站里量车票、读停表；换三个参照物，看同一列车是动是静；让三列车各跑 10 秒比快慢；再用一段斜坡和一辆小车，亲手测一次平均速度。', n: 7, href: '/labs/motion/index.html', pts: ['长度和时间的测量', '速度', '参照物'], s: 'phys', grade: '初中', book: '八年级上册', issue: 1 },
   { id: 'sound', name: '声现象', hook: '声音是振动出来的，没有空气就传不过来', desc: '在一座音乐厅的舞台上敲音叉、敲鼓，看贴着叉臂的乒乓球被弹开；把闹钟罩进玻璃罩抽走空气，铃声越来越小；拍一下手等回声，算出墙有多远；再用钢尺、鼓和三种乐器分清音调、响度、音色，最后到后台把风机的噪声挡住。', n: 7, href: '/labs/sound/index.html', pts: ['声音的产生和传播', '音调 响度 音色', '噪声'], s: 'phys', grade: '初中', book: '八年级上册', issue: 2 },
-  { id: 'phase', name: '物态变化', hook: '熔化、凝固、汽化、液化、升华、凝华', desc: '熔化、凝固、汽化、液化、升华、凝华；温度怎样变。场景设想：高山气象站：从山脚到雪线。', pts: ['熔化和凝固', '汽化和液化', '升华和凝华'], s: 'phys', grade: '初中', book: '八年级上册', issue: 3 },
+  { id: 'phase', name: '物态变化', hook: '水烧开以后再加热，温度为什么不升了', desc: '在山脚的一座气象站里学用温度计；给海波和石蜡加热，画出两条不一样的熔化图线；比一比两滴水谁先干；把水烧开，看气泡和温度怎么变；再看“白气”、碘蒸气和干冰，最后走到屋外，把冰凌、露水、霜和雪一个个对上号。', n: 7, href: '/labs/phase/index.html', pts: ['熔化和凝固', '汽化和液化', '升华和凝华'], s: 'phys', grade: '初中', book: '八年级上册', issue: 3 },
   { id: 'mirror', name: '光的反射和平面镜', hook: '镜子里的像和你一样大、一样远', desc: '在一间光学暗室里用小孔成像看光走直线；让激光射到镜面上，量出反射角总等于入射角；隔着玻璃板移动另一支蜡烛，找到像的位置；再画出潜望镜的光路，算一算照全身要多高的镜子，看凹面镜和凸面镜各把光怎么样。', n: 7, href: '/labs/mirror/index.html', pts: ['光的直线传播', '反射定律', '平面镜成像'], s: 'phys', grade: '初中', book: '八年级上册', issue: 4 },
   { id: 'density', name: '质量与密度', hook: '一样大的铝和铜，为什么不一样重', desc: '在冶炼厂的化验室里学用托盘天平：调平、左物右码、从大到小试砝码、移游码；用量筒和排水法量体积；称几块铝和铜，在图上连出两条直线，得到密度；再测一块石头和一杯盐水，到料场认出一块金属、算出大铝锭有多重。', n: 7, href: '/labs/density/index.html', pts: ['质量', '密度', '测量物质的密度'], s: 'phys', grade: '初中', book: '八年级上册', issue: 6 },
-  { id: 'force', name: '力和运动', hook: '力的作用效果', desc: '力的作用效果；牛顿第一定律；二力平衡；摩擦力。场景设想：冰雪运动场：冰壶、雪橇。', pts: ['牛顿第一定律', '二力平衡', '摩擦力'], s: 'phys', grade: '初中', book: '八年级下册', issue: 7 },
+  { id: 'force', name: '力和运动', hook: '没有阻力，小车会一直滑下去', desc: '在冰壶道上推冰壶，看力的大小、方向、作用点各管什么；在器材室里用弹簧测力计称钩码，画出重力和质量的图线；让小车在毛巾、棉布、木板上各滑一次，推想没有阻力会怎样；再看惯性、二力平衡，量一量滑动摩擦力跟什么有关。', n: 7, href: '/labs/force/index.html', pts: ['牛顿第一定律', '二力平衡', '摩擦力'], s: 'phys', grade: '初中', book: '八年级下册', issue: 7 },
   { id: 'energy', name: '功和机械能', hook: '功、功率', desc: '功、功率；动能和势能怎样转化。场景设想：游乐园：过山车、蹦极。', pts: ['功和功率', '动能和势能', '机械能守恒'], s: 'phys', grade: '初中', book: '八年级下册', issue: 8 },
   { id: 'machine', name: '简单机械', hook: '杠杆的平衡条件', desc: '杠杆的平衡条件；滑轮；机械效率。场景设想：建筑工地：塔吊、撬棍、滑轮组。', pts: ['杠杆', '滑轮', '机械效率'], s: 'phys', grade: '初中', book: '八年级下册', issue: 9 },
   { id: 'heat', name: '内能和热机', hook: '分子热运动', desc: '分子热运动；比热容；热机的四个冲程。场景设想：汽车发动机厂。', pts: ['分子热运动', '比热容', '热机'], s: 'phys', grade: '初中', book: '九年级', issue: 10 },
@@ -199,7 +216,7 @@ export const LABS: Lab[] = [
   { id: 'crystal', name: '分子的形状和晶体', hook: '几对电子，决定了分子长什么样', desc: '价层电子对互斥模型；杂化轨道；晶胞里怎样数粒子；四类晶体的区别。场景设想：晶体实验室。', pts: ['分子的空间结构', '晶胞', '晶体的类型'], s: 'chem', grade: '高中', book: '选择性必修 2', issue: 72 },
   { id: 'petro', name: '从石油到塑料', hook: '一桶原油怎样变成汽油、酒精和塑料', desc: '石油的分馏、裂化、裂解；官能团怎样一步步转化；加聚反应。场景设想：炼油厂。', pts: ['石油的炼制', '官能团的转化', '加聚反应'], s: 'chem', grade: '高中', book: '必修第二册', issue: 73 },
   { id: 'cells', name: '细胞', hook: '怎样才能看见细胞，看见了什么', desc: '在一间生物实验室里学会用显微镜：对光、调焦、把偏掉的物像移回来；亲手做一张洋葱表皮的临时装片；再把放大的植物细胞和动物细胞一个结构一个结构地点亮，看一个细胞怎样分裂成两个。', n: 7, href: '/labs/cells/index.html', pts: ['显微镜', '细胞的结构', '细胞分裂'], s: 'bio', grade: '初中', book: '七年级上册', issue: 26 },
-  { id: 'plant', name: '植物的一生', hook: '种子萌发的条件', desc: '种子萌发的条件；根的生长；开花和结果。场景设想：一块试验田，从播种到收获。', pts: ['种子的萌发', '根的生长', '开花和结果'], s: 'bio', grade: '初中', book: '七年级上册', issue: 28 },
+  { id: 'plant', name: '植物的一生', hook: '一粒种子里，已经有一棵小植物', desc: '在一块试验田边剥开菜豆和玉米的种子，找到胚；用四个瓶子做对照，找出种子萌发要的条件；隔着玻璃看胚根先钻出来、子叶被拉出土；推近看根尖的四个区；再到桃树下认一朵花的各部分，看花粉管怎样把精子送到胚珠，子房长成一只桃。', n: 7, href: '/labs/plant/index.html', pts: ['种子的萌发', '根的生长', '开花和结果'], s: 'bio', grade: '初中', book: '七年级上册', issue: 28 },
   { id: 'digest', name: '消化和吸收', hook: '食物在消化道里经历了什么', desc: '食物在消化道里经历了什么；营养在哪里吸收。场景设想：人体内部：沿消化道走一遍。', pts: ['消化系统', '营养物质', '吸收'], s: 'bio', grade: '初中', book: '七年级下册', issue: 29 },
   { id: 'breath', name: '呼吸', hook: '胸廓怎样带动吸气呼气', desc: '胸廓怎样带动吸气呼气；肺泡里怎样换气。场景设想：人体内部：胸腔和肺。', pts: ['呼吸运动', '肺泡', '气体交换'], s: 'bio', grade: '初中', book: '七年级下册', issue: 30 },
   { id: 'nerve', name: '神经调节', hook: '反射和反射弧', desc: '反射和反射弧；眼和耳怎样感受刺激。场景设想：人体内部：从指尖到大脑。', pts: ['反射弧', '神经系统', '眼和耳'], s: 'bio', grade: '初中', book: '七年级下册', issue: 32 },
