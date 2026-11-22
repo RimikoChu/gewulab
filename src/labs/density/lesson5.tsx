@@ -7,7 +7,7 @@ import { Balance, WeightSet, panAt, useWeigh } from './balance'
 import { LESSONS, goLesson } from './lessons'
 import { Block, Carry, Room, newLive, useSettled, type V3 } from './parts'
 import { BARS, BAR_V, RHO, density, massOf, sci, toSI, type Metal3 } from './physics'
-import { ST, TOP } from './world'
+import { ST, TOP, CM } from './world'
 
 const rho = (k: Metal3) => density(massOf(k, BAR_V), BAR_V)
 const TASKS: Task[] = BARS.map(k => ({ id: k, text: `称 ${BAR_V} cm³ 的${RHO[k].name}块，算出它的密度`, note: `ρ = ${massOf(k, BAR_V)} g ÷ ${BAR_V} cm³ = ${rho(k).toFixed(1)} g/cm³ = ${sci(toSI(rho(k)))} kg/m³` }))
@@ -41,7 +41,7 @@ export default function Lesson5() {
         <Balance at={BASE} left={Wg.left} right={Wg.right} rider={Wg.rider} live={live} />
         <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />
         <RoundedBox args={[1.5, 0.02, 0.5]} radius={0.008} smoothness={2} position={[X - 1.6, TOP + 0.01, 1.02]} receiveShadow><meshStandardMaterial color="#2e4a44" roughness={0.95} /></RoundedBox>
-        {BARS.map((k, j) => { const up = metal === k && placed; return <Carry key={k} at={up ? panAt(BASE, -1) : home(j)} ride={up ? 'L' : null} live={live}><Block kind={k} size={[2, 2, BAR_V / 4]} /></Carry> })}
+        {BARS.map((k, j) => { const up = metal === k && placed; return <Carry key={k} at={up ? panAt(BASE, -1) : home(j)} ride={up ? 'L' : null} live={live} grip={[2 * CM, 1.3 * CM]}><Block kind={k} size={[2, 2, BAR_V / 4]} /></Carry> })}
       </Room>}
       lesson={<LessonBlock no="5" title="密度" concept="密度 ρ = m/V，是物质的一种特性" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

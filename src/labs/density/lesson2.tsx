@@ -7,7 +7,7 @@ import { LESSONS, goLesson } from './lessons'
 import { Block, Carry, Room, newLive, useLag, useLanded, useSettled, type V3 } from './parts'
 import { COPPER, START, pointerSays, reading, tilt, weigh, weightsText } from './physics'
 import { BalanceView } from './views'
-import { ST, TOP } from './world'
+import { ST, TOP, CM } from './world'
 
 const W = weigh(COPPER), N = W.steps.length
 const TASKS: Task[] = [
@@ -70,7 +70,7 @@ export default function Lesson2() {
       stage={<Room at="s2" labels={labels}>
         <Balance at={B} left={left} right={right} rider={rider} nut={-0.7 + nut * 0.9} live={live} />
         <WeightSet box={BOX2} base={B} on={on} live={live} />
-        <Carry at={placed ? panAt(B, -1) : [B[0] - 1.5, TOP, B[2] + 0.5]} ride={placed ? 'L' : null} live={live}><Block kind="cu" size={[2.5, 2, 2]} /></Carry>
+        <Carry at={placed ? panAt(B, -1) : [B[0] - 1.5, TOP, B[2] + 0.5]} ride={placed ? 'L' : null} live={live} grip={[2.5 * CM, 1.3 * CM]}><Block kind="cu" size={[2.5, 2, 2]} /></Carry>
       </Room>}
       lesson={<LessonBlock no="2" title="用天平称质量" concept="左物右码，砝码加游码就是质量" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

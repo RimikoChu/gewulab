@@ -22,6 +22,26 @@ const ORDER: Sub[] = ['freeze', 'lake', 'air']
 const TASKS: Task[] = ORDER.map(k => ({ id: k, text: `${SUBS[k].name}：按“${SUBS[k].button}”`, note: SUBS[k].title }))
 const X = ST.sx, Z = 0.35
 
+// ---------- 水结成冰：烧杯坐在一盆碎冰里，旁边一只装满水的玻璃瓶 ----------
+const BASIN = shell([[0, 0], [0.4, 0], [0.45, 0.02], [0.49, 0.075], [0.51, 0.082]], 0.012, { segs: 56 })
+const BOTTLE = shell([[0, 0], [0.085, 0], [0.095, 0.012], [0.095, 0.24], [0.08, 0.3], [0.04, 0.34], [0.036, 0.4]], 0.006, { segs: 36 })
+const CUBES = Array.from({ length: 46 }, (_, i) => { const a = i * 2.399, r = 0.26 + (i * 37 % 100) / 100 * 0.17; return { p: [Math.cos(a) * r, 0.03 + (i % 2) * 0.03, Math.sin(a) * r] as V3, r: [i * 0.7, i * 1.3, i * 0.4] as V3, s: 0.04 + (i * 13 % 10) / 10 * 0.025 } })
+/** on 从 0 到 1：瓶里的水结成冰，瓶身裂开几道纹 */
+function Chill({ on }: { on: number }) {
+  const crack = Math.max(0, (on - 0.6) / 0.4)
+  return <group>
+    <mesh geometry={BASIN} castShadow receiveShadow><meshPhysicalMaterial color="#e9ecec" roughness={0.25} clearcoat={0.7} side={THREE.DoubleSide} /></mesh>
+    {CUBES.map((c, i) => <RoundedBox key={i} args={[c.s, c.s, c.s]} radius={c.s * 0.2} smoothness={2} position={c.p} rotation={c.r}><meshPhysicalMaterial color="#dff0f7" transparent opacity={0.7} roughness={0.15} clearcoat={1} /></RoundedBox>)}
+    <group position={[0.86, 0, 0.05]}>
+      <mesh position={[0, 0.16, 0]} renderOrder={2}><cylinderGeometry args={[0.086, 0.082, 0.3, 28]} /><meshBasicMaterial color={new THREE.Color('#5f9fd0').lerp(new THREE.Color('#dcecf3'), on)} transparent opacity={0.4 + 0.4 * on} depthWrite={false} /></mesh>
+      <mesh geometry={BOTTLE} renderOrder={3} castShadow><meshPhysicalMaterial color="#2c4149" transparent opacity={0.14} roughness={0.05} clearcoat={0.6} clearcoatRoughness={0.1} envMapIntensity={0.5} depthWrite={false} side={THREE.DoubleSide} /></mesh>
+      <mesh position={[0, 0.41, 0]}><cylinderGeometry args={[0.043, 0.043, 0.04, 20]} /><Metal kind="aluminum" grain="turned" /></mesh>
+      {/* 裂纹：贴着瓶身的几道折线，结冰到后半段才慢慢显出来 */}
+      {crack > 0 && [[0.3, 0.2, 0.5], [0.55, 0.13, -0.6], [0.05, 0.24, -0.3], [0.8, 0.09, 0.9], [0.42, 0.05, 0.2]].map(([a, y, tilt], i) => <mesh key={i} position={[Math.cos(a * 2) * 0.0965, y + 0.03, Math.sin(a * 2) * 0.0965]} rotation={[0, -a * 2 + Math.PI / 2, tilt]} renderOrder={4}><planeGeometry args={[0.004, 0.11]} /><meshBasicMaterial color="#ffffff" transparent opacity={0.85 * crack} side={THREE.DoubleSide} /></mesh>)}
+    </group>
+  </group>
+}
+
 // ---------- 结冰的湖：一只长玻璃缸当湖的剖面 ----------
 const LW = 2.2, LH = 0.86, LD = 0.5, MUD = 0.07
 /** 湖的剖面：on 从 0 到 1，水面结出一层冰 */
@@ -113,6 +133,8 @@ export default function LessonX() {
   const labels: Label[] = sub === 'freeze' ? [
     { id: 'v', at: [X + 0.26, TOP + beakerY(V), Z], className: 'scene-tag key -translate-y-1/2', children: <><small>{frozen > 0.98 ? '冰的体积' : frozen < 0.02 ? '水的体积' : '体积'}</small>{V.toFixed(0)} cm³</> },
     { id: 'n', at: [X, TOP + BEAKER_H + 0.06, Z], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: `烧杯里 ${FREEZE.m} g 的水` },
+    { id: 'b', at: [X + 0.86, TOP + 0.5, Z], ax: 0.5, className: `scene-${frozen > 0.9 ? 'tag key' : 'name'} -translate-y-full`, name: frozen <= 0.9, children: frozen > 0.9 ? '装满水的瓶子被胀裂了' : '装满水、拧紧盖的玻璃瓶' },
+    { id: 'i', at: [X - 0.56, TOP + 0.1, Z + 0.2], ax: 1, name: true, className: 'scene-name', children: '碎冰（降温用）' },
   ] : sub === 'lake' ? [
     ...tags.map(({ t, y }, i) => ({ id: `t${i}`, at: [X + LW / 2 + 0.08, TOP + y, Z] as V3, className: `scene-tag -translate-y-1/2 transition-opacity${i === tags.length - 1 ? ' key' : ''}`, style: { opacity: winter > 0.9 ? 1 : 0 }, children: `${t} ℃` })),
     { id: 'ice', at: [X - LW / 2 - 0.08, TOP + 0.045 + LH - 0.15, Z], ax: 1, className: 'scene-name -translate-y-1/2 transition-opacity', style: { opacity: winter > 0.9 ? 1 : 0 }, children: '冰层' },
@@ -125,7 +147,7 @@ export default function LessonX() {
   return (
     <LabShell title="质量与密度" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<Room at={sub === 'lake' ? 'sx' : sub === 'air' ? 'sx2' : 'sx3'} labels={labels}>
-        {sub === 'freeze' && <group position={cup}><Beaker V={V} frozen={frozen} /></group>}
+        {sub === 'freeze' && <group position={cup}><Beaker V={V} frozen={frozen} /><Chill on={frozen} /></group>}
         {sub === 'lake' && <Lake on={winter} />}
         {sub === 'air' && <Lamp lit={lit} />}
       </Room>}

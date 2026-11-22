@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, 
 import { useFrame } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
-import { LabStage, Metal, disc, makeGrain, makeGround, shell, type Label } from '@/lab-kit'
+import { LabStage, Metal, Rod, disc, makeGrain, makeGround, shell, type Label } from '@/lab-kit'
 import type { Metal3 } from './physics'
 import { AIR, CM, SPOT, type SpotKey, type Want } from './world'
 
@@ -57,7 +57,7 @@ const ease = (t: number) => t * t * t * (t * (6 * t - 15) + 10)
  * ride：落在哪只托盘上（落稳以后跟着托盘上下）；lift：平移时比两头高出多少；snap 变了就直接到位，不走过程；
  * extra：只在搬的过程中出现的东西（夹着它的镊子）；flag：每帧报告是不是还在路上。
  */
-export function Carry({ at, ride = null, live, lift = 0.45, speed = 2, snap, extra, flag, children }: { at: V3; ride?: 'L' | 'R' | null; live?: RefObject<Live>; lift?: number; speed?: number; snap?: string | number; extra?: ReactNode; flag?: (moving: boolean) => void; children: ReactNode }) {
+export function Carry({ at, ride = null, live, lift = 0.45, speed = 2, snap, extra, grip, held = false, flag, children }: { at: V3; ride?: 'L' | 'R' | null; live?: RefObject<Live>; lift?: number; speed?: number; snap?: string | number; extra?: ReactNode; grip?: [number, number, number?]; held?: boolean; flag?: (moving: boolean) => void; children: ReactNode }) {
   const g = useRef<THREE.Group>(null), ex = useRef<THREE.Group>(null)
   const s = useRef({ p: new THREE.Vector3(...at), from: new THREE.Vector3(...at), to: new THREE.Vector3(...at), t: 1, a: 0, b: 0, c: 0 })
   useLayoutEffect(() => { const q = s.current; q.p.set(...at); q.to.set(...at); q.t = 1 }, [snap])   // eslint-disable-line react-hooks/exhaustive-deps
@@ -80,10 +80,29 @@ export function Carry({ at, ride = null, live, lift = 0.45, speed = 2, snap, ext
     }
     const off = ride && live?.current ? (ride === 'L' ? live.current.yL : live.current.yR) * q.t ** 6 : 0
     g.current?.position.set(q.p.x, q.p.y + off, q.p.z)
-    if (ex.current) ex.current.visible = q.t < 1
+    if (ex.current) ex.current.visible = q.t < 1 || held
     flag?.(q.t < 1)
   })
-  return <group ref={g} position={at}>{children}{extra && <group ref={ex} visible={false}>{extra}</group>}</group>
+  return <group ref={g} position={at}>{children}{(extra || grip) && <group ref={ex} visible={false}>{extra}{grip && <group position={[grip[2] ?? 0, grip[1], 0]}><Tongs w={grip[0]} /></group>}</group>}</group>
+}
+
+/**
+ * 坩埚钳：两根钢杆在中间用一颗铆钉铰在一起，下面是往里弯的钳口，上面是两只指环。夹着 w 这么宽的东西，原点在钳口正中。
+ * 东西不是自己飞过去的：搬的时候有它夹着
+ */
+export function Tongs({ w }: { w: number }) {
+  const a = w / 2, py = Math.max(0.2, w * 0.9), top = py + 0.34
+  const steel = <Metal kind="stainless" env={2} />
+  return <group rotation-y={0.5}>
+    {[-1, 1].map(s => <group key={s}>
+      <Rod from={[s * (a - 0.012), 0.012, 0]} to={[s * (a + 0.02), 0.07, 0]} r={0.009}>{steel}</Rod>
+      <Rod from={[s * (a + 0.02), 0.07, 0]} to={[0, py, 0]} r={0.009}>{steel}</Rod>
+      <Rod from={[0, py, 0]} to={[-s * 0.07, top, 0]} r={0.009}>{steel}</Rod>
+      <mesh position={[-s * 0.09, top + 0.035, 0]}><torusGeometry args={[0.04, 0.008, 8, 20]} />{steel}</mesh>
+      <mesh position={[s * (a - 0.006), 0.012, 0]} rotation-x={Math.PI / 2}><cylinderGeometry args={[0.012, 0.012, 0.05, 10]} /><meshStandardMaterial color="#2a2f33" roughness={0.8} /></mesh>
+    </group>)}
+    <mesh position={[0, py, 0]} rotation-x={Math.PI / 2}><cylinderGeometry args={[0.014, 0.014, 0.03, 12]} />{steel}</mesh>
+  </group>
 }
 
 // ---------- 金属块 ----------

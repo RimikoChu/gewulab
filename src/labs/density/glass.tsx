@@ -1,6 +1,6 @@
 // 玻璃器皿：量筒和烧杯。都是有壁厚的玻璃件，里面的液体单独画，所以玻璃用半透明的便宜做法（不折射），液体才看得清、不走样。
 import { useMemo, useRef, type ReactNode } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { lathe, shell } from '@/lab-kit'
 import { CYL, columnCm } from './physics'
@@ -71,10 +71,16 @@ export const beakerY = (V: number) => 0.01 + columnCm(V, BEAKER_IN / CM) * CM
  */
 export function Beaker({ V, color = WATER, pour = false, drop = 0.6, frozen = 0 }: { V: number; color?: string; pour?: boolean; drop?: number; frozen?: number }) {
   const tip = useRef<THREE.Group>(null), stream = useRef<THREE.Mesh>(null), a = useRef(0)
+  // 倒的时候杯子歪了，里面的液面仍然是平的：液体画成装满整只杯子，再用一个水平面把液面以上的切掉；液面那张片也始终放平
+  const gl = useThree(s => s.gl), mark = useRef<THREE.Group>(null), top = useRef<THREE.Mesh>(null), w = useMemo(() => new THREE.Vector3(), [])
+  const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), [])
   useFrame((_, d) => {
     a.current += ((pour ? 1.05 : 0) - a.current) * (1 - Math.exp(-Math.min(d, 1 / 30) / 0.22))
     if (tip.current) tip.current.rotation.z = a.current
     if (stream.current) stream.current.visible = pour && a.current > 0.8
+    gl.localClippingEnabled = true
+    if (mark.current) { mark.current.getWorldPosition(w); plane.constant = w.y }
+    if (top.current) { top.current.parent!.rotation.z = -a.current; top.current.scale.set(1 / Math.max(0.5, Math.cos(a.current)), 1, 1) }
   })
   const h = beakerY(V) - 0.01
   const ice = useMemo(() => new THREE.Color(color).lerp(new THREE.Color('#cfe4ee'), frozen), [color, frozen])
@@ -83,8 +89,8 @@ export function Beaker({ V, color = WATER, pour = false, drop = 0.6, frozen = 0 
       <group ref={tip} position={[-BEAKER_R, BEAKER_H, 0]}>
         <group position={[BEAKER_R, -BEAKER_H, 0]}>
           {h > 0.002 && <>
-            <mesh position={[0, 0.01 + h / 2, 0]} renderOrder={2}><cylinderGeometry args={[BEAKER_IN - 0.002, BEAKER_IN - 0.012, h, 40]} /><Liquid color={`#${ice.getHexString()}`} o={0.46 + 0.4 * frozen} /></mesh>
-            <mesh position={[0, 0.011 + h, 0]} rotation-x={-Math.PI / 2} renderOrder={2}><ringGeometry args={[BEAKER_IN - 0.03, BEAKER_IN - 0.003, 40]} /><meshBasicMaterial color="#cfe6f2" transparent opacity={0.22} depthWrite={false} /></mesh>
+            <mesh position={[0, 0.01 + (BEAKER_H - 0.03) / 2, 0]} renderOrder={2}><cylinderGeometry args={[BEAKER_IN - 0.002, BEAKER_IN - 0.012, BEAKER_H - 0.03, 40]} /><meshBasicMaterial color={`#${ice.getHexString()}`} transparent opacity={0.46 + 0.4 * frozen} depthWrite={false} clippingPlanes={[plane]} /></mesh>
+            <group ref={mark} position={[0, 0.01 + h, 0]}><group><mesh ref={top} rotation-x={-Math.PI / 2} renderOrder={2}><ringGeometry args={[BEAKER_IN - 0.03, BEAKER_IN - 0.003, 40]} /><meshBasicMaterial color="#cfe6f2" transparent opacity={0.22} depthWrite={false} /></mesh></group></group>
           </>}
           <mesh geometry={CUP} renderOrder={3} castShadow><Glass3 o={0.17} /></mesh>
           {/* 杯嘴和几道刻度线 */}

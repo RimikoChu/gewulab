@@ -34,7 +34,7 @@ function Bench({ mode, k, live }: { mode: Mode; k: number; live: RefObject<Live>
     <Balance at={BASE} left={Wg.left} right={Wg.right} rider={Wg.rider} live={live} />
     <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />
     <Cylinder at={CYL_AT} V={V} />
-    <Carry at={at} ride={on && k === 1 ? 'L' : null} live={live} lift={0.52} speed={2.4}>
+    <Carry at={at} ride={on && k === 1 ? 'L' : null} live={live} lift={0.52} speed={2.4} grip={mode === 'ball' ? [BALL_R * 2, BALL_R] : [UNKNOWN.v / 4 * CM, 1.3 * CM, UNKNOWN.v / 8 * CM]}>
       {mode === 'ball' ? <Ball r={BALL_R} /> : on && k >= 2 ? <Block kind="fe" size={[2, UNKNOWN.v / 4, 2]} /> : <group position={[UNKNOWN.v / 8 * CM, CM, 0]} rotation-z={Math.PI / 2}><Block kind="fe" size={[2, UNKNOWN.v / 4, 2]} /></group>}
     </Carry>
   </>

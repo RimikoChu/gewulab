@@ -175,8 +175,8 @@ export function LightBox({ at, dir, w, slits, on = true, dz = 0.4, pin = 0.2 }: 
   const L = 0.56
   return (
     <group position={[at[0], at[1], 0]} rotation-z={Math.atan2(dir[1], dir[0]) - Math.PI / 2}>
-      <RoundedBox args={[w, L, dz]} radius={0.02} position={[0, -L / 2 - 0.014, 0]} castShadow><meshStandardMaterial color="#1b1e22" roughness={0.72} metalness={0.25} envMapIntensity={2} /></RoundedBox>
-      {[0, 1, 2, 3, 4, 5].map(i => <mesh key={i} position={[0, -L + 0.05 + i * 0.038, 0]}><boxGeometry args={[w + 0.03, 0.012, dz + 0.03]} /><meshStandardMaterial color="#101214" roughness={0.6} metalness={0.5} /></mesh>)}
+      <RoundedBox args={[w, L, dz]} radius={0.02} position={[0, -L / 2 - 0.014, 0]} castShadow><meshPhysicalMaterial color="#3d4852" roughness={0.5} metalness={0.3} clearcoat={0.5} clearcoatRoughness={0.3} envMapIntensity={2.4} /></RoundedBox>
+      {[0, 1, 2, 3, 4, 5].map(i => <mesh key={i} position={[0, -L + 0.05 + i * 0.038, 0]}><boxGeometry args={[w + 0.03, 0.012, dz + 0.03]} /><meshStandardMaterial color="#59646e" roughness={0.45} metalness={0.8} envMapIntensity={2.4} /></mesh>)}
       <mesh position={[0, -0.007, 0]}><boxGeometry args={[w + 0.02, 0.014, dz + 0.02]} /><Metal kind="aluminum" grain="brushed" env={ENV * 0.7} /></mesh>
       {slits.map(s => <mesh key={s} position={[s, 0.0006, 0]}><boxGeometry args={[0.014, 0.002, dz * 0.62]} />{on ? <meshBasicMaterial color="#ffd9c8" toneMapped={false} /> : <meshBasicMaterial color="#050506" />}</mesh>)}
       {/* 正面的铭牌、亮度旋钮和四角的螺丝 */}
@@ -379,15 +379,42 @@ export function SolarCooker({ x, z = 0 }: { x: number; z?: number }) {
     {[0.5, 2.6, 4.7].map(a => <Rod key={a} from={[Math.cos(a) * 0.24, 0, Math.sin(a) * 0.24]} to={hub} r={0.012}><Metal kind="steel" grain="brushed" env={1.2} /></Rod>)}
     <mesh position={hub}><sphereGeometry args={[0.03, 14, 10]} /><Metal kind="steel" env={ENV} /></mesh>
     <group position={[0, 0.32, 0]} rotation-z={0.3}>
-      <mesh geometry={DISH.body} castShadow><meshStandardMaterial color="#2a3036" metalness={0.6} roughness={0.5} /></mesh>
+      <mesh geometry={DISH.body} castShadow><meshStandardMaterial color="#5a6670" metalness={0.7} roughness={0.42} envMapIntensity={2.4} /></mesh>
       <mesh geometry={DISH.face}><Silver two /></mesh>
       {/* 壶架：从碗边伸出的两根细杆，托着一只圈，水壶坐在圈上 */}
       {[-1, 1].map(s => <Rod key={s} from={[0, 0.125, s * 0.36]} to={[0, DISH.f - 0.01, s * 0.08]} r={0.007}><Metal kind="steel" env={ENV} /></Rod>)}
       <mesh position={[0, DISH.f - 0.01, 0]} rotation-x={Math.PI / 2}><torusGeometry args={[0.078, 0.007, 8, 28]} /><Metal kind="steel" env={ENV} /></mesh>
-      <mesh geometry={KETTLE} position={[0, DISH.f - 0.012, 0]} castShadow><meshStandardMaterial color="#15171a" roughness={0.45} metalness={0.5} envMapIntensity={2} /></mesh>
+      <mesh geometry={KETTLE} position={[0, DISH.f - 0.012, 0]} castShadow><Metal kind="aluminum" grain="brushed" env={ENV} /></mesh>
       <mesh position={[0, DISH.f + 0.1, 0]} rotation-y={Math.PI / 2}><torusGeometry args={[0.06, 0.006, 8, 20, Math.PI]} /><Metal kind="steel" env={ENV} /></mesh>
     </group>
   </group>
+}
+// 街角镜的镜面：一块球冠。贴图按正对着看的样子铺上去（不是绕着球顶转一圈）
+const STREET_FACE = (() => {
+  const g = new THREE.SphereGeometry(0.72, 40, 14, 0, Math.PI * 2, 0, 0.36), p = g.attributes.position, uv = g.attributes.uv, R = 0.72 * Math.sin(0.36)
+  for (let i = 0; i < p.count; i++) uv.setXY(i, 0.5 + p.getX(i) / R / 2, 0.5 - p.getZ(i) / R / 2)
+  return g
+})()
+/** 镜子里映出的路口：天、两边的楼、拐过去的路和一辆车，画得往中间鼓，像凸面镜里看到的那样。暗室里没有东西可映，所以让它自己亮一点 */
+let streetTex: THREE.CanvasTexture | null = null
+function StreetView() {
+  const map = useMemo(() => {
+    if (!streetTex) {
+      const S = 256, c = document.createElement('canvas'); c.width = c.height = S
+      const g = c.getContext('2d')!, sky = g.createLinearGradient(0, 0, 0, S)
+      sky.addColorStop(0, '#8fb8dc'); sky.addColorStop(0.5, '#cfe2ee'); sky.addColorStop(0.52, '#8c8f8a'); sky.addColorStop(1, '#5d605c')
+      g.fillStyle = sky; g.fillRect(0, 0, S, S)
+      g.fillStyle = '#b9ad98'; g.beginPath(); g.moveTo(0, 150); g.quadraticCurveTo(40, 60, 96, 96); g.lineTo(96, 136); g.quadraticCurveTo(40, 150, 0, 190); g.fill()          // 左边的楼
+      g.fillStyle = '#a79f94'; g.beginPath(); g.moveTo(S, 150); g.quadraticCurveTo(216, 50, 150, 92); g.lineTo(150, 134); g.quadraticCurveTo(216, 150, S, 196); g.fill()      // 右边的楼
+      g.fillStyle = '#5d6a78'; for (let i = 0; i < 4; i++) { g.fillRect(22 + i * 17, 104 + i * 2, 9, 9); g.fillRect(226 - i * 17, 100 + i * 3, 9, 9) }
+      g.fillStyle = '#4a4d4a'; g.beginPath(); g.moveTo(96, 134); g.lineTo(150, 134); g.quadraticCurveTo(200, 190, 230, S); g.lineTo(20, S); g.quadraticCurveTo(60, 180, 96, 134); g.fill()   // 路
+      g.strokeStyle = '#e9e6d8'; g.lineWidth = 3; g.setLineDash([10, 9]); g.beginPath(); g.moveTo(123, 140); g.quadraticCurveTo(126, 200, 132, S); g.stroke(); g.setLineDash([])
+      g.fillStyle = '#c63b3b'; g.fillRect(140, 150, 30, 16); g.fillStyle = '#22272b'; g.fillRect(144, 153, 22, 6); g.beginPath(); g.arc(146, 167, 4, 0, 7); g.arc(164, 167, 4, 0, 7); g.fill()   // 一辆车
+      streetTex = new THREE.CanvasTexture(c); streetTex.colorSpace = THREE.SRGBColorSpace
+    }
+    return streetTex
+  }, [])
+  return <meshPhysicalMaterial map={map} emissive="#ffffff" emissiveMap={map} emissiveIntensity={0.55} roughness={0.12} metalness={0.2} clearcoat={1} clearcoatRoughness={0.05} envMapIntensity={1.5} />
 }
 /** 街角反光镜的模型：一根立杆，顶上一面带橙色边框的凸面镜，镜子上面有一道遮雨檐 */
 export function StreetMirror({ x, z = 0 }: { x: number; z?: number }) {
@@ -395,7 +422,7 @@ export function StreetMirror({ x, z = 0 }: { x: number; z?: number }) {
     <mesh geometry={RING_BASE} castShadow><Metal kind="iron" grain="cast" env={ENV * 0.7} /></mesh>
     <mesh position={[0, 0.58, 0]} castShadow><cylinderGeometry args={[0.022, 0.022, 1.0, 16]} /><meshStandardMaterial color="#c7742a" roughness={0.5} metalness={0.3} /></mesh>
     <group position={[-0.05, 0.98, 0.04]} rotation-y={-0.45} rotation-x={0.12}>
-      <mesh position={[0, 0, -0.67]} rotation-x={Math.PI / 2}><sphereGeometry args={[0.72, 40, 14, 0, Math.PI * 2, 0, 0.36]} /><Silver /></mesh>
+      <mesh geometry={STREET_FACE} position={[0, 0, -0.67]} rotation-x={Math.PI / 2}><StreetView /></mesh>
       <mesh position={[0, 0, 0.004]}><torusGeometry args={[0.255, 0.022, 12, 44]} /><meshStandardMaterial color="#d9661c" roughness={0.45} /></mesh>
       <mesh position={[0, 0, -0.03]} rotation-x={Math.PI / 2}><cylinderGeometry args={[0.255, 0.255, 0.05, 40]} /><Black /></mesh>
       <mesh position={[0, 0.27, 0.03]} rotation-x={0.25}><boxGeometry args={[0.36, 0.012, 0.14]} /><meshStandardMaterial color="#d9661c" roughness={0.45} /></mesh>
