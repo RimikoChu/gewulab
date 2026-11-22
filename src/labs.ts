@@ -70,6 +70,21 @@ export const ART: Record<string, string> = {
     <g class="m flow" style="--t:2.4s"><path class="c" d="M124 84h30M110 112h44M94 142h60"/></g>
     <path class="c" d="M148 79l7 5-7 5M148 107l7 5-7 5M148 137l7 5-7 5"/>
     <text x="236" y="100">p = <tspan>ρgh</tspan></text>`,
+  sound: `<path class="w" d="M96 44v70a14 14 0 0 0 28 0V44M110 128v34"/><rect class="w" x="84" y="162" width="52" height="16" rx="3"/>
+    <g class="m flow" style="--t:1.6s"><path class="c" d="M150 78c10 14 10 34 0 48M172 64c18 24 18 52 0 76M194 50c26 34 26 70 0 104"/></g>
+    <path class="t" d="M216 150h70M216 150c6-28 12-28 18 0s12 28 18 0 12-28 18 0 12 28 16 0"/>
+    <text x="218" y="40">v = 340 m/s</text>`,
+  mirror: `<path d="M40 150h240"/><path class="t" d="M44 158l8-8M64 158l8-8M84 158l8-8M104 158l8-8M124 158l8-8M144 158l8-8M164 158l8-8M184 158l8-8M204 158l8-8M224 158l8-8M244 158l8-8M264 158l8-8"/>
+    <path class="t d" d="M160 150V40"/>
+    <path class="c" d="M84 56l76 94 76-94"/><path class="t c m flow" style="--t:1.4s" d="M84 56l76 94 76-94"/>
+    <path class="t" d="M146 132a22 22 0 0 1 28 0"/>
+    <text x="134" y="120">i</text><text x="180" y="120">r</text>
+    <text x="236" y="40">r = i</text>`,
+  density: `<path class="w" d="M120 168h80l-8-12h-64z"/><path d="M160 156V70"/><path d="M84 76l152-10"/><circle class="s n" cx="160" cy="71" r="4"/>
+    <path class="t" d="M84 76l-18 44M84 76l18 44M236 66l-18 44M236 66l18 44"/>
+    <path class="w" d="M60 120h48a24 10 0 0 1-48 0zM212 110h48a24 10 0 0 1-48 0z"/>
+    <rect class="a" x="74" y="102" width="20" height="18" rx="2"/><g class="m bob" style="--t:2.4s"><rect class="w" x="226" y="96" width="8" height="14" rx="1"/><rect class="w" x="238" y="100" width="6" height="10" rx="1"/></g>
+    <text x="126" y="40">ρ = m / V</text>`,
   lens: `<path class="t d" d="M26 108h268"/>
     <ellipse class="a" cx="160" cy="108" rx="10" ry="60"/>
     <rect class="w" x="68" y="80" width="12" height="28" rx="2"/><path class="s m flick" style="--t:1.1s" d="M74 60c7 7 6 17 0 19-6-2-7-12 0-19z"/>
@@ -149,10 +164,10 @@ export const LABS: Lab[] = [
   { id: 'orbit', name: '地球的运动', hook: '为什么夏天的白天更长', desc: '让地球自己转、绕着太阳转。盯住北京，看它什么时候天亮、夏天的白天有多长、正午旗杆的影子有多短，再弄懂五带是怎么分出来的。所有的课都在同一个太阳和地球的大场景里。', pts: ['自转和公转', '太阳直射点', '昼夜长短和五带'], vb: '0 30 320 150', s: 'geo', grade: '初中', book: '七年级上册', n: 7, featured: true, trail: '从昼夜到四季，一路看到五带', lessons: ['自转', '时差', '公转', '直射点', '昼长', '影长', '五带'], href: '/labs/orbit/index.html', issue: 36 },
   // ---------- 以下是总规划表里还没有做的实验室：没有封面线稿，卡片上用占位图，点开是它的认领议题 ----------
   { id: 'motion', name: '机械运动', hook: '动还是没动，要看跟谁比', desc: '在一座高铁站里量车票、读停表；换三个参照物，看同一列车是动是静；让三列车各跑 10 秒比快慢；再用一段斜坡和一辆小车，亲手测一次平均速度。', n: 7, href: '/labs/motion/index.html', pts: ['长度和时间的测量', '速度', '参照物'], s: 'phys', grade: '初中', book: '八年级上册', issue: 1 },
-  { id: 'sound', name: '声现象', hook: '声音怎样产生和传播', desc: '声音怎样产生和传播；音调、响度、音色各由什么决定。场景设想：音乐厅和后台。', pts: ['声音的产生和传播', '音调 响度 音色', '噪声'], s: 'phys', grade: '初中', book: '八年级上册', issue: 2 },
+  { id: 'sound', name: '声现象', hook: '声音是振动出来的，没有空气就传不过来', desc: '在一座音乐厅的舞台上敲音叉、敲鼓，看贴着叉臂的乒乓球被弹开；把闹钟罩进玻璃罩抽走空气，铃声越来越小；拍一下手等回声，算出墙有多远；再用钢尺、鼓和三种乐器分清音调、响度、音色，最后到后台把风机的噪声挡住。', n: 7, href: '/labs/sound/index.html', pts: ['声音的产生和传播', '音调 响度 音色', '噪声'], s: 'phys', grade: '初中', book: '八年级上册', issue: 2 },
   { id: 'phase', name: '物态变化', hook: '熔化、凝固、汽化、液化、升华、凝华', desc: '熔化、凝固、汽化、液化、升华、凝华；温度怎样变。场景设想：高山气象站：从山脚到雪线。', pts: ['熔化和凝固', '汽化和液化', '升华和凝华'], s: 'phys', grade: '初中', book: '八年级上册', issue: 3 },
-  { id: 'mirror', name: '光的反射和平面镜', hook: '光沿直线传播', desc: '光沿直线传播；反射定律；平面镜成像的特点。场景设想：湖边和一座灯塔。', pts: ['光的直线传播', '反射定律', '平面镜成像'], s: 'phys', grade: '初中', book: '八年级上册', issue: 4 },
-  { id: 'density', name: '质量与密度', hook: '怎样测质量和体积', desc: '怎样测质量和体积；密度是物质的特性。场景设想：金属冶炼厂的化验室和料场。', pts: ['质量', '密度', '测量物质的密度'], s: 'phys', grade: '初中', book: '八年级上册', issue: 6 },
+  { id: 'mirror', name: '光的反射和平面镜', hook: '镜子里的像和你一样大、一样远', desc: '在一间光学暗室里用小孔成像看光走直线；让激光射到镜面上，量出反射角总等于入射角；隔着玻璃板移动另一支蜡烛，找到像的位置；再画出潜望镜的光路，算一算照全身要多高的镜子，看凹面镜和凸面镜各把光怎么样。', n: 7, href: '/labs/mirror/index.html', pts: ['光的直线传播', '反射定律', '平面镜成像'], s: 'phys', grade: '初中', book: '八年级上册', issue: 4 },
+  { id: 'density', name: '质量与密度', hook: '一样大的铝和铜，为什么不一样重', desc: '在冶炼厂的化验室里学用托盘天平：调平、左物右码、从大到小试砝码、移游码；用量筒和排水法量体积；称几块铝和铜，在图上连出两条直线，得到密度；再测一块石头和一杯盐水，到料场认出一块金属、算出大铝锭有多重。', n: 7, href: '/labs/density/index.html', pts: ['质量', '密度', '测量物质的密度'], s: 'phys', grade: '初中', book: '八年级上册', issue: 6 },
   { id: 'force', name: '力和运动', hook: '力的作用效果', desc: '力的作用效果；牛顿第一定律；二力平衡；摩擦力。场景设想：冰雪运动场：冰壶、雪橇。', pts: ['牛顿第一定律', '二力平衡', '摩擦力'], s: 'phys', grade: '初中', book: '八年级下册', issue: 7 },
   { id: 'energy', name: '功和机械能', hook: '功、功率', desc: '功、功率；动能和势能怎样转化。场景设想：游乐园：过山车、蹦极。', pts: ['功和功率', '动能和势能', '机械能守恒'], s: 'phys', grade: '初中', book: '八年级下册', issue: 8 },
   { id: 'machine', name: '简单机械', hook: '杠杆的平衡条件', desc: '杠杆的平衡条件；滑轮；机械效率。场景设想：建筑工地：塔吊、撬棍、滑轮组。', pts: ['杠杆', '滑轮', '机械效率'], s: 'phys', grade: '初中', book: '八年级下册', issue: 9 },
