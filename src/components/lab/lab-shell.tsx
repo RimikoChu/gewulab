@@ -1,6 +1,6 @@
 // 实验页统一外壳（沉浸式）：三维场景铺满全屏，课次条、课程块、读数面板、操作条都是叠在上面的半透明浮层。各实验室共用。
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { ArrowLeft, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /** 顶栏左上角回到哪里：线上是站点首页；离线包里是包内的目录页（打包脚本设 VITE_GEWU_HOME） */
@@ -36,6 +36,11 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
     return () => clearInterval(t)
   }, [auto])
   const toggleAuto = () => { if (auto) setAuto(false); else { onReset(); setAuto(true) } }
+  // 全部完成：结论不再弹窗盖住画面，而是换掉底部的操作条；“收起”可以回到操作条接着看
+  const [fold, setFold] = useState(false)
+  useEffect(() => { if (!finale) setFold(false) }, [!!finale])   // eslint-disable-line react-hooks/exhaustive-deps
+  const dock = !!finale && !fold
+  const at = lessons.findIndex(l => l.key === current), next = lessons.slice(at + 1).find(l => !l.disabled)
   const hintLine = <p key={hint} className="hint-in text-center text-[14px] font-medium text-[#ffe9a8]">{hint}</p>
   return (
     <div ref={root} className="lab-dark relative flex min-h-dvh flex-col bg-[#0f1418] text-white lg:h-dvh lg:overflow-hidden">
@@ -71,7 +76,7 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
 
       {/* 窄屏：场景下面依次是操作条、读数面板、课程块；宽屏：各自浮在画面四周 */}
       <div className="relative z-20 flex flex-col gap-3 p-3 pb-36 lg:pointer-events-none lg:absolute lg:inset-0 lg:block lg:p-0">
-        <div className="lg:pointer-events-auto lg:absolute lg:bottom-4 lg:left-[300px] lg:right-[350px] lg:flex lg:justify-center">
+        <div className={cn('lg:pointer-events-auto lg:absolute lg:bottom-4 lg:left-[300px] lg:right-[350px] lg:flex lg:justify-center', dock && 'lg:hidden')}>
           <div className="glass flex flex-col gap-2.5 rounded-2xl px-3.5 py-3">
             <div className="hidden lg:block">{hintLine}</div>
             <div className="flex flex-wrap items-end justify-center gap-x-4 gap-y-3">
@@ -85,12 +90,27 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
       </div>
 
       {/* 手机：主按钮固定在屏幕底部，按的时候不挡读数 */}
-      <div className="glass fixed inset-x-0 bottom-0 z-40 flex flex-col gap-2 rounded-t-2xl px-3 pt-2.5 pb-[max(12px,env(safe-area-inset-bottom))] lg:hidden">
+      <div className={cn('glass fixed inset-x-0 bottom-0 z-40 flex flex-col gap-2 rounded-t-2xl px-3 pt-2.5 pb-[max(12px,env(safe-area-inset-bottom))] lg:hidden', dock && 'hidden')}>
         {hintLine}
         <div className="grid grid-cols-3 gap-2 [&>button]:px-2">{actions}</div>
       </div>
 
-      {finale && <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">{finale}</div>}
+      {/* 结论条：手机上贴在屏幕底部，宽屏上在操作条的位置；不压暗、不挡画面 */}
+      {dock && (
+        <div data-finale className="fixed inset-x-0 bottom-0 z-40 lg:absolute lg:bottom-4 lg:left-[300px] lg:right-[350px] lg:flex lg:justify-center">
+          <div className="finale-in glass flex w-full max-w-[760px] flex-col gap-3 rounded-t-2xl px-4 pt-3.5 pb-[max(14px,env(safe-area-inset-bottom))] lg:flex-row lg:items-center lg:gap-5 lg:rounded-2xl lg:pb-3.5">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              <span className="mt-0.5 grid size-7 flex-none place-items-center rounded-full bg-[#35c7b3] text-[#06231f]"><Check className="size-4" strokeWidth={3} /></span>
+              <div className="finale-body min-w-0 flex-1">{finale}</div>
+            </div>
+            <div className="grid flex-none grid-cols-3 gap-2 lg:flex lg:flex-col">
+              {next ? <LabButton primary onClick={() => { setAuto(false); onLesson(next.key) }}>下一课<ArrowRight className="size-4" /></LabButton> : <span className="hidden lg:hidden" />}
+              <LabButton onClick={() => { setAuto(false); onReset() }}>重做本课</LabButton>
+              <LabButton className="lg:h-8 lg:bg-transparent lg:text-[13.5px] lg:text-white/60 lg:hover:bg-white/10" onClick={() => setFold(true)}>收起</LabButton>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
