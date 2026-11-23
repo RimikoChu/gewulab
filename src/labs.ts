@@ -17,8 +17,8 @@ export interface Lab {
   issue?: number
 }
 
-/** 离线包的下载地址。name 是实验室的目录名、学科的代号（phys、chem…）或 all；包由 scripts/build-offline.mjs 打出来，随 main 自动发布 */
-export const offlineUrl = (name: string) => `https://github.com/RimikoChu/gewulab/releases/download/offline/gewulab-${name}.zip`
+/** 离线包的下载地址。正式站点上离线包和网站放在一起（构建时设 VITE_GEWU_OFFLINE），本地开发时指向 GitHub 上的发布。name 是实验室的目录名、学科的代号（phys、chem…）或 all；包由 scripts/build-offline.mjs 打出来，随 main 自动发布 */
+export const offlineUrl = (name: string) => import.meta.env.VITE_GEWU_OFFLINE ? `${import.meta.env.BASE_URL}offline/gewulab-${name}.zip` : `https://github.com/RimikoChu/gewulab/releases/download/offline/gewulab-${name}.zip`
 /** 这一间有没有离线包：能进去做、而且不是旧版的 */
 export const hasOffline = (lab: Lab) => !!lab.href && !lab.legacy
 
@@ -70,6 +70,12 @@ export const ART: Record<string, string> = {
     <g class="m flow" style="--t:2.4s"><path class="c" d="M124 84h30M110 112h44M94 142h60"/></g>
     <path class="c" d="M148 79l7 5-7 5M148 107l7 5-7 5M148 137l7 5-7 5"/>
     <text x="236" y="100">p = <tspan>ρgh</tspan></text>`,
+  motion: `<path d="M24 150h272"/><path class="t" d="M40 150v8M72 150v8M104 150v8M136 150v8M168 150v8M200 150v8M232 150v8M264 150v8"/>
+    <path class="w" d="M70 96h118c22 0 40 16 46 40v6H70a8 8 0 0 1-8-8v-30a8 8 0 0 1 8-8z"/>
+    <path class="a" d="M78 106h96c12 0 22 6 28 16H78z"/><path class="t" d="M110 106v16M142 106v16"/><path class="c" d="M62 132h172"/>
+    <circle class="w" cx="96" cy="146" r="6"/><circle class="w" cx="126" cy="146" r="6"/><circle class="w" cx="186" cy="146" r="6"/><circle class="w" cx="212" cy="146" r="6"/>
+    <path class="t d" d="M70 58v26M228 58v26"/><path class="c m flow" style="--t:1.4s" d="M74 70h146"/><path class="c" d="M208 62l12 8-12 8"/>
+    <text x="238" y="52">v = s / t</text>`,
   sound: `<path class="w" d="M96 44v70a14 14 0 0 0 28 0V44M110 128v34"/><rect class="w" x="84" y="162" width="52" height="16" rx="3"/>
     <g class="m flow" style="--t:1.6s"><path class="c" d="M150 78c10 14 10 34 0 48M172 64c18 24 18 52 0 76M194 50c26 34 26 70 0 104"/></g>
     <path class="t" d="M216 150h70M216 150c6-28 12-28 18 0s12 28 18 0 12-28 18 0 12 28 16 0"/>
@@ -168,7 +174,7 @@ export const ART: Record<string, string> = {
     <text x="238" y="160" font-size="13">O₂</text><text x="44" y="150" font-size="13">CO₂</text><path class="t" d="M72 140l14-6M80 129l7 5-5 7"/>`,
 };
 
-export const LABS: Lab[] = [
+const RAW: Lab[] = [
   { id: 'quake', name: '地震', hook: '一次真实的地震：发生、预警、看穿地球', desc: '用 2008 年汶川地震做主线：先分清震级和烈度，再跟着纵波和横波跑一趟，算出预警能抢到几秒，最后用地震波看穿地球内部。', pts: ['震级与烈度', '纵波与横波', '地震预警', '地球的圈层'], s: 'geo', grade: '高中', book: '必修一', n: 6, wide: true, legacy: true, href: '/labs/quake/index.html', lessons: ['地震发生', '纵波横波', '地震预警', '找到震中', '看穿地球', '房屋抗震'], issue: 42 },
   { id: 'float', name: '浮力', hook: '为什么钢铁做的船能浮在水上', desc: '在一座造船厂里做实验：用吊车把船锚放进港池，看吊秤读数少了多少；接住溢出来的水，称一称有多重。最后弄懂一块会沉的钢铁怎样变成能浮的船，再去太空看浮力为什么消失。', pts: ['称重法测浮力', '阿基米德原理', '浮沉条件'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/float/index.html' },
   { id: 'pressure', name: '压强', hook: '大坝为什么要做成上窄下宽', desc: '在一座水电站里做实验：把混凝土块压在沙地上、让卡车开上软土，弄懂压强；把探头伸进水库，量出越深压强越大；再自己开船闸、做托里拆利实验、吹风洞。所有的课都在同一个大场景里，换课时镜头飞过去。', pts: ['压强 p = F/S', '液体压强 p = ρgh', '大气压与流速'], vb: '0 -8 320 216', s: 'phys', grade: '初中', book: '八年级下册', n: 7, href: '/labs/pressure/index.html' },
@@ -243,3 +249,6 @@ export const LABS: Lab[] = [
   { id: 'conic', name: '圆锥曲线', hook: '一刀切下去，圆锥给出三种曲线', desc: '椭圆、双曲线、抛物线是怎样切出来的；焦点和离心率；光学性质。场景设想：行星轨道和抛物面天线。', pts: ['椭圆', '双曲线和抛物线', '焦点的性质'], s: 'math', grade: '高中', book: '选择性必修第一册', issue: 81 },
   { id: 'derivative', name: '导数', hook: '这一瞬间到底有多快', desc: '平均变化率到瞬时变化率；导数的几何意义；用导数研究单调性和最值。场景设想：一条山路和一辆车。', pts: ['瞬时变化率', '切线的斜率', '单调性和最值'], s: 'math', grade: '高中', book: '选择性必修第二册', issue: 82 },
 ];
+
+/** 首页用的清单。入口地址在这里补上站点的路径前缀（站点可能不在域名的根目录下） */
+export const LABS: Lab[] = RAW.map(l => (l.href ? { ...l, href: import.meta.env.BASE_URL + l.href.replace(/^\//, '') } : l))

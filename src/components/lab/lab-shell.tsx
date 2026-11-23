@@ -4,7 +4,7 @@ import { ArrowLeft, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-r
 import { cn } from '@/lib/utils'
 
 /** 顶栏左上角回到哪里：线上是站点首页；离线包里是包内的目录页（打包脚本设 VITE_GEWU_HOME） */
-const HOME: string = import.meta.env.VITE_GEWU_HOME || '/'
+const HOME: string = import.meta.env.VITE_GEWU_HOME || import.meta.env.BASE_URL
 
 export interface LessonTab { key: string; no: string; name: string; disabled?: boolean }
 export interface Task { id: string; text: string; note: string }
