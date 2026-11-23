@@ -136,6 +136,15 @@
 .pop { animation: pop 0.5s cubic-bezier(.3, 1.8, .5, 1); }
 @keyframes pop { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
 .hint-in, .row-in { animation: hint-in 0.35s ease-out; }
+/* 结论条：从操作条的位置滑上来。各课交来的结论卡在这里去掉卡片外框、改成左对齐，卡片自带的“再看一看”由结论条的按钮代替 */
+.finale-in { animation: finale-in 0.45s cubic-bezier(.2, .8, .2, 1); }
+@keyframes finale-in { from { opacity: 0; transform: translateY(18px); } }
+.finale-body > * { width: auto !important; max-width: none !important; padding: 0 !important; background: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0 !important; text-align: left !important; }
+.finale-body button { display: none !important; }
+.finale-body > * > :first-child { margin-top: 0 !important; }
+.finale-body > * > :nth-child(2) { margin-top: 2px !important; font-size: 19px !important; }
+.finale-body > * > :nth-child(n+3) { margin-top: 6px !important; font-size: 13.5px !important; }
+.finale-body { max-height: 32vh; overflow-y: auto; scrollbar-width: none; }
 @keyframes hint-in { from { opacity: 0; transform: translateY(4px); } }
 .scene-tag .delta { margin-left: 8px; padding: 1px 7px; border-radius: 6px; background: #ffe9a8; color: #5a4300; font-size: 14px; font-weight: 700; }
 .scene-tag .delta.eq { background: #35c7b3; color: #06231f; }
@@ -145,5 +154,5 @@
 .scene-btn { display: flex; height: 36px; align-items: center; gap: 6px; padding: 0 11px; border-radius: 10px; font-size: 13px; color: rgb(255 255 255 / 0.85); }
 .scene-btn:hover { background: rgb(255 255 255 / 0.12); }
 .scene-btn[aria-pressed="true"] { color: #7fe3d4; }
-@media (prefers-reduced-motion: reduce) { .lab-pulse, .pop, .hint-in, .row-in, .drag-hint { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .lab-pulse, .pop, .finale-in, .hint-in, .row-in, .drag-hint { animation: none; } }
 .force-tag { font: italic 700 17px var(--font-formula); white-space: nowrap; pointer-events: none; text-shadow: 0 1px 6px rgb(0 0 0 / 0.75), 0 0 2px rgb(0 0 0 / 0.6); font-variant-numeric: tabular-nums; }
