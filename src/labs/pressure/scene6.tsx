@@ -5,7 +5,7 @@ import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { SPOTS, TUBE, type SpotKey } from './physics'
 import { CREST, PEAK } from './hydro'
-import { LabStage, Painted, mergeParts, type Label, type Part } from '@/lab-kit'
+import { LabStage, Metal, Painted, lathe, mergeParts, shell, type Label, type Part } from '@/lab-kit'
 
 const AT: Record<SpotKey, [number, number, number]> = { crest: [CREST.x, CREST.y, -4], peak: [PEAK.x, PEAK.y, PEAK.z] }
 const TOP = 0.8, HGY = TOP + 0.06                        // 桌面高度、槽里水银面的高度
@@ -36,8 +36,11 @@ function Bench({ at, live, tilt, thick, h, len, onTilt, snow }: { at: [number, n
     const P: Part[] = []
     for (const [x, z] of [[-0.72, -0.32], [0.72, -0.32], [-0.72, 0.32], [0.72, 0.32]]) P.push({ p: [x, TOP / 2 - 0.02, z], s: [0.05, TOP - 0.04, 0.05], c: '#4a5058' })
     P.push({ p: [0, 0.3, 0], s: [1.44, 0.03, 0.64], c: '#4a5058' })
-    // 铁架台：底座、立杆、横夹
-    P.push({ p: [-0.3, TOP + 0.012, -0.16], s: [0.26, 0.024, 0.16], c: '#2b2f33' }, { p: [-0.3, TOP + 0.62, -0.2], s: [0.012, 1.2, 0.012], c: '#8d949c', cyl: true })
+    // 桌子：台面下一圈裙板、两道横撑、四只脚垫
+    P.push({ p: [0, TOP - 0.1, 0.34], s: [1.46, 0.1, 0.02], c: '#3d4349' }, { p: [0, TOP - 0.1, -0.34], s: [1.46, 0.1, 0.02], c: '#3d4349' }, { p: [0.73, TOP - 0.1, 0], s: [0.02, 0.1, 0.66], c: '#3d4349' }, { p: [-0.73, TOP - 0.1, 0], s: [0.02, 0.1, 0.66], c: '#3d4349' })
+    for (const [x, z] of [[-0.72, -0.32], [0.72, -0.32], [-0.72, 0.32], [0.72, 0.32]]) P.push({ p: [x, 0.012, z], s: [0.08, 0.024, 0.08], c: '#1c1f22' })
+    // 台面上的东西：一本记录本、一支笔、一只装水银的小瓶
+    P.push({ p: [0.5, TOP + 0.008, 0.16], s: [0.26, 0.016, 0.2], c: '#2f4a5c', r: [0, 0.3, 0] }, { p: [0.5, TOP + 0.018, 0.16], s: [0.24, 0.004, 0.18], c: '#f1efe6', r: [0, 0.3, 0] }, { p: [0.36, TOP + 0.03, 0.24], s: [0.006, 0.15, 0.006], c: '#c0392b', cyl: true, r: [Math.PI / 2, 0, 0.5] })
     // 百叶箱：气象观测用的白色小木箱
     P.push({ p: [1.9, 1.35, -0.9], s: [0.6, 0.6, 0.5], c: '#f1efe8' }, { p: [1.9, 1.69, -0.9], s: [0.74, 0.08, 0.64], c: '#e1ded4' })
     for (let k = 0; k < 5; k++) P.push({ p: [1.9, 1.14 + k * 0.1, -0.645], s: [0.56, 0.03, 0.02], c: '#d3d0c6' })
@@ -45,6 +48,13 @@ function Bench({ at, live, tilt, thick, h, len, onTilt, snow }: { at: [number, n
     return mergeParts(P)
   }, [])
   const r = thick ? 0.024 : 0.012, a = tilt * Math.PI / 180
+  const kit = useMemo(() => ({
+    base: (() => { const sh = new THREE.Shape(); sh.moveTo(-0.15, -0.09); sh.lineTo(0.15, -0.09); sh.lineTo(0.15, 0.09); sh.lineTo(-0.15, 0.09); sh.lineTo(-0.15, -0.09); const g = new THREE.ExtrudeGeometry(sh, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.005, bevelSize: 0.005, bevelSegments: 2 }); g.rotateX(-Math.PI / 2); return g })(),
+    collar: lathe([[0.008, 0], [0.022, 0], [0.024, 0.003], [0.024, 0.027], [0.022, 0.03], [0.008, 0.03]], { segs: 20, closed: true }),
+    knob: lathe([[0, 0], [0.006, 0], [0.006, 0.014], [0.014, 0.014], [0.016, 0.016], [0.016, 0.028], [0.014, 0.03], [0, 0.03]], { segs: 16 }),
+    trough: shell([[0, 0], [0.19, 0], [0.2, 0.008], [0.2, 0.09], [0.208, 0.098]], 0.008, { segs: 4 }),
+    vial: shell([[0, 0], [0.028, 0], [0.03, 0.004], [0.03, 0.06], [0.018, 0.075], [0.016, 0.09]], 0.003, { segs: 24 }),
+  }), [])
   const hg = <meshStandardMaterial color="#c9d0d6" metalness={1} roughness={0.12} envMapIntensity={1.6} />
   const glass = <meshPhysicalMaterial color="#e8f6fb" transparent opacity={0.22} roughness={0.04} envMapIntensity={1.5} side={THREE.DoubleSide} depthWrite={false} />
   const hand = live ? {
@@ -55,8 +65,17 @@ function Bench({ at, live, tilt, thick, h, len, onTilt, snow }: { at: [number, n
   } : {}
   return (
     <group position={at}>
-      <RoundedBox args={[1.6, 0.05, 0.8]} radius={0.015} position={[0, TOP - 0.025, 0]} castShadow receiveShadow><meshStandardMaterial color={snow ? '#b9c2c8' : '#8a6a45'} roughness={0.7} /></RoundedBox>
+      <RoundedBox args={[1.6, 0.05, 0.8]} radius={0.015} position={[0, TOP - 0.025, 0]} castShadow receiveShadow><meshPhysicalMaterial color={snow ? '#b9c2c8' : '#8a6a45'} roughness={0.55} clearcoat={0.3} clearcoatRoughness={0.4} /></RoundedBox>
       <mesh geometry={furniture} castShadow receiveShadow><Painted rough={0.6} metal={0.3} /></mesh>
+      {/* 铁架台：带倒角的铸铁底座、镀铬立杆、十字夹和夹住玻璃管的铁夹 */}
+      <mesh geometry={kit.base} position={[-0.3, TOP, -0.16]} castShadow><Metal kind="iron" grain="cast" /></mesh>
+      <mesh position={[-0.3, TOP + 0.62, -0.2]} castShadow><cylinderGeometry args={[0.007, 0.007, 1.2, 14]} /><Metal kind="chrome" rough={0.16} /></mesh>
+      <mesh geometry={kit.collar} position={[-0.3, TOP + 0.02, -0.2]}><Metal kind="steel" grain="turned" /></mesh>
+      <mesh geometry={kit.collar} position={[-0.3, HGY - 0.035 + Math.cos(a) * 0.6, -0.2]}><Metal kind="steel" grain="turned" /></mesh>
+      <mesh geometry={kit.knob} position={[-0.325, HGY - 0.02 + Math.cos(a) * 0.6, -0.2]} rotation-z={Math.PI / 2}><meshStandardMaterial color="#1c1f22" roughness={0.5} /></mesh>
+      <mesh geometry={kit.vial} position={[0.62, TOP, -0.2]} renderOrder={5}>{glass}</mesh>
+      <mesh position={[0.62, TOP + 0.022, -0.2]}><cylinderGeometry args={[0.026, 0.026, 0.04, 20]} />{hg}</mesh>
+      <mesh position={[0.62, TOP + 0.097, -0.2]}><cylinderGeometry args={[0.019, 0.019, 0.016, 16]} /><meshStandardMaterial color="#2b2f33" roughness={0.6} /></mesh>
       {/* 水银槽：玻璃槽里一层水银 */}
       <mesh position={[0, TOP + 0.03, 0]}><boxGeometry args={[0.4, 0.06, 0.22]} />{hg}</mesh>
       <mesh position={[0, TOP + 0.05, 0]} renderOrder={5}><boxGeometry args={[0.42, 0.1, 0.24]} />{glass}</mesh>

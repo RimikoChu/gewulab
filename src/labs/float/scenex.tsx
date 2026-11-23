@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { CYL, G, LIQUIDS, POOL, TOP5, WRECK, kN, type CrownKey, type LiquidKey } from './physics'
+import { makeGround } from '@/lab-kit'
 import { BRIM, DockStage, ForceArrow, GlassTank, HALF, Painted, Rod, Water, mergeParts, useLiftDrag, type Label, type Part } from './dock'
 
 export type Sub = 'ice' | 'salvage' | 'space' | 'crown'
@@ -31,12 +32,20 @@ function Polar() {
     P.push({ p: [-11.6, 4.6, -8], s: [0.06, 2.6, 0.06], c: '#9aa3ad', cyl: true }, { p: [-11.6, 6, -8], s: [0.5, 0.06, 0.5], c: '#9aa3ad', cyl: true })
     for (const [x, z, c] of [[5.5, 3.5, '#e8b21e'], [6.5, -2, '#c8372d'], [-5, 4.5, '#e8b21e']] as const) P.push({ p: [x, 0.9, z], s: [0.03, 1.8, 0.03], c: '#2b2f33', cyl: true }, { p: [x + 0.25, 1.6, z], s: [0.5, 0.3, 0.02], c })
     P.push({ p: [7.5, 0.25, 3], s: [2.2, 0.12, 0.8], c: '#8a6a45' }, { p: [7.5, 0.6, 3], s: [1.2, 0.6, 0.7], c: '#2f6f8f' })
+    // 小屋的细节：门框、窗框、台阶、屋顶的烟囱和一排太阳能板；屋旁几只油桶和一架雪橇
+    P.push({ p: [-9, 1.7, -5.46], s: [1.14, 2.04, 0.04], c: '#e9eef2' }, { p: [-7.4, 2.2, -5.46], s: [1.04, 0.84, 0.04], c: '#e9eef2' }, { p: [-9, 0.5, -5.1], s: [1.4, 0.16, 0.7], c: '#6f777e' }, { p: [-9, 0.3, -4.6], s: [1.4, 0.16, 0.5], c: '#6f777e' })
+    P.push({ p: [-10.6, 3.9, -7.6], s: [0.16, 1.0, 0.16], c: '#3c4249', cyl: true }, { p: [-8.2, 3.52, -6.6], s: [2.6, 0.05, 1.2], c: '#22354a', r: [0.3, 0, 0] })
+    for (const [x, z, c] of [[-5.6, -6.4, '#e8b21e'], [-5.0, -6.9, '#2f6f8f'], [-5.5, -7.3, '#e8b21e']] as const) P.push({ p: [x, 0.45, z], s: [0.3, 0.9, 0.3], c, cyl: true })
+    for (const dz of [-0.35, 0.35]) P.push({ p: [3.2, 0.08, -5.5 + dz], s: [2.6, 0.06, 0.1], c: '#8a6a45' })
+    P.push({ p: [3.2, 0.22, -5.5], s: [2.2, 0.06, 0.8], c: '#a98352' }, { p: [3.4, 0.5, -5.5], s: [1.2, 0.5, 0.6], c: '#c8372d' })
     return mergeParts(P)
   }, [])
+  // 雪地：带一点蓝灰的白，上面有风吹出来的深浅
+  const snow = useMemo(() => { const t = makeGround('#d6e0e8', '176,194,208', '244,248,251', 17); t.repeat.set(60, 60); return t }, [])
   const bergs: [number, number, number, number, number][] = [[-60, 2, -100, 9, 0.8], [40, 3, -115, 12, 1.1], [95, 1, -30, 8, 0.6], [-90, 2, -14, 10, 0.9], [10, 1, -130, 14, 1.2], [-14, 0.2, 6, 1.6, 0.5], [12, 0.3, 7, 2.2, 0.5], [36, 0.5, -20, 4, 0.6], [-40, 0.5, 30, 5, 0.6], [110, 3, -100, 15, 1], [-130, 3, -90, 16, 1], [70, 2, -70, 9, 0.9], [24, 1, -62, 6, 0.8]]
   return (
     <group>
-      <mesh rotation-x={-Math.PI / 2} receiveShadow><circleGeometry args={[400, 48]} /><meshStandardMaterial color="#cfdae2" roughness={0.95} /></mesh>
+      <mesh rotation-x={-Math.PI / 2} receiveShadow><circleGeometry args={[400, 48]} /><meshStandardMaterial map={snow} color="#e6edf2" roughness={0.95} /></mesh>
       <Chunks items={bergs} color="#d8ecf5" rough={0.5} />
       <mesh geometry={hut} castShadow receiveShadow><Painted rough={0.7} metal={0.1} /></mesh>
     </group>

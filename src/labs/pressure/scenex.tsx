@@ -6,7 +6,7 @@ import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import { BALL, BOIL, JACK, kN, kPa, pWater, tonPerM2, type SpotKey } from './physics'
 import { CREST, DEEP, PEAK, ST, WY } from './hydro'
-import { ForceArrow, LabStage, Painted, Rod, mergeParts, useConcrete, useLiftDrag, type Label, type Part } from '@/lab-kit'
+import { ForceArrow, LabStage, Painted, Rod, mergeParts, useConcrete, useLiftDrag, type Label, type Part, Metal, bolts, disc } from '@/lab-kit'
 
 export type Sub = 'ball' | 'dive' | 'boil' | 'jack'
 const XB = 198, ZB = -4                                    // 半球
@@ -27,12 +27,24 @@ export interface XProps {
   jack: { push: number; lift: number }
 }
 
+// 半球口上的法兰（一圈凸出来的边）和上面的一圈螺栓头。半球画成半径 0.32
+const RIM = disc(0.32 + 0.045, 0.028, { hole: 0.3 }), RIM_BOLTS = bolts(12, 0.34, 0.022, 0.012)
 /** 马德堡半球：两只铜半球扣在一起，两头各一台卷扬机往外拉 */
 function Ball({ vac, pull, open }: XProps['ball']) {
   const frame = useMemo(() => {
     const P: Part[] = []
-    for (const s of [-1, 1]) { P.push({ p: [s * 2.1, 0.5, 0], s: [0.9, 1, 0.9], c: '#3c4249' }, { p: [s * 2.1, 1.25, 0], s: [0.5, 0.5, 0.6], c: '#e8b21e' }, { p: [s * 1.82, 1.25, 0], s: [0.2, 0.06, 0.2], c: '#8d949c', cyl: true, r: [0, 0, Math.PI / 2] }) }
-    P.push({ p: [0, 0.03, 0], s: [5.6, 0.06, 1.6], c: '#b7b5ab' }, { p: [0, 0.45, -0.5], s: [0.5, 0.9, 0.4], c: '#3f5a66' }, { p: [0, 0.95, -0.5], s: [0.16, 0.1, 0.16], c: '#22262a', cyl: true })
+    // 两台卷扬机：钢架底座、电机、减速箱、侧板；卷筒单独画（会反光的钢）
+    for (const s of [-1, 1]) {
+      P.push({ p: [s * 2.1, 0.06, 0], s: [1.1, 0.12, 1.0], c: '#2f353b' })
+      for (const dx of [-0.42, 0.42]) for (const dz of [-0.4, 0.4]) P.push({ p: [s * 2.1 + dx, 0.56, dz], s: [0.08, 0.9, 0.08], c: '#3c4249' })
+      for (const dz of [-0.4, 0.4]) { P.push({ p: [s * 2.1, 1.0, dz], s: [0.92, 0.08, 0.08], c: '#3c4249' }); P.push({ p: [s * 2.1, 0.55, dz], s: [1.1, 0.05, 0.05], c: '#3c4249', r: [0, 0, s * 0.72] }) }
+      P.push({ p: [s * 2.1, 1.02, 0], s: [0.92, 0.04, 0.88], c: '#4a5158' })
+      for (const dz of [-0.3, 0.3]) P.push({ p: [s * 2.05, 1.27, dz], s: [0.5, 0.46, 0.04], c: '#e8b21e' })
+      P.push({ p: [s * 2.42, 1.2, 0.02], s: [0.22, 0.3, 0.34], c: '#3f5a66' }, { p: [s * 2.42, 1.2, -0.3], s: [0.13, 0.3, 0.13], c: '#2a6f8f', cyl: true, r: [Math.PI / 2, 0, 0] })
+    }
+    // 底板，和中间的抽气机：机座、泵体、电机、压力表的表座
+    P.push({ p: [0, 0.03, 0], s: [5.8, 0.06, 1.7], c: '#b7b5ab' }, { p: [0, 0.1, -0.5], s: [0.7, 0.08, 0.5], c: '#2f353b' })
+    P.push({ p: [-0.12, 0.42, -0.5], s: [0.2, 0.5, 0.2], c: '#3f5a66', cyl: true }, { p: [0.2, 0.3, -0.5], s: [0.13, 0.34, 0.13], c: '#2a6f8f', cyl: true, r: [0, 0, Math.PI / 2] }, { p: [-0.12, 0.72, -0.5], s: [0.06, 0.1, 0.06], c: '#22262a', cyl: true })
     return mergeParts(P)
   }, [])
   const bronze = <meshStandardMaterial color="#b98a3e" metalness={1} roughness={0.3} envMapIntensity={1.3} side={THREE.DoubleSide} />
@@ -40,9 +52,21 @@ function Ball({ vac, pull, open }: XProps['ball']) {
   return (
     <group position={[XB, 0, ZB]}>
       <mesh geometry={frame} castShadow receiveShadow><Painted rough={0.6} metal={0.3} /></mesh>
+      {/* 卷筒和缠在上面的钢丝绳；抽气机上的压力表 */}
+      {[-1, 1].map(s => <group key={`d${s}`} position={[s * 2.05, 1.27, 0]} rotation-x={Math.PI / 2}>
+        <mesh castShadow><cylinderGeometry args={[0.13, 0.13, 0.56, 24]} /><Metal kind="steel" grain="turned" /></mesh>
+        {[-0.27, 0.27].map(y => <mesh key={y} position-y={y}><cylinderGeometry args={[0.21, 0.21, 0.02, 28]} /><Metal kind="steel" /></mesh>)}
+        <mesh><cylinderGeometry args={[0.145, 0.145, 0.34, 24]} /><meshStandardMaterial color="#3a3f45" roughness={0.7} metalness={0.6} /></mesh>
+      </group>)}
+      <group position={[-0.12, 0.86, -0.5]}>
+        <mesh rotation-x={Math.PI / 2}><cylinderGeometry args={[0.09, 0.09, 0.04, 28]} /><Metal kind="brass" grain="turned" /></mesh>
+        <mesh position-z={0.021}><circleGeometry args={[0.078, 28]} /><meshBasicMaterial color="#f4f1e6" toneMapped={false} /></mesh>
+        <mesh position={[0, 0, 0.023]} rotation-z={1.9 - vac * 3.6}><planeGeometry args={[0.008, 0.13]} /><meshBasicMaterial color="#d2362f" toneMapped={false} /></mesh>
+      </group>
       {[-1, 1].map(s => <group key={s} position={[s * open * 0.5, 1.25, 0]}>
         <mesh rotation-z={s * Math.PI / 2} castShadow><sphereGeometry args={[R, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />{bronze}</mesh>
-        <mesh position={[s * 0.012, 0, 0]} rotation-y={Math.PI / 2}><torusGeometry args={[R, 0.025, 10, 48]} />{bronze}</mesh>
+        <mesh geometry={RIM} position={[s * 0.004, 0, 0]} rotation-z={-s * Math.PI / 2}>{bronze}</mesh>
+        <mesh geometry={RIM_BOLTS} position={[s * 0.03, 0, 0]} rotation-z={-s * Math.PI / 2}><Metal kind="steel" /></mesh>
         <mesh position={[s * (R + 0.06), 0, 0]} rotation-x={Math.PI / 2}><torusGeometry args={[0.07, 0.02, 10, 24]} /><meshStandardMaterial color="#30353b" metalness={0.8} roughness={0.4} /></mesh>
         <Rod from={[s * (R + 0.12), 0, 0]} to={[s * (1.72 - s * 0 - open * 0.5), 0, 0]} r={0.014}><meshStandardMaterial color="#22262a" metalness={0.6} roughness={0.5} /></Rod>
       </group>)}
