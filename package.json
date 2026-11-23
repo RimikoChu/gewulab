@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "check:labs": "node scripts/check-labs.mjs",
+    "voice": "node scripts/voice.mjs",
     "check": "tsc --noEmit && node scripts/check-labs.mjs && vitest run && vite build",
     "new-lab": "node scripts/new-lab.mjs",
     "build:offline": "node scripts/build-offline.mjs"
