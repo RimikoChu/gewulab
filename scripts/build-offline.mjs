@@ -14,7 +14,7 @@ import tailwindcss from '@tailwindcss/vite'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const out = path.join(root, 'dist-offline'), tmp = path.join(out, '.tmp')
 const SUBJECTS = { phys: '物理', chem: '化学', bio: '生物', geo: '地理', math: '数学' }
-const MIME = { '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.hdr': 'application/hdr', '.svg': 'image/svg+xml' }
+const MIME = { '.mp3': 'audio/mpeg', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.hdr': 'application/hdr', '.svg': 'image/svg+xml' }
 
 // ---------- 要打哪些实验室：labs/<名字>/index.html 存在的，名字和学科从首页清单 src/labs.ts 里取 ----------
 const cards = fs.readFileSync(path.join(root, 'src/labs.ts'), 'utf8')
