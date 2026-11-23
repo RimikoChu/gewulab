@@ -53,7 +53,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `energy` | 功和机械能 | 初中 · 八年级下册 功和机械能 | 功、功率；动能和势能怎样转化 | 游乐园：过山车、蹦极 | [#8](https://github.com/RimikoChu/gewulab/issues/8) |
 | `machine` | 简单机械 | 初中 · 八年级下册 简单机械 | 杠杆的平衡条件；滑轮；机械效率 | 建筑工地：塔吊、撬棍、滑轮组 | 已完成 |
 | `heat` | 内能和热机 | 初中 · 九年级 内能、内能的利用 | 分子热运动；比热容；热机的四个冲程 | 汽车发动机厂 | [#10](https://github.com/RimikoChu/gewulab/issues/10) |
-| `circuit` | 电路 | 初中 · 九年级 电流和电路、电压 电阻 | 串联和并联；电流、电压、电阻怎样测 | 一栋正在装修的房子 | [#11](https://github.com/RimikoChu/gewulab/issues/11) |
+| `circuit` | 电路 | 初中 · 九年级 电流和电路、电压 电阻 | 串联和并联；电流、电压、电阻怎样测 | 一栋正在做水电改造的房子 | 已完成 |
 | `ohm` | 欧姆定律 | 初中 · 九年级 欧姆定律 | 电流与电压、电阻的关系；伏安法测电阻 | 电子元件检测车间 | [#12](https://github.com/RimikoChu/gewulab/issues/12) |
 | `power` | 电功率和生活用电 | 初中 · 九年级 电功率、生活用电 | 电能、电功率；焦耳定律；家庭电路和安全用电 | 一户人家和小区配电房 | [#13](https://github.com/RimikoChu/gewulab/issues/13) |
 | `magnet` | 电与磁 | 初中 · 九年级 电与磁 | 磁场；电生磁；电动机和发电机 | 风力发电场 | [#14](https://github.com/RimikoChu/gewulab/issues/14) |
@@ -77,7 +77,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `water` | 水的净化和组成 | 初中 · 九年级上册 自然界的水 | 沉淀、过滤、吸附、消毒；电解水说明水的组成 | 自来水厂 | [#17](https://github.com/RimikoChu/gewulab/issues/17) |
 | `mass` | 质量守恒定律 | 初中 · 九年级上册 化学方程式 | 反应前后质量为什么不变；怎样写化学方程式 | 化工厂的称量和反应车间 | [#18](https://github.com/RimikoChu/gewulab/issues/18) |
 | `carbon` | 碳和二氧化碳 | 初中 · 九年级上册 碳和碳的氧化物 | 二氧化碳的制取和性质；一氧化碳；碳循环 | 汽水厂和温室 | [#19](https://github.com/RimikoChu/gewulab/issues/19) |
-| `fire` | 燃烧和灭火 | 初中 · 九年级上册 燃料及其利用 | 燃烧的三个条件；灭火的原理 | 消防训练基地 | [#20](https://github.com/RimikoChu/gewulab/issues/20) |
+| `fire` | 燃烧和灭火 | 初中 · 九年级上册 燃料及其利用 | 燃烧的三个条件；灭火的原理 | 消防训练基地 | 已完成 |
 | `metal` | 金属和炼铁 | 初中 · 九年级下册 金属和金属材料 | 金属的活动性顺序；铁的冶炼；锈蚀和防护 | 钢铁厂：高炉和轧钢线 | [#21](https://github.com/RimikoChu/gewulab/issues/21) |
 | `solution` | 溶液 | 初中 · 九年级下册 溶液 | 溶解和结晶；溶解度曲线；溶质的质量分数 | 盐湖和盐场 | [#22](https://github.com/RimikoChu/gewulab/issues/22) |
 | `acid` | 酸、碱和中和 | 初中 · 九年级下册 酸和碱 | 酸和碱的性质；pH；中和反应 | 污水处理厂 | [#23](https://github.com/RimikoChu/gewulab/issues/23) |
@@ -98,7 +98,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `plant` | 植物的一生 | 初中 · 七年级上册 被子植物的一生 | 种子萌发的条件；根的生长；开花和结果 | 一块试验田，从播种到收获 | 已完成 |
 | `digest` | 消化和吸收 | 初中 · 七年级下册 人体的营养 | 食物在消化道里经历了什么；营养在哪里吸收 | 人体内部：沿消化道走一遍 | [#29](https://github.com/RimikoChu/gewulab/issues/29) |
 | `breath` | 呼吸 | 初中 · 七年级下册 人体的呼吸 | 胸廓怎样带动吸气呼气；肺泡里怎样换气 | 人体内部：胸腔和肺 | [#30](https://github.com/RimikoChu/gewulab/issues/30) |
-| `blood` | 血液循环 | 初中 · 七年级下册 人体内物质的运输 | 心脏怎样泵血；体循环和肺循环；血液在哪里换了气 | 人体内部：心脏和血管 | [#31](https://github.com/RimikoChu/gewulab/issues/31) |
+| `blood` | 血液循环 | 初中 · 七年级下册 人体内物质的运输 | 心脏怎样泵血；体循环和肺循环；血液在哪里换了气 | 科学馆的人体展厅：半透明人体、心脏和血管模型 | 已完成 |
 | `nerve` | 神经调节 | 初中 · 七年级下册 人体生命活动的调节 | 反射和反射弧；眼和耳怎样感受刺激 | 人体内部：从指尖到大脑 | [#32](https://github.com/RimikoChu/gewulab/issues/32) |
 | `gene` | 遗传和变异 | 初中 · 八年级下册 生物的遗传与变异 | 基因在亲子代之间怎样传递；显性和隐性；性别决定 | 一座豌豆试验园 | [#33](https://github.com/RimikoChu/gewulab/issues/33) |
 | `eco` | 生态系统 | 初中 · 七年级上册 生物与环境 | 食物链和食物网；物质和能量怎样流动；生态平衡 | 一片草原，或一个湖泊 | [#34](https://github.com/RimikoChu/gewulab/issues/34) |
@@ -149,7 +149,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | 数学 | 8 |
 | 合计 | 72 |
 
-压强、浮力、地球的运动、光合作用和呼吸作用、水循环、细胞、原电池、机械运动、光的折射和凸透镜成像、声现象、光的反射和平面镜、质量与密度、物态变化、力和运动、植物的一生、简单机械十六间已完成。其余的都可以认领。
+压强、浮力、地球的运动、光合作用和呼吸作用、水循环、细胞、原电池、机械运动、光的折射和凸透镜成像、声现象、光的反射和平面镜、质量与密度、物态变化、力和运动、植物的一生、简单机械、电路、燃烧和灭火、血液循环十九间已完成。其余的都可以认领。
 
 ## 做的先后
 
