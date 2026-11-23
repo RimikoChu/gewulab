@@ -1,30 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { FeaturedLabCard, LabCard } from '@/components/lab-card'
+import { LabMap } from '@/components/lab-map'
 import { CHANGES } from '@/changelog'
 import { LABS, SUBJECTS, type SubjectKey, hasOffline, offlineUrl } from '@/labs'
-
-/** 瀑布流列数：跟着容器宽度走 */
-function useColumns() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [cols, setCols] = useState(3)
-  useEffect(() => {
-    const el = ref.current!
-    const ro = new ResizeObserver(() => { const w = el.clientWidth; setCols(w >= 900 ? 3 : w >= 560 ? 2 : 1) })
-    ro.observe(el); return () => ro.disconnect()
-  }, [])
-  return [ref, cols] as const
-}
 
 export default function App() {
   const [subject, setSubject] = useState<'all' | SubjectKey>('all')
   const [grade, setGrade] = useState('all')
   const [q, setQ] = useState('')
-  const [gridRef, cols] = useColumns()
   const [log, setLog] = useState(false)
   useEffect(() => {
     if (!log) return
@@ -36,15 +23,6 @@ export default function App() {
   const pool = useMemo(() => LABS.filter(l =>
     (grade === 'all' || l.grade === grade) &&
     (!q.trim() || (l.name + l.desc + l.pts.join('') + l.book + SUBJECTS[l.s]).includes(q.trim()))), [grade, q])
-  // 已经能进去做的排在前面，还没做的排在后面；各自保持清单里的顺序
-  const list = pool.filter(l => subject === 'all' || l.s === subject).sort((a, b) => Number(!!b.href) - Number(!!a.href))
-  // 只有“全部”视图才放主推卡
-  const featured = subject === 'all' && grade === 'all' && !q.trim() ? list.find(l => l.featured && l.href && l.lessons) : undefined
-  const columns = useMemo(() => {
-    const out: (typeof LABS)[] = Array.from({ length: cols }, () => [])
-    list.filter(l => l !== featured).forEach((l, i) => out[i % cols].push(l))   // 轮流分列，阅读顺序仍是从左到右
-    return out
-  }, [list, cols, featured])
   // 离线包的下载入口：看着哪个学科就给哪个学科的包；看“全部”时给全部和各学科的
   const packs: [string, string][] = subject === 'all'
     ? [['all', '全部'], ...(Object.keys(SUBJECTS) as SubjectKey[]).filter(k => LABS.some(l => l.s === k && hasOffline(l))).map((k): [string, string] => [k, SUBJECTS[k]])]
@@ -114,12 +92,7 @@ export default function App() {
             {packs.map(([k, t]) => <a key={k} href={offlineUrl(k)} className="text-foreground underline-offset-2 hover:text-primary hover:underline">{t}</a>)}
           </p>
         )}
-        {featured && <div className="mt-5"><FeaturedLabCard lab={featured} /></div>}
-        <div ref={gridRef} className="mt-4 flex items-start gap-4">
-          {list.length === 0
-            ? <p className="w-full py-14 text-center text-faint">没有找到相关的实验</p>
-            : columns.map((col, i) => <div key={i} className="flex min-w-0 flex-1 flex-col gap-4">{col.map(l => <LabCard key={l.id} lab={l} />)}</div>)}
-        </div>
+        {pool.some(l => subject === 'all' || l.s === subject) ? <LabMap labs={pool} subject={subject} /> : <p className="w-full py-14 text-center text-faint">没有找到相关的实验</p>}
       </main>
       {log && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-4" onClick={() => setLog(false)}>
