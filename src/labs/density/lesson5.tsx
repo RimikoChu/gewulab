@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Block, Carry, Room, newLive, useSettled, type V3 } from './parts'
 import { BARS, BAR_V, RHO, density, massOf, sci, toSI, type Metal3 } from './physics'
 import { ST, TOP, CM } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const rho = (k: Metal3) => density(massOf(k, BAR_V), BAR_V)
 const TASKS: Task[] = BARS.map(k => ({ id: k, text: `称 ${BAR_V} cm³ 的${RHO[k].name}块，算出它的密度`, note: `ρ = ${massOf(k, BAR_V)} g ÷ ${BAR_V} cm³ = ${rho(k).toFixed(1)} g/cm³ = ${sci(toSI(rho(k)))} kg/m³` }))
@@ -36,7 +39,7 @@ export default function Lesson5() {
     ...BARS.map((k, j) => ({ id: k, at: [home(j)[0], TOP + 0.2, home(j)[2]] as V3, ax: 0.5, name: true, className: 'scene-name -translate-y-full', style: metal === k && placed ? { display: 'none' } : undefined, children: RHO[k].name })),
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`${RHO[metal].name}块`}
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="质量与密度" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`${RHO[metal].name}块`}
       stage={<Room at="s5" labels={labels}>
         <Balance at={BASE} left={Wg.left} right={Wg.right} rider={Wg.rider} live={live} />
         <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />

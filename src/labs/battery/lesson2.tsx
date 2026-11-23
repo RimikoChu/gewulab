@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { MICRO, perElectrons } from './physics'
 import Rig, { X } from './rig'
 import { TOP } from './world'
@@ -28,7 +31,7 @@ export default function Lesson2() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="放大了看"
+    <LabShell title="原电池" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="放大了看"
       stage={<Rig left="Zn" right="Cu" joined flow={n >= 2 ? 1 : 0} gasR={n >= 3 ? 0.9 : 0} labels={labels} />}
       lesson={<LessonBlock no="2" title="电子往哪走" concept="负极失电子，正极得电子；电子走导线，离子走溶液" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

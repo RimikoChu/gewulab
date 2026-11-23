@@ -8,6 +8,9 @@ import { Block, Carry, Room, newLive, useLag, useLanded, useSettled, type V3 } f
 import { COPPER, START, pointerSays, reading, tilt, weigh, weightsText } from './physics'
 import { BalanceView } from './views'
 import { ST, TOP, CM } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const W = weigh(COPPER), N = W.steps.length
 const TASKS: Task[] = [
@@ -66,7 +69,7 @@ export default function Lesson2() {
     { id: 'box', at: [BOX2[0], TOP + 0.62, BOX2[2]], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '砝码和镊子' },
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="托盘天平"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="质量与密度" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="托盘天平"
       stage={<Room at="s2" labels={labels}>
         <Balance at={B} left={left} right={right} rider={rider} nut={-0.7 + nut * 0.9} live={live} />
         <WeightSet box={BOX2} base={B} on={on} live={live} />

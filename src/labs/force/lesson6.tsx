@@ -10,6 +10,9 @@ import { LESSONS, goLesson } from './lessons'
 import { CARD_RUN, CONDS, G, TWIST, balanced, cardAccel, pull, runTime, twistAt, type Cond } from './physics'
 import { Diagram } from './views'
 import { BENCH_Z, ST, TOP, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: Cond[] = ['unequal', 'equal', 'twist', 'cut']
 const TASKS: Task[] = [
@@ -87,7 +90,7 @@ export default function Lesson6() {
     { id: 'n3', at: P(DROP + 3, HANG - 5), name: true, className: 'scene-name -translate-y-1/2', children: '钩码 · 每只 50 g' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小卡片"
+    <LabShell title="力和运动" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小卡片"
       stage={<Place at="l6" labels={labels}>
         <group position={[X, TOP, BENCH_Z]}>
           {/* 底板、两根带滑轮的立柱、两块接钩码的软垫 */}

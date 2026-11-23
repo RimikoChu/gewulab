@@ -9,6 +9,9 @@ import { useRun, type V3 } from './parts'
 import { DEVELOP, FALLS, FERTILIZE, developsInto, seedsIn } from './physics'
 import { Finale, H, Row } from './ui'
 import { FLOWER_A, FLOWER_B, Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'tube', text: '让柱头上的花粉萌发，看花粉管长到哪里', note: '花粉管穿过花柱，进入子房，一直到达胚珠' },
@@ -49,7 +52,7 @@ export default function Lesson7() {
     { id: 'eg', at: worldA(F.egg), className: `scene-tag ${fert >= 1 ? 'key' : ''} translate-x-6 translate-y-1/2`, children: fert >= 1 ? '受精卵' : '卵细胞' },
   ]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一朵传过粉的桃花"
+    <LabShell title="植物的一生" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一朵传过粉的桃花"
       stage={<Room at={step >= 3 ? 's7b' : tube > 0.8 ? 's7c' : 's7'} labels={labels}>
         <group position={FLOWER_A} rotation={POSE_A}>
           <Flower cut={1} grow={grow} fruitCut={open} fertilized={fert >= 1} />

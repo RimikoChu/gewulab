@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Microscope } from './models'
 import { EYEPIECE, OBJECTIVES, brightness, cellsInRow, magnify } from './physics'
 import View from './view'
@@ -23,7 +26,7 @@ export default function Lesson2() {
     : ob !== task.id ? { hint: `转动转换器，换成 ${task.id} 倍物镜`, next: 'ob' } : { hint: '数一数视野里一行有几个细胞，按“记录”', next: 'record' }
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
+    <LabShell title="细胞" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
       stage={<LabStage labels={[{ id: 'ob', at: [ST.scope + 0.14, TOP + 0.52, 0.12], className: 'scene-tag key -translate-y-1/2', children: <><small>物镜</small>{ob} 倍</> }, { id: 'eye', at: [ST.scope + 0.1, TOP + 1.14, 0.08], className: 'scene-tag -translate-y-1/2', children: <><small>目镜</small>{EYEPIECE} 倍</> }]} target={SPOT.scope} span={SPAN.scope}><Microscope position={[ST.scope, TOP, 0]} glow={null} objective={OBJECTIVES.indexOf(Number(ob) as 4)} /></LabStage>}
       lesson={<LessonBlock no="2" title="放大多少倍" concept="放大倍数 = 目镜的倍数 × 物镜的倍数" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

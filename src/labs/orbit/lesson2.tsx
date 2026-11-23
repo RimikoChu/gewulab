@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene1 from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { CITIES, clockText, hoursText, localTime, timeGap, utcForNoon, type CityKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Other = Exclude<CityKey, 'beijing'>
 interface Row { id: number; city: Other; dLon: number; gap: number; tB: number; tO: number }
@@ -44,7 +47,7 @@ export default function Lesson2() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球（也可以直接抓住它拨）"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="地球的运动" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球（也可以直接抓住它拨）"
       stage={<Scene1 utc={utc} cities={['beijing', city]} onSpin={h => { setTouched(true); setGoal(g => g + h) }} dragHint={!touched} times />}
       lesson={
         <LessonBlock no="2" title="东边先天亮" concept="越往东，时间越早" tasks={TASKS} done={T.done} current={task?.id}

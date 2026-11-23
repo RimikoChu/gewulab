@@ -4,6 +4,9 @@ import { ArrowLeft, ArrowRight, Check, X } from 'lucide-react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { cn } from '@/lib/utils'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import Rig from './rig'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
@@ -36,7 +39,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="原电池" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="原电池" lessons={LESSONS} current="q" narration={voiced(NARRATION['q'], VOICE)} onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Rig left="Zn" right="Cu" joined flow={1} gasR={0.9} labels={[]} />}
       lesson={<LessonBlock no="随堂检测" title="随堂检测" concept="九道题，看看都弄懂了没有" tasks={TASKS} done={done}
         theory={<p>每道题对应前面的一课。答错的题，回到那一课把任务再做一遍，比看答案更管用。题目可以反复做，点右上角“重做本课”清空。</p>} />}

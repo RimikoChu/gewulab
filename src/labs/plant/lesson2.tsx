@@ -8,6 +8,9 @@ import { Flesh, Glass, blob, fuse, lerp, place, rng, seg, tube, useRun, type V3 
 import { CONTROL, JARS, PER_JAR, envOf, lacking, sprouted, variable, type Jar } from './physics'
 import { Finale, H } from './ui'
 import { AT, BENCH, Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const J0: V3 = [AT.jars.x, BENCH.h, AT.jars.z + 0.3]
 const JX = [-3.9, -1.3, 1.3, 3.9]
@@ -84,7 +87,7 @@ export default function Lesson2() {
   if (grow >= 1) labels.push({ id: 'n', at: [J0[0] + JX[no - 1], J0[1] + 0.2, J0[2] + 1.9], ax: 0.5, className: 'scene-tag', children: <><small>萌发</small>{sprouted(jar)} 粒</> })
   const yes = (b: boolean) => <span className={b ? 'text-[#7fe3d4]' : 'text-[#ff9b8a]'}>{b ? '满足' : '不满足'}</span>
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="对照实验"
+    <LabShell title="植物的一生" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="对照实验"
       stage={<Room at="s2" labels={labels}>
         <group position={J0}>
           {JARS.map((j, i) => <JarView key={j.no} jar={j} x={JX[i]} setup={setup} grow={grow} on={j.no === no} />)}

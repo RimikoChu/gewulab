@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Cell } from './models'
 import { PARTS, PART_KEYS } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -21,7 +24,7 @@ export default function Lesson5() {
   const hint = todo ? `${now ? `${PARTS[now].name}：${PARTS[now].does}。` : ''}按“看下一个结构”` : '七种结构都看过了。'
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="植物细胞模型"
+    <LabShell title="细胞" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="植物细胞模型"
       stage={<LabStage labels={now ? [{ id: 'p', at: [ST.model, TOP + 1.85, 0], ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>第 {n} 个</small>{PARTS[now].name}</> }] : [{ id: 'n', at: [ST.model, TOP + 1.85, 0], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '植物细胞（放大的模型）' }]} target={SPOT.model} span={SPAN.model}><Cell position={[ST.model, TOP + 0.95, 0]} kind="plant" glow={now ? [now] : []} /></LabStage>}
       lesson={<LessonBlock no="5" title="植物细胞里有什么" concept="每个结构各管一件事" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<ul className="flex flex-col gap-1.5 text-[14px] text-white/80">{PART_KEYS.map(k => <li key={k}><b className="text-[#7fe3d4]">{PARTS[k].name}：</b>{PARTS[k].does}</li>)}</ul>} />}

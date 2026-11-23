@@ -5,6 +5,9 @@ import { useTasks } from '@/lab-kit'
 import Scene2 from './scene2'
 import { LESSONS, goLesson } from './lessons'
 import { LAMP_CM, bubbles } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Cm = '10' | '20' | '30'
 const TASKS: Task[] = [
@@ -47,7 +50,7 @@ export default function Lesson2() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="金鱼藻"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="金鱼藻"
       stage={<Scene2 cm={Number(cm)} on={on} gas={rows.length / 3 + (on ? 0.1 : 0)} tested={tested} />}
       lesson={<LessonBlock no="2" title="冒出来的气泡" concept="光合作用放出氧气，光越强放得越快" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

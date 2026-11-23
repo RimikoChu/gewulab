@@ -8,6 +8,9 @@ import { Flesh, Glass, ease, fuse, lerp, rng, seg, tube, useGeo, useRun, type V3
 import { MARK_GAP, ZONES, absorber, fastest, gapAfter, zone, type ZoneKey } from './physics'
 import { Finale, H, Row } from './ui'
 import { LENS, ROOT, Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'zoom', text: '用放大镜推近，看幼根最前端的一段', note: '从根的顶端到长着根毛的地方，这一段叫根尖' },
@@ -144,7 +147,7 @@ export default function Lesson4() {
   ]
   const z = sel ? zone(sel) : null
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="幼根"
+    <LabShell title="植物的一生" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="幼根"
       stage={<Room at={zoom ? 's4b' : 's4'} labels={labels}><Scope show={show} g={g} marks={marks} sel={sel} wet={wet} /></Room>}
       lesson={<LessonBlock no="4" title="根的生长" concept="根尖伸长区长得最快" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

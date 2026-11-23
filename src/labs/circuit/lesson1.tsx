@@ -1,5 +1,8 @@
 // 电路 · 第 1 课 电路的组成：靠窗工作台的西头，一只电池盒、一只灯座和小灯泡、一只单刀开关，三根导线连成一圈。
 // 闭合开关灯亮（通路），断开开关灯灭（断路）；再用一根导线把电池盒的两个接线柱直接连起来：灯不亮，电流全从这根导线走，电池发热（短路）。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -57,7 +60,7 @@ export default function Lesson1() {
     { id: 's', at: W(add(BAT, [0, -0.2, 3.4])), ax: 0.5, className: 'scene-tag key transition-opacity', style: { opacity: state === 'short' ? 1 : 0 }, children: <><small>短路</small>电池发热</> },
   ]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电路"
+    <LabShell title="电路" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['1'], VOICE)} actionsLabel="电路"
       stage={<Place at="l1" labels={labels}>
         <Bench at="l1">
           <group position={BAT}><BatteryBox n={2} hot={hot} /></group>

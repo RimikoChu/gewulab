@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ArrowLeft, ArrowRight, Check, ChevronDown, Play, RotateCcw, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { Narration } from '@/lab-kit/narration'
 
 /** 顶栏左上角回到哪里：线上是站点首页；离线包里是包内的目录页（打包脚本设 VITE_GEWU_HOME） */
 const HOME: string = import.meta.env.VITE_GEWU_HOME || import.meta.env.BASE_URL
@@ -16,25 +17,54 @@ export interface Task { id: string; text: string; note: string }
  * 自动演示：顶栏有一个“自动演示”，按下去先重做本课，然后每隔一秒替学生做下一步，一直做到结论卡。
  * “下一步”就是现在在闪的那个控件：闪着的按钮直接点；闪着的分段选择点它 want 指的那一项。
  * 下一步不是按钮的（比如要点场景里的东西），这一课用 autoStep 自己做，做了就返回 true。
+ * narration：演示时的解说（见 lab-kit/narration.ts）。有解说时，每句说完才做下一步。
  */
-export function LabShell({ title, lessons, current, onLesson, stage, lesson, panel, actions, actionsLabel = '吊车（按住连续升降，也可以直接拖物块）', extras, hint, banner, finale, onReset, autoStep }: {
+export function LabShell({ title, lessons, current, onLesson, stage, lesson, panel, actions, actionsLabel = '吊车（按住连续升降，也可以直接拖物块）', extras, hint, banner, finale, onReset, autoStep, narration }: {
   title: string; lessons: LessonTab[]; current: string; onLesson: (key: string) => void
   stage: ReactNode; lesson: ReactNode; panel: ReactNode; actions: ReactNode; actionsLabel?: string; extras: ReactNode; hint: string
-  banner?: string | null; finale?: ReactNode; onReset: () => void; autoStep?: () => boolean
+  banner?: string | null; finale?: ReactNode; onReset: () => void; autoStep?: () => boolean; narration?: Narration
 }) {
   const root = useRef<HTMLDivElement>(null)
   const [auto, setAuto] = useState(false)
-  const live = useRef({ autoStep, done: !!finale }); live.current = { autoStep, done: !!finale }
+  const live = useRef({ autoStep, done: !!finale, hint, narration }); live.current = { autoStep, done: !!finale, hint, narration }
   useEffect(() => {
     if (!auto) return
+    let voice: HTMLAudioElement | null = null, last = performance.now()
+    // 讲到哪了：提示语每换一次就看一次；对应的解说和上一句不同才说。
+    // 所以同一步在课里重复出现（比如串联做一遍、并联再做一遍）每次都会讲；读数一跳一跳的提示语只讲一次。
+    let lastHint = '', lastKey: string | undefined, outro = false
+    /** 放一句录音；放完以后隔半秒再做下一步 */
+    const say = (url?: string) => {
+      if (!url) return false
+      const a = new Audio(url); voice = a
+      a.onended = a.onerror = () => { if (voice === a) { voice = null; last = performance.now() - 600 } }
+      a.play().catch(() => a.onerror?.(new Event('error')))
+      return true
+    }
+    say(live.current.narration?.intro)
     const t = setInterval(() => {
-      if (live.current.done) { setAuto(false); return }
-      if (live.current.autoStep?.()) return
+      const L = live.current
+      if (voice) return
+      if (L.done) { if (!outro) { outro = true; if (say(L.narration?.outro)) return } setAuto(false); return }
+      if (L.hint !== lastHint) {
+        lastHint = L.hint
+        const k = stepKey(L.narration, L.hint)
+        if (k !== lastKey) { lastKey = k; if (k && say(L.narration?.steps?.[k])) return }
+      }
+      if (performance.now() - last < 1100) return
+      last = performance.now()
+      if (L.autoStep?.()) return
       const el = root.current?.querySelector<HTMLButtonElement>('[data-auto]:not(:disabled)') ?? root.current?.querySelector<HTMLButtonElement>('button.lab-pulse:not(:disabled)')
       el?.click()
-    }, 1100)
-    return () => clearInterval(t)
+    }, 200)
+    return () => { clearInterval(t); voice?.pause(); voice = null }
   }, [auto])
+  /** 提示语对应哪一条解说：先找一字不差的；找不到就找最长的、提示语以它开头的（提示语里带读数时用） */
+  function stepKey(n: Narration | undefined, h: string) {
+    const st = n?.steps; if (!st) return undefined
+    if (st[h]) return h
+    return Object.keys(st).filter(k => h.startsWith(k)).sort((a, b) => b.length - a.length)[0]
+  }
   const toggleAuto = () => { if (auto) setAuto(false); else { onReset(); setAuto(true) } }
   // 全部完成：结论不再弹窗盖住画面，而是换掉底部的操作条；“收起”可以回到操作条接着看
   const [fold, setFold] = useState(false)
@@ -64,7 +94,12 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
             </button>
           ))}
         </nav>
-        <button onClick={toggleAuto} aria-pressed={auto} className={cn('ml-auto flex h-10 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] hover:bg-white/10', auto ? 'bg-[#35c7b3]/20 text-[#7fe3d4]' : 'text-white/80')}>{auto ? <Square className="size-3.5" /> : <Play className="size-3.5" />}<span className="hidden sm:inline">{auto ? '停止演示' : '自动演示'}</span></button>
+        {/* 自动演示是给老师投屏用的主入口：实心按钮，标明带讲解 */}
+        <button onClick={toggleAuto} aria-pressed={auto} className={cn('ml-auto flex h-10 flex-none items-center gap-2 rounded-xl px-3.5 text-[14px] font-semibold whitespace-nowrap shadow-[0_6px_20px_rgb(53_199_179/0.28)] transition-colors',
+          auto ? 'bg-white text-[#10151a] hover:bg-white/90' : 'bg-[#35c7b3] text-[#06231f] hover:bg-[#4fd6c3]')}>
+          {auto ? <Square className="size-3.5 fill-current" /> : <Play className="size-4 fill-current" />}
+          <span>{auto ? '停止演示' : <>自动演示<span className="hidden font-normal opacity-75 sm:inline"> · 讲解</span></>}</span>
+        </button>
         <button onClick={() => { setAuto(false); onReset() }} className="flex h-10 flex-none items-center gap-1.5 rounded-lg px-2.5 text-[13.5px] text-white/80 hover:bg-white/10"><RotateCcw className="size-3.5" /><span className="hidden sm:inline">重做本课</span></button>
       </header>
 

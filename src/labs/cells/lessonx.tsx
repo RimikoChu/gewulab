@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useSlide, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Cell } from './models'
 import { CUBES, DOLLY, dollyLooksLike, surfaceToVolume } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -47,7 +50,7 @@ export default function LessonX() {
     : <mesh scale={[1, 1, 0.35]}><sphereGeometry args={[0.16, 18, 12]} /><meshStandardMaterial color="#c9302c" roughness={0.5} /></mesh>
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell title="细胞" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<LabStage labels={labels} target={SPOT.model} span={SPAN.model}>
         {sub === 'grow' && <mesh position={[X, TOP + 0.3 + side / 2, 0]} castShadow><boxGeometry args={[side, side, side]} /><meshStandardMaterial color="#8fc7a0" transparent opacity={0.85} roughness={0.4} /></mesh>}
         {sub === 'dolly' && <Cell position={[X, TOP + 0.95, 0]} kind="animal" glow={['nucleus']} />}

@@ -9,6 +9,9 @@ import { BECOMES, FIRST_OUT, SEEDS, STAGES, feedsFrom } from './physics'
 import { kidney, makeCoat } from './seeds'
 import { Finale, H, Row } from './ui'
 import { GERM, Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const X = GERM.x, Z = GERM.face, TOP = GERM.top - 0.12, SEED_Y = TOP - 1.45, S = 0.9
 const TASKS: Task[] = STAGES.map((s, i) => ({ id: s.key, text: i === 0 ? '给种子浇水，看它吸水膨胀' : i === 1 ? '继续等，看哪一部分最先突破种皮' : i === 2 ? '继续等，看子叶是怎么出土的' : '继续等，看胚芽长成什么', note: s.what }))
@@ -100,7 +103,7 @@ export default function Lesson3() {
     { id: 'soil', at: [X - GERM.w / 2 + 0.5, TOP - 0.25, Z + 0.3], name: true, className: 'scene-name', children: '土面' },
   ]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="观察箱里的菜豆种子"
+    <LabShell title="植物的一生" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="观察箱里的菜豆种子"
       stage={<Room at="s3" labels={labels}><Seedling t={t} /><Drops k={stage === 1 ? seg(t, 0, 0.6) : 0} /></Room>}
       lesson={<LessonBlock no="3" title="萌发的过程" concept="胚根最先突破种皮，发育成根" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

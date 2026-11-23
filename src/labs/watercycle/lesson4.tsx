@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { GROUNDS, RAIN, runoff, seep, type GroundKey } from './physics'
 
 const KEYS = Object.keys(GROUNDS) as GroundKey[]
@@ -57,7 +60,7 @@ export default function Lesson4() {
   ])
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="试验小区"
+    <LabShell title="水循环" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="试验小区"
       stage={<Basin at="plots" labels={labels}><Plots wet={wetAll} pick={pick} raining={raining} /></Basin>}
       lesson={<LessonBlock no="4" title="雨落在什么地上" concept="地面越容易透水，渗下去的越多，流走的越少" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

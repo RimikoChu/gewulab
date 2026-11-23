@@ -8,6 +8,9 @@ import { BOX_CM, Bumper, Cord, Crate, DECK_Y, Force, Place, Sled, setRod, useRun
 import { LESSONS, goLesson } from './lessons'
 import { CRASH, CRATE, SAME, SLED, crashAt, crashEnd, crashSlide, crashSpeed, jerkAt, jerkEnd, sameShove, shoveAt } from './physics'
 import { LANE, M, RINK, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = 'jerk' | 'crash' | 'same'
 const J = jerkEnd(), L = sameShove('light'), H = sameShove('heavy')
@@ -96,7 +99,7 @@ export default function Lesson5() {
     { id: 'n3', at: [WALL + 1, 6.4, Z1], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '挡板' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="雪橇"
+    <LabShell title="力和运动" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="雪橇"
       stage={<Place at="l5" labels={labels}><Rig mode={mode} run={run} onEnd={ended} /></Place>}
       lesson={<LessonBlock no="5" title="惯性" concept="物体总要保持原来的运动状态" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

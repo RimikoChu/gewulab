@@ -8,6 +8,9 @@ import { Metal, Rod, disc, lathe, useSlide, useTasks, type Label } from '@/lab-k
 import { ENV, FORK, Fork, Hall, Mallet, Mic, P, Rings, SWING, Scope, micHead, ringing, useWood, type Hit, type Pose } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { FORK_HZ, TONES, wave, type ToneKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const ORDER: ToneKey[] = ['fork', 'guitar', 'flute']
 const TASKS: Task[] = ORDER.map((k, i) => ({ id: k, text: `${i ? '把话筒挪到' : '话筒对着'}${TONES[k].name}：奏出这个音，记下波形`, note: k === 'fork' ? '音叉的波形最简单：一条光滑的正弦曲线' : `和音叉一样密、一样高，可形状不一样：这就是${TONES[k].name}的音色` }))
@@ -124,7 +127,7 @@ export default function Lesson6() {
     { id: 's', at: P('tone', 3.95, 1.95), ax: 0.5, className: 'scene-tag key -translate-y-full transition-opacity', style: { opacity: live ? 1 : 0 }, children: <><small>{TONES[k].name}</small>{FORK_HZ} Hz</> },
   ]
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={TONES[k].name}
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="声现象" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={TONES[k].name}
       stage={<Hall at="tone" labels={labels}>
         <Fork x={FX} level={k === 'fork' ? lv : () => 0} />
         <Mallet rest={REST} hit={STRIKE} t0={hit && k === 'fork' ? hit.t - SWING : null} />

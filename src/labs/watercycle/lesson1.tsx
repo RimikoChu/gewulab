@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { BODIES, FRESH_OF_ALL, type BodyKey } from './physics'
 import { ground, riverZ } from './world'
 
@@ -26,7 +29,7 @@ export default function Lesson1() {
   const labels: Label[] = ORDER.map(k => ({ id: k, at: AT[k], ax: 0.5, className: `scene-tag -translate-y-full transition-opacity${body === k ? ' key' : ''}`, style: { opacity: seen.includes(k) ? 1 : 0.55 }, children: seen.includes(k) ? <><small>{BODIES[k].name}</small>{BODIES[k].ofFresh == null ? `占全球 ${BODIES[k].ofAll}%` : `占淡水 ${BODIES[k].ofFresh}%`}</> : BODIES[k].name }))
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水体"
+    <LabShell title="水循环" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水体"
       stage={<Basin labels={labels} />}
       lesson={<LessonBlock no="1" title="水都在哪里" concept="水很多，淡水很少，能直接用的更少" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

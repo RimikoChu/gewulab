@@ -11,6 +11,9 @@ import { Big, Done, H2, Room, useRun } from './parts'
 import { BOIL, CHANGES, CYCLE, FLASK as WAIT, FRIDGE, boilsAgain, flaskT, readT } from './physics'
 import { ThermoView } from './views'
 import { FRIDGE_AT, LAKE, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'fridge' | 'flask' | 'cycle'
 const SUBS: Record<Sub, { name: string; title: string; button: string; say: string }> = {
@@ -55,7 +58,7 @@ export default function LessonX() {
     { id: 'c3', at: [LAKE.x + 34, 12, LAKE.z - 130], className: 'scene-name', children: '河水流回湖里' },
   ]
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={S.name}
+    <LabShell title="物态变化" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={S.name}
       stage={<Room at={sub === 'fridge' ? 'fridge' : sub === 'flask' ? 'sx' : 'cycle'} labels={labels} fridge={door} power={on.fridge && sub === 'fridge'} cycle={on.cycle && sub === 'cycle'}>
         {/* 烧瓶：瓶塞上插着温度计，一根橡皮管接到注射器；酒精灯放在一边 */}
         <Stand at={[X, TOP, Z]}><Ring y={RING} /><Clamp y={RING + GAUZE_T + 0.72} grip={FLASK.neck} /></Stand>

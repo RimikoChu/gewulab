@@ -9,6 +9,9 @@ import { LESSONS, goLesson } from './lessons'
 import { PUSHES, PUSH_T, STONE, shoveAt, stoneEnd, stoneShove, stoneSpin, tipSquash, type PushKey } from './physics'
 import { Diagram } from './views'
 import { LANE, M, RINK, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: PushKey[] = ['light', 'heavy', 'back', 'side']
 const deg = (k: PushKey) => Math.round(stoneSpin(k, 99) * 180 / Math.PI)
@@ -76,7 +79,7 @@ export default function Lesson1() {
     { id: 'stick', at: [X0 - p.dir * 5.5, 5.2, LANE + p.off * M], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '推杆（海绵头）' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="推杆"
+    <LabShell title="力和运动" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="推杆"
       stage={<Place at="l1" labels={labels}>
         <Rig mode={mode} run={run} onEnd={ended} />
         <Spares />

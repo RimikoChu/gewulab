@@ -10,6 +10,9 @@ import { LESSONS, goLesson } from './lessons'
 import { COMBO, STONE, SWEEP, comboShove, friction, glideAt, resultant, rolling, shoveAt, sweepDist, sweepTime, tipSquash } from './physics'
 import { ScaleView } from './views'
 import { HOUSE, LANE, M, RINK, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'sum' | 'sweep' | 'roll'
 const SUBS: Record<Sub, { name: string; title: string; a: string; b: string; say: string }> = {
@@ -100,7 +103,7 @@ export default function LessonX() {
   ]
   const big = sub === 'sum' ? { t: '合力', v: String(sum.F), u: 'N' } : sub === 'sweep' ? { t: '冰壶滑行的距离', v: seen ? sweepDist(alt).toFixed(2) : '—', u: 'm' } : { t: '拉动木块要用的力', v: seen ? (alt ? rolling() : friction('base')).toFixed(2) : '—', u: 'N' }
   const shell = {
-    title: '力和运动', lessons: LESSONS, current: 'x', onLesson: goLesson, banner: T.banner, onReset: resetAll, hint, actionsLabel: S.name,
+    title: '力和运动', lessons: LESSONS, current: 'x', narration: voiced(NARRATION['x'], VOICE), onLesson: goLesson, banner: T.banner, onReset: resetAll, hint, actionsLabel: S.name,
     lesson: <LessonBlock no="拓展" title="合力 · 擦冰 · 滚动" concept={S.title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{S.say}</p>} />,
     finale: T.finale && (
       <Glass className="w-[min(92vw,430px)] px-6 py-5 text-center">

@@ -9,6 +9,9 @@ import { Done, H2, Room, useRun } from './parts'
 import { COOL, EVAP, FACTORS, ROOM, dryTime, readT, waterLeft, wetT, type Factor } from './physics'
 import { ThermoView } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = Factor | 'cool'
 const MODES: Mode[] = ['temp', 'area', 'wind', 'cool']
@@ -57,7 +60,7 @@ export default function Lesson3() {
     { id: 'n2', at: [TX + 0.62, TOP + 0.5, Z + 0.3], name: true, className: 'scene-name', children: '酒精' },
   ]
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={mode === 'cool' ? '温度计' : '两滴水'}
+    <LabShell title="物态变化" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={mode === 'cool' ? '温度计' : '两滴水'}
       stage={<Room at="s3" labels={labels} bloom={0.3}>
         {/* 左边：对照的那一滴；右边：改变一个条件的那一滴 */}
         <Stand at={[LX, TOP, Z]} h={2.2}><Ring y={RING} /></Stand>

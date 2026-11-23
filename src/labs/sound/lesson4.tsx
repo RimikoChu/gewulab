@@ -8,6 +8,9 @@ import { Metal, lathe, useSlide, useTasks, type Label } from '@/lab-kit'
 import { ENV, Glove, Hall, Hose, Mic, P, Rings, Scope, ringing, useWood, type Hit, type Pose } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { HEAR, OVERHANG, pitchWord, rate } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type L = '20' | '15' | '10'
 const TASKS: Task[] = OVERHANG.map((l, i) => ({ id: String(l), text: i === 0 ? `钢尺伸出 ${l} cm：拨一下，看它振动得快还是慢，记录` : `伸出 ${l} cm：再拨、再记`, note: i === 0 ? '伸出得长：振动慢，音调低' : `振动的快慢是伸出 20 cm 时的${rate(l) === Math.round(rate(l)) ? ` ${rate(l)}` : `约 ${rate(l).toFixed(1)}`} 倍，音调${pitchWord(l)}` }))
@@ -72,7 +75,7 @@ export default function Lesson4() {
     { id: 'n', at: P('ruler', EDGE - 1.0, 0.05, 1.3), ax: 0.5, className: 'scene-name', children: '钢尺的振动是放慢了画的' },
   ]
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="钢尺"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="声现象" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="钢尺"
       stage={<Hall at="ruler" labels={labels}>
         {/* 木块：当作桌边。钢尺压在上面，用一条压板和两只手拧螺母夹紧 */}
         <RoundedBox args={[2.0, BY, 1.6]} radius={0.04} position={[EDGE - 1.0, BY / 2, 0]} castShadow receiveShadow><meshPhysicalMaterial map={wood} roughness={0.55} clearcoat={0.3} /></RoundedBox>

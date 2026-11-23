@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 1 课 燃烧需要可燃物：实验台第 1 格，一盏酒精灯，旁边一块白瓷板上放着小木条、小石块和两只棉球（一只蘸了酒精，一只蘸了水）。
 // 用坩埚钳夹起一样，放到火焰上加热约 3 秒，看它着不着。木条、酒精棉球是可燃物，着了；石块、水棉球烧不着。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { RoundedBox } from '@react-three/drei'
@@ -79,7 +82,7 @@ export default function Lesson1() {
     { id: 'n3', at: [X0 + (SLOT[item] + 0.1) * M, Y + 0.075 * M, BZ + 0.5], name: true, className: 'scene-name', children: '坩埚钳' },
   ]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="坩埚钳"
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['1'], VOICE)} actionsLabel="坩埚钳"
       stage={<Place at="l1" labels={labels}>
         <group position={[X0 + LAMP_X * M, Y, BZ]}><AlcoholLamp /></group>
         <Flame at={[X0 + LAMP_X * M, Y + LAMP.top * M, BZ]} w={0.026 * M} h={0.075 * M} kind="alcohol" light={1.4} lightColor="#ffb26a" />

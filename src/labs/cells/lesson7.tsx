@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Dividing } from './models'
 import { DIVIDE, LAST_STEP, chromosomes, type CellKind } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -25,7 +28,7 @@ export default function Lesson7() {
     : todo ? { hint: `${step ? `${say(step - 1)}。` : ''}按“下一步”`, next: 'go' } : { hint: say(DIVIDE.length - 1), next: null }
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="细胞分裂"
+    <LabShell title="细胞" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="细胞分裂"
       stage={<LabStage labels={[{ id: 's', at: [ST.model, TOP + 1.85, 0], ax: 0.5, className: `scene-tag -translate-y-full${step ? ' key' : ''}`, children: step ? <><small>第 {step} 步</small>{DIVIDE[step - 1].name}</> : `一个${NAME[kind]}` }]} target={SPOT.model} span={SPAN.model}><Dividing position={[ST.model, TOP + 0.95, 0]} kind={kind} step={step} /></LabStage>}
       lesson={<LessonBlock no="7" title="一个变两个" concept="先分核，再分质；染色体先复制、再平分" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

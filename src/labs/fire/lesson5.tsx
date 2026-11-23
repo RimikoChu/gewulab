@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 5 课 灭火的原理：训练场的灭火实训区，三处火：燃气灶（接着液化气钢瓶）、油锅、一垛木柴。
 // 每处火选一种办法灭：关阀门（隔离可燃物）、盖锅盖（隔绝空气）、浇水（降温到着火点以下）。选错了不报错，说明为什么不行。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -108,7 +111,7 @@ export default function Lesson5() {
     <Puffs at={[target[0], target[1] + 0.2 * M, target[2]]} on={doing?.w === 'cool' && t > 1.6 && t < 3.4 && doing.f !== 'oil'} opt={SMOKE.steam(1.2)} seed={9} />
   </Place>
   return (
-    <LabShell autoStep={autoStep} title="燃烧和灭火" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="灭火的办法"
+    <LabShell autoStep={autoStep} title="燃烧和灭火" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['5'], VOICE)} actionsLabel="灭火的办法"
       stage={lab}
       lesson={<LessonBlock no="5" title="灭火的原理" concept="破坏燃烧的条件，就能灭火" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

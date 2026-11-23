@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useTasks } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { DIVISION, TICKET, WAYS, rulerReading, type WayKey } from './physics'
 import { DESK } from './world'
 
@@ -29,7 +32,7 @@ export default function Lesson1() {
   const x0 = px(w.off), x1 = px(w.off + TICKET), eye = x1 + (w.tilt ? 34 : 0)
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="刻度尺"
+    <LabShell title="机械运动" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="刻度尺"
       stage={<At at="desk" labels={[{ id: 'n', at: [DESK[0], DESK[1] + 0.98, DESK[2] + 0.2], ax: 0.5, name: true, className: 'scene-name', children: '刻度尺和一张车票' }]}>
         <group position={[DESK[0], DESK[1] + 0.9, DESK[2]]}>
           <mesh position={[0, 0.006, 0.12]}><boxGeometry args={[1.1, 0.012, 0.14]} /><meshStandardMaterial color="#e9d98a" roughness={0.5} /></mesh>

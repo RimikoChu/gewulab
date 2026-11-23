@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { TERMS, TILT, YEAR, axisToOrbit, dateText, nearTerm, type TermKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const LEAN: Record<TermKey, string> = { spring: '侧对太阳', summer: '北极偏向太阳', autumn: '侧对太阳', winter: '北极背向太阳' }
 const TASKS: Task[] = [
@@ -40,7 +43,7 @@ export default function Lesson3() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="地球的运动" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球"
       stage={<Scene3 day={day} near={near} ghosts={rows.map(k => TERMS.find(t => t.key === k)!.day)} />}
       lesson={
         <LessonBlock no="3" title="斜着身子绕太阳" concept="地轴斜着，而且一直指着同一个方向" tasks={TASKS} done={T.done} current={task?.id}

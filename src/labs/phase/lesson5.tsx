@@ -10,6 +10,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Big, Done, H2, Room, useRun } from './parts'
 import { DEW_TIME, LIQUEFY, SYRINGE, dewOn, etherLiquid } from './physics'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Way = keyof typeof LIQUEFY
 const WAYS: Way[] = ['cool', 'press']
@@ -72,7 +75,7 @@ export default function Lesson5() {
     { id: 'c', at: [SX - 0.62, SY - 0.02, Z + 0.2], ax: 1, name: true, className: 'scene-name', children: '橡皮帽堵住针嘴' },
   ]
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={way === 'cool' ? '烧瓶和玻璃片' : '注射器'}
+    <LabShell title="物态变化" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={way === 'cool' ? '烧瓶和玻璃片' : '注射器'}
       stage={<Room at={way === 'cool' ? 's5' : 's5b'} labels={labels} bloom={0.3}>
         {/* 烧水的一套：铁架台、酒精灯、石棉网、塞着橡皮塞和玻璃弯管的烧瓶 */}
         <Stand at={[FX, TOP, Z]}><Ring y={RING} /><Clamp y={RING + GAUZE_T + 0.72} grip={FLASK.neck} /></Stand>

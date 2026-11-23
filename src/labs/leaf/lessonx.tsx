@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import SceneX, { type Sub } from './scenex'
 import { LESSONS, goLesson } from './lessons'
 import { WILLOW, willowAt, willowGain } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const SUBS: Record<Sub, { name: string; title: string; say: string }> = {
   jars: { name: '钟罩里的蜡烛', title: '植物能让空气“变好”，但要有光', say: '只有蜡烛的那一罩，氧气烧完就灭了。有植物又有光的那一罩，植物不断放出氧气，蜡烛一直烧着。把植物罩在暗处，它不进行光合作用，蜡烛照样熄灭。' },
@@ -43,7 +46,7 @@ export default function LessonX() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<SceneX sub={sub} burn={burn} years={years} rim={rim} />}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id}
         theory={<p>{SUBS[sub].say}</p>} />}

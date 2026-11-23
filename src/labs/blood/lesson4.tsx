@@ -1,5 +1,8 @@
 // 血液循环 · 第 4 课 心脏怎样泵血：剖开的心脏一步一步跳：心房收缩、心室收缩、全心舒张；看瓣膜开合、红细胞往哪里走；
 // 试着让血倒流，被关着的瓣膜挡住；最后按真实的节拍连续跳动，读出一次心跳 0.8 s。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useRef, useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -70,7 +73,7 @@ export default function Lesson4() {
   const T0 = period(), sum = PHASES.reduce((s, p) => s + p.sec, 0)
   const at = live ? ((performance.now() / 1000) % T0) / T0 : null
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="心脏"
+    <LabShell title="血液循环" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['4'], VOICE)} actionsLabel="心脏"
       stage={<Place at="pump" labels={labels} want={{ look: { shell: 0.1, lungs: 0, tree: 0 }, heart: { cut: 1, flow: true }, stream: 'none' }} />}
       lesson={<LessonBlock no="4" title="心脏怎样泵血" concept="瓣膜让血只能朝一个方向流" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

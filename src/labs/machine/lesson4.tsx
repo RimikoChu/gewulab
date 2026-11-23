@@ -10,6 +10,9 @@ import { Glove, Place, ease, useRun } from './parts'
 import { TOOLS, round, toolUse, type Tool } from './physics'
 import { BAL, BARROW, MiniBalance, Shovel, TestCube, Wheelbarrow } from './tools'
 import { BZ, M, ST, TOP, YARD, type SpotKey, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const ORDER: Tool[] = ['barrow', 'shovel', 'balance']
 const cm = (x: number) => round(x * 100, 1)
@@ -64,7 +67,7 @@ export default function Lesson4() {
     { id: 'n', at: tool === 'balance' ? [ST.bal, TOP + 0.05, BZ + 1.1] : tool === 'barrow' ? [YARD.barrow.x + 3, 0.2, YARD.barrow.z + 2.5] : [YARD.shovel.x + 2, 0.2, YARD.shovel.z + 2], ax: 0.5, name: true, className: 'scene-name', children: Tl.name },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={Tl.name}
+    <LabShell title="简单机械" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={Tl.name}
       stage={<Place at={SPOTS[tool]} labels={labels}>
         {/* 手推车：轮轴是支点，砖的重力是阻力，手抬车把 */}
         <group position={RIG.barrow.O}>

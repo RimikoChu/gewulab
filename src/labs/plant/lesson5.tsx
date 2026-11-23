@@ -8,6 +8,9 @@ import { Flesh, blob, ease, leafGeo, lerp, mixHex, ring, seg, tube, useGeo, useR
 import { BUD, budBecomes, type BudKey } from './physics'
 import { Finale, H, Row } from './ui'
 import { BUD_AT, Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'cut', text: '把枝条上的叶芽纵向切开', note: '芽里面已经有了很小的叶和茎' },
@@ -104,7 +107,7 @@ export default function Lesson5() {
     { id: 'twig', at: world([1.9, -0.5, 0.6]), name: true, className: 'scene-name', children: '桃树的枝条' },
   ]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="叶芽"
+    <LabShell title="植物的一生" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="叶芽"
       stage={<Room at={grown ? 's5b' : 's5'} labels={labels}><Bud cut={cut} G={G} sel={part && !busy ? part.key : null} /></Room>}
       lesson={<LessonBlock no="5" title="芽发育成枝条" concept="枝条是由芽发育成的" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

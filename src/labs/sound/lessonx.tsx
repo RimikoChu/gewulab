@@ -8,6 +8,9 @@ import { Metal, lathe, useTasks, type Label } from '@/lab-kit'
 import { BallStand, ENV, FORK, Fork, Hall, Hose, Mallet, P, Readout, Rings, SWING, Scope, ringing, useWood, type Hit, type Pose } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { FORK_HZ, HEAR, SONAR_T, V_WATER, band, frontAt, seaDepth, sweep } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'reso' | 'hear' | 'sonar'
 const SUBS: Record<Sub, { name: string; title: string; say: string; button: string }> = {
@@ -122,7 +125,7 @@ export default function LessonX() {
     </Hall>
   )
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="声现象" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={stage}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && (

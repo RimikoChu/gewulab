@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { TRAINS, distance, speed, toMs, type TrainKey } from './physics'
 import { LINE, Train, lineX } from './world'
 
@@ -32,7 +35,7 @@ export default function Lesson4() {
   ]
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="列车"
+    <LabShell title="机械运动" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="列车"
       stage={<At at="line" labels={labels}><Train x={lineX(s)} z={LINE.z} len={25} s={0.8} stripe={TINT[train]} y={0.3} /></At>}
       lesson={<LessonBlock no="4" title="谁跑得快" concept="速度 = 路程 ÷ 时间" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

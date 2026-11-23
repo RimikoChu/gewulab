@@ -9,6 +9,9 @@ import { LESSONS, goLesson } from './lessons'
 import { PULLS, SCALE, SPRING_K, ZERO_ERR, overRange, scaleReads, stretchCm } from './physics'
 import { Plot, ScaleView } from './views'
 import { BENCH_Z, ST, TOP, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const LAST = PULLS[PULLS.length - 1]
 const TASKS: Task[] = [
@@ -57,7 +60,7 @@ export default function Lesson2() {
     { id: 'n3', at: P(HOOK0 + 6, -1.2, 6), ax: 0.5, name: true, className: 'scene-name', children: '拉力滑块' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={warn ?? hint} actionsLabel="测力计"
+    <LabShell title="力和运动" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={warn ?? hint} actionsLabel="测力计"
       stage={<Place at="l2" labels={labels}>
         <group position={[X, TOP, BENCH_Z]}>
           {/* 拉力架：一块底板，左边一根立柱带固定销，中间一条托着测力计的垫条，右边一根带刻度的导轨 */}

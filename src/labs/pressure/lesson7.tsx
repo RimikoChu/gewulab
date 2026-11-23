@@ -5,6 +5,9 @@ import Scene7 from './scene7'
 import { LESSONS, goLesson } from './lessons'
 import { WIND, paperGap, solve7 } from './physics'
 import { useSlide, useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; v: number; top: number; bot: number; dp: number }
 const TASKS: Task[] = [
@@ -42,7 +45,7 @@ export default function Lesson7() {
   })()
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="风（再点一次关掉）"
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="压强" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="风（再点一次关掉）"
       stage={<Scene7 mode={mode} v={v} r={r} />}
       lesson={
         <LessonBlock no="7" title="流得快，压得轻" concept="流得快的那一边，压强小" tasks={TASKS} done={T.done} current={task?.id}

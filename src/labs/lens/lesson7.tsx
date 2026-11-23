@@ -6,6 +6,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Axis, Candle, Dark, Lens, Ray } from './optics'
 import { SCOPES, type ScopeKey } from './physics'
 import { AXIS, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(SCOPES) as ScopeKey[]
 const TASKS: Task[] = KEYS.map(k => ({ id: k, text: `${SCOPES[k].name}：一步一步看两块透镜各做了什么`, note: SCOPES[k].steps.join('；') }))
@@ -34,7 +37,7 @@ export default function Lesson7() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={s.name}
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={s.name}
       stage={<Dark at="scope" labels={labels}>
         <Axis x0={X0 - 2.05} x1={X0 + 1.6} y={AXIS} />
         {/* 镜筒：一段半透明的筒，两头各装一块透镜 */}

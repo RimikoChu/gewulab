@@ -7,6 +7,9 @@ import { Dark, Lens, Ray } from './optics'
 import * as THREE from 'three'
 import { EYE, EYES, focusAt, retinaBlur, where, type EyeKey } from './physics'
 import { AXIS, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(EYES) as EyeKey[], K = 0.42      // 模型放大：1 cm 画成 0.42 个单位
 const LX = ST.eye - 0.3, RX = LX + EYE * K, HS = [-0.15, 0, 0.15]
@@ -60,7 +63,7 @@ export default function Lesson6() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="眼镜"
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="眼镜"
       stage={<Dark at="eye" labels={labels}>
         {/* 眼球：一个半透明的球，后壁是视网膜；前面的晶状体是一块凸透镜 */}
         {/* 眼球模型：一只透明的球，后半个内壁是红色的视网膜，前面鼓出一块角膜，里面是虹膜和晶状体；立在一只底座上 */}

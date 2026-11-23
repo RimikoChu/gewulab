@@ -11,6 +11,9 @@ import { Place, useSettled } from './parts'
 import { GROUPS, NUT_OFF, RULER, balanceAt, hooksN, leverTilt, row, sideMoment } from './physics'
 import { LeverView, Table } from './views'
 import { BZ, ST, TOP, U, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'level', text: '调节平衡螺母，让杠杆尺在水平位置平衡', note: '调到水平：挂上钩码以后，力臂就是支点到挂钩码那一格的距离，在尺上直接读得出来' },
@@ -79,7 +82,7 @@ export default function Lesson2() {
     { O: [X, PY + 0.45, BZ + 0.2] as V3, F: [X + pos * GRID, PY + 0.45, BZ + 0.2] as V3, c: C2 },
   ] : [], [g, showArms, pos])
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="杠杆尺"
+    <LabShell title="简单机械" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="杠杆尺"
       stage={<Place at="l2" labels={labels}>
         <group position={BASE}><Lever tilt={tilt} nut={-0.8 + nut * 0.8} live={live} /></group>
         <group position={BOX}><HookBox /></group>

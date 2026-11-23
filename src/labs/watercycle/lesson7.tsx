@@ -4,6 +4,9 @@ import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@
 import { useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { BUDGET, landGain, seaLoss, type LinkKey } from './physics'
 import { pathMid } from './world'
 
@@ -26,7 +29,7 @@ export default function Lesson7() {
   const labels: Label[] = links.map(k => ({ id: k, at: pathMid(k), ax: 0.5, className: `scene-tag -translate-y-full${k === 'move' || k === 'runoff' ? ' key' : ''}`, children: <><small>{NUM[k]![0]}</small>{NUM[k]![1]}</> }))
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="全球一年的水量"
+    <LabShell title="水循环" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="全球一年的水量"
       stage={<Basin labels={labels} want={{ links, rain: [...(sea ? ['sea' as const] : []), ...(land ? ['land' as const] : [])] }} />}
       lesson={<LessonBlock no="7" title="一年的水账" concept="多年平均来看，收入等于支出" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

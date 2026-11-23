@@ -8,6 +8,9 @@ import { DRAW_US, angleTo, hitHeight, imageDistance, mirrorPoint } from './physi
 import { UprightMirror } from './props'
 import { Finale, Note, Readout } from './ui'
 import { CM, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type U = '8' | '14'
 const STEPS = ['画第一条光线', '画第二条光线', '把反射光线反向延长'] as const
@@ -52,7 +55,7 @@ export default function Lesson5() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光路图"
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title={TITLE} lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光路图"
       stage={<Dark at="draw" labels={labels}>
         <UprightMirror x={X0} y={MY} h={MH} d={0.8} />
         <Candle x={S[0]} y={BASE} h={CH} />

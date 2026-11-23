@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { BASE2, BOX2 } from './lesson2'
 import { Block, Room, newLive } from './parts'
 import { BRINE, COPPER, ICE_M, RHO, STONE, brineAll, brinePart, displaced, massOf, reading, sci, stoneV2, toSI, volumeOf, weigh, weightsText } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
 const W = weigh(COPPER), A = brineAll(), P = brinePart(), FE = 158, BALL_V = 30, feV = volumeOf('fe', FE)
@@ -41,7 +44,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="质量与密度" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell narration={voiced(NARRATION['q'], VOICE)} autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="质量与密度" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Room at="s2" labels={[]}>
         <Balance at={BASE2} left={COPPER} right={reading(W.on, W.rider)} rider={W.rider} nut={0.2} live={live} leftPan={<Block kind="cu" size={[2.5, 2, 2]} />} />
         <WeightSet box={BOX2} base={BASE2} on={W.on} live={live} snap="q" />

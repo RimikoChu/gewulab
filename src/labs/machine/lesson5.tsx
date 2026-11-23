@@ -10,6 +10,9 @@ import { FIXED_SLANT, rig5, round, type Rig5 } from './physics'
 import { PulleyRig, type RigDef } from './pulley'
 import { ScaleView, Table } from './views'
 import { BZ, ST, TOP, U, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const H = 110, X = ST.l5, Y0 = TOP + H * U, ORG: V3 = [X, Y0, BZ]
 const FIX: RigDef = { fixed: [{ o: [-12, -1], wheels: [[0, -7]] }], start: { on: 'load', p: [-9, -50] }, wraps: [{ b: 'f', k: 0, w: 0, s: 1 }], out: [0, -1], free0: 20, hooks: 4, hang: 'start' }
@@ -59,7 +62,7 @@ export default function Lesson5() {
     { id: 'n2', at: world([29, -70 + riseM]), ax: 0, name: true, className: 'scene-name -translate-y-1/2', children: '动滑轮' },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="滑轮"
+    <LabShell title="简单机械" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="滑轮"
       stage={<Place at="l5" labels={labels}>
         <group position={[X, TOP, BZ]}><Frame w={96} h={H}>
           <group position={[6 * U, 0, 4 * U]}><MeterStick len={100} /></group>

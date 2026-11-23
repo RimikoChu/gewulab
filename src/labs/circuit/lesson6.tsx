@@ -1,5 +1,8 @@
 // 电路 · 第 6 课 串、并联电路中电压的规律：两只规格不同的灯，一只电压表的两根线轮流接在 L₁、L₂、电源两端。
 // 串联：U₁ 1.2 V + U₂ 1.8 V = U 3.0 V。并联：三处都是 3.0 V。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -58,7 +61,7 @@ export default function Lesson6() {
   const head = ['', 'U₁ / V', 'U₂ / V', 'U / V']
   const show = (l: Link) => [LINK_NAME[l], ...AC.map(a => rows[l][a] !== undefined ? f1(rows[l][a]!) : '—')]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电压表"
+    <LabShell title="电路" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['6'], VOICE)} actionsLabel="电压表"
       stage={<Place at="l6" labels={labels}>
         <Bench at="l6"><TwoLampRig link={link} c={live ? c : twoLamps(link, false)} knife={knife} move={move} wired={wired} volt={ac} voltK={m.k} /></Bench>
       </Place>}

@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { LIQUID } from './parts'
 import { METALS, negativeOf } from './physics'
 import Rig, { X } from './rig'
@@ -35,7 +38,7 @@ export default function LessonX() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell title="原电池" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<Rig left="Zn" right={ship ? 'Fe' : 'Cu'} liquid={sub === 'fruit' ? LIQUID.juice : LIQUID.acid} joined={on && sub !== 'waste'} flow={on && sub !== 'waste' ? (sub === 'fruit' ? 0.25 : 0.5) : 0} labels={labels} />}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && (

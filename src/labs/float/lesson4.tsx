@@ -6,6 +6,9 @@ import { LESSONS, goLesson } from './lessons'
 import { cn } from '@/lib/utils'
 import Scene4 from './scene4'
 import { BLOCKS, G, LIQUIDS, START_GAP, STEP, advance, kN, maxDrop, solve, type BlockKey, type Lesson4Result, type Lesson4State, type LiquidKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 
 // 任务在按“记录数据”的那一刻判定。顺序按吊车往下放的顺序排：先一半，再全部，最后换海水
@@ -114,7 +117,7 @@ export default function Lesson4() {
 
   const allDone = TASKS.every(t => done[t.id])
   return (
-    <LabShell autoStep={() => { if (moving || busy || next !== 'lower' || !task) return false; moveTo(task.goal === 'half' ? halfDrop(st.block) : fullDrop(st.block)); return true }} title="浮力" lessons={LESSONS} current="4" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} autoStep={() => { if (moving || busy || next !== 'lower' || !task) return false; moveTo(task.goal === 'half' ? halfDrop(st.block) : fullDrop(st.block)); return true }} title="浮力" lessons={LESSONS} current="4" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene4 r={r} block={st.block} liquid={st.liquid} flowing={flowing} drop={st.drop} onDrop={dragTo} dragHint={!touched} />}
       lesson={
         <LessonBlock no="4" title="阿基米德原理" concept="排开多少水，就得到多大的浮力" tasks={TASKS} done={done} current={task?.id}

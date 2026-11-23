@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { REPEATS, mean } from './physics'
 import { PLAT, TRACK, Train } from './world'
 
@@ -30,7 +33,7 @@ export default function LessonX() {
   const labels: Label[] = sub === 'side' ? [{ id: 'a', at: [x - 12, PLAT + 3.4, TRACK.near], ax: 0.5, className: 'scene-tag -translate-y-full', children: '我坐的车' }, { id: 'b', at: [x - 12, PLAT + 3.4, TRACK.far], ax: 0.5, className: `scene-tag -translate-y-full${on ? ' key' : ''}`, children: on ? '在我看来：静止' : '旁边的车' }] : []
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell title="机械运动" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<At at="platform" labels={labels}><Train x={x} z={TRACK.near} /><Train x={x} z={TRACK.far} color="#f1ede4" stripe="#c9453a" /></At>}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && (

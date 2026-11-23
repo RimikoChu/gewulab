@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Microscope } from './models'
 import { DIRS, FOCUS, imageMoves, seenAs, slideToCenter, type Dir } from './physics'
 import View from './view'
@@ -31,7 +34,7 @@ export default function Lesson3() {
     : { hint: `物像清楚了，但偏在${DIRS[IMAGE_AT]}。玻片该往哪边移？`, next: right }
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
+    <LabShell title="细胞" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
       stage={<LabStage labels={last ? [{ id: 's', at: [ST.scope + 0.3, TOP + 0.75, 0.1], className: 'scene-tag key -translate-y-1/2', children: <><small>第 {step} 步</small>{last.name}</> }] : []} target={SPOT.scope} span={SPAN.scope}><Microscope position={[ST.scope, TOP, 0]} glow={step === 2 ? 'light' : step === 3 || step === 4 || step === 5 ? 'focus' : step === 1 ? 'lens' : null} /></LabStage>}
       lesson={<LessonBlock no="3" title="对光和调焦" concept="先对光，再调焦；看到的是倒像" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

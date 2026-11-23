@@ -8,6 +8,9 @@ import { SEEDS, embryoOf, storeOf, turnsBlue, type PartKey, type SeedKey } from 
 import { BEAN_X, CORN_X, S0, SeedBench, beanAnchor, cornAnchor } from './seeds'
 import { Finale, H, Row } from './ui'
 import { Room } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'open', text: '剥去菜豆种子的种皮，掰开两片子叶', note: '种皮里面是胚，两片肥厚的是子叶' },
@@ -50,7 +53,7 @@ export default function Lesson1() {
     { id: 'ni', at: at([5.6, 2.5, -1.6]), ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '碘液' },
   ]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SEEDS[seed].name}
+    <LabShell title="植物的一生" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SEEDS[seed].name}
       stage={<Room at="s1" labels={labels} shift={[seed === 'bean' ? BEAN_X + 0.2 : CORN_X + 0.4, 0, 0.1]} span={[6.6, 3.9]}><SeedBench open={open} cut={cut} drop={drop} sel={sel} seed={seed} /></Room>}
       lesson={<LessonBlock no="1" title="种子的结构" concept="种子里有胚，胚是新植物的幼体" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

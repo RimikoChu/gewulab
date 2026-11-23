@@ -6,6 +6,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Axis, Dark, Lens, Ray } from './optics'
 import { F, LENSES, type LensKey } from './physics'
 import { AXIS, CM, ST } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(LENSES) as LensKey[]
 const TASKS: Task[] = [
@@ -31,7 +34,7 @@ export default function Lesson2() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="透镜"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="透镜"
       stage={<Dark at="bench" labels={labels}>
         <Axis x0={X(-36)} x1={X(36)} y={AXIS} marks={[X(cx ? F : -F)]} />
         <mesh position={[X(-34.5), AXIS, 0]}><boxGeometry args={[0.16, 0.86, 0.4]} /><meshStandardMaterial color="#2b3136" metalness={0.5} roughness={0.5} /></mesh>

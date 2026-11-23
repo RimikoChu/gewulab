@@ -7,6 +7,9 @@ import { LESSONS, TITLE, goLesson } from './lessons'
 import { useEase } from './optics'
 import { ANGLES, bounce } from './physics'
 import { DataTable, Finale, Readout } from './ui'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type A = '30' | '45' | '60'
 const TASKS: Task[] = [
@@ -48,7 +51,7 @@ export default function Lesson2() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光屏和激光笔"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title={TITLE} lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光屏和激光笔"
       stage={<Board i={i} fold={f} rev={rev} k={k} labels={labels} />}
       lesson={<LessonBlock no="2" title="反射定律" concept="反射角等于入射角" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

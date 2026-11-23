@@ -1,6 +1,9 @@
 // 电路 · 第 4 课 串、并联电路中电流的规律：两只规格不同的灯，一只电流表轮流接在 A、B、C 三处。
 // 串联：三处都是 0.12 A。并联：L₁ 支路（A）0.30 A，L₂ 支路（B）0.20 A，干路（C）0.50 A。
 // 换位置时开关先断开，电流表挪过去、导线接好，再自动合上开关。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -67,7 +70,7 @@ export default function Lesson4() {
   const head = ['', ...PTS.map(p => <span key={p} className="font-formula italic">I<sub>{p}</sub> / A</span>)]
   const show = (l: Link) => [LINK_NAME[l], ...PTS.map(p => rows[l][p] !== undefined ? f2(rows[l][p]!) : '—')]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电流表"
+    <LabShell title="电路" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['4'], VOICE)} actionsLabel="电流表"
       stage={<Place at="l4" labels={labels}>
         <Bench at="l4"><TwoLampRig link={link} c={live ? c : twoLamps(link, false)} knife={knife} move={move} wired={wired} amp={at} ampK={m.k} ampPos={ampPos} /></Bench>
       </Place>}

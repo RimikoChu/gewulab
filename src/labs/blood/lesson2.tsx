@@ -1,5 +1,8 @@
 // 血液循环 · 第 2 课 三种血管：右展台上三段放大的血管（动脉、静脉、毛细血管），纵向剖开，看管壁、管腔和红细胞走得多快；
 // 让静脉里的血倒流一下，看静脉瓣合上。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useRef, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -44,7 +47,7 @@ export default function Lesson2() {
     { id: 'mag', at: [VES_AT('capillary')[0] + 2.3, VES_AT('capillary')[1] + 0.3, VES_AT('capillary')[2]], ax: 0, name: true, className: 'scene-name', children: '都是放大的；毛细血管放大得更多' },
   ]
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="血管"
+    <LabShell title="血液循环" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['2'], VOICE)} actionsLabel="血管"
       stage={<Place at="ves" labels={labels} want={{ ves: { cut: cut.k, hl: kind, rev } }} />}
       lesson={<LessonBlock no="2" title="三种血管" concept="毛细血管最细最薄，血流最慢" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

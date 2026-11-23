@@ -8,6 +8,9 @@ import { CANDLE, HOLE_US, SCREEN, pinholeHeight, pinholeSize } from './physics'
 import { PinholeBox, Ruler } from './props'
 import { DataTable, Finale, Readout } from './ui'
 import { CM, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type U = '30' | '15' | '10'
 const TASKS: Task[] = [
@@ -60,7 +63,7 @@ export default function Lesson1() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小孔成像"
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title={TITLE} lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小孔成像"
       stage={<Dark at="hole" labels={labels}>
         <PinholeBox x={X0} y={AX} len={SCREEN * CM} hh={HH} />
         <Candlestick x={X(-u)} y0={TOP} h={Y(-CANDLE / 2) - TOP} />

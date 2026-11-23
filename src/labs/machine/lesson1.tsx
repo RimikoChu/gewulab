@@ -10,6 +10,9 @@ import { Glove, Place, useRun } from './parts'
 import { BAR, PUSH, crowbar, crowbarAt, pushAngle, round, type P2, type Push } from './physics'
 import { BAR_R, Chock, Crowbar, Rock } from './tools'
 import { M, YARD, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const CX = YARD.crow.x, CZ = YARD.crow.z, OY = 0.1 + BAR_R, FZ = CZ + 0.32
 const cm = (x: number) => round(x * 100, 1)
@@ -65,7 +68,7 @@ export default function Lesson1() {
     { id: 'n3', at: [CX + 0.2, 0.15, CZ + 0.5], name: true, className: 'scene-name', children: '垫块' },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="撬棍"
+    <LabShell title="简单机械" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="撬棍"
       stage={<Place at="l1" labels={labels}>
         <group position={[CX, 0.1 * M, CZ]}><Chock /></group>
         <group position={[CX + (tip[0] + 0.04 - 0.6 * Math.cos(phi)) * M, 0, CZ]} rotation-z={phi}>

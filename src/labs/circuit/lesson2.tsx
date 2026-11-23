@@ -1,6 +1,9 @@
 // 电路 · 第 2 课 串联和并联：长工作台上，一只电池盒、一只开关、两只规格不同的小灯泡 L₁、L₂。
 // 串联：闭合开关两只灯都亮，拧下 L₁，L₂ 也灭了（只有一条路）。并联：两只灯各在一条支路上，拧下 L₁，L₂ 照常亮。
 // 换连接方式时，先断开开关、装回灯泡、拆掉导线，两只灯挪到新位置，再重新连好。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -58,7 +61,7 @@ export default function Lesson2() {
     { id: 'L2s', at: W(add(L.L2, [4, 3.4, 0])), ax: 0, className: 'scene-tag -translate-y-1/2 transition-opacity', style: { opacity: live && out ? 1 : 0 }, children: <><small>L₂</small>{c.b2 > 0 ? '还亮着' : '灭了'}</> },
   ]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电路"
+    <LabShell title="电路" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['2'], VOICE)} actionsLabel="电路"
       stage={<Place at="l2" labels={labels}>
         <Bench at="l2"><TwoLampRig link={link} c={live ? c : twoLamps(link, false)} knife={knife} out={outK} move={move} wired={wired} /></Bench>
       </Place>}

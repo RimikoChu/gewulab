@@ -8,6 +8,9 @@ import { BEAM_IN, SPOTS, SURFACES, scatter, type SurfaceKey } from './physics'
 import { LightBox, MirrorSlab, PaperSlab, Platform, Post } from './props'
 import { Finale, Note, Readout } from './ui'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(SURFACES) as SurfaceKey[]
 const TASKS: Task[] = [
@@ -48,7 +51,7 @@ export default function Lesson3() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SURFACES[kind].name}
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title={TITLE} lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SURFACES[kind].name}
       stage={<Dark at="rough" labels={labels}>
         <Platform x={X0} y={SY - 0.12} w={2.8} d={0.74} />
         {same ? <MirrorSlab x={X0} y={SY} w={2.5} d={0.6} t={0.12} /> : <PaperSlab x={X0} y={SY} s={S} d={0.6} t={0.12} />}

@@ -4,6 +4,9 @@ import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@
 import { LabStage, useTasks, type Label } from '@/lab-kit'
 import * as THREE from 'three'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { DRY, DRY_VOLT, type DryKey } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
 
@@ -25,7 +28,7 @@ export default function Lesson6() {
   const labels: Label[] = KEYS.slice(0, n).map(k => ({ id: k, at: [X + AT[k][0], TOP + AT[k][1], 0.2], ax: AT[k][0] < 0 ? 1 : 0, className: `scene-tag -translate-y-1/2${now === k ? ' key' : ''}`, children: <><small>{DRY[k].role}</small>{DRY[k].name}</> }))
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="干电池模型"
+    <LabShell title="原电池" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="干电池模型"
       stage={<LabStage labels={labels} target={SPOT.three} span={SPAN}>
         {/* 一节放大的干电池，朝镜头的一半切掉了 */}
         <group position={[X, TOP + 0.08, 0]} rotation-y={-0.42 + Math.PI / 2}>

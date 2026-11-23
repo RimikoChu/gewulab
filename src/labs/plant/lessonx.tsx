@@ -11,6 +11,9 @@ import { Flesh, Glass, blob, ease, fuse, lerp, mixHex, place, rng, seg, tube, us
 import { GROUPS, SALTS, SAMPLE, germRate, growsWell, meanRate, setsFruit, type Liquid } from './physics'
 import { Finale, H } from './ui'
 import { AT, BENCH, FLOWER_A, FLOWER_B, Room, beanPlant } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'rate' | 'hydro' | 'hand'
 const SUBS: { key: Sub; name: string }[] = [{ key: 'rate', name: '发芽率' }, { key: 'hydro', name: '无土栽培' }, { key: 'hand', name: '人工授粉' }]
@@ -128,7 +131,7 @@ export default function LessonX() {
     { id: 'b', at: [FLOWER_B[0] + 0.2, FLOWER_B[1] + 2.5, FLOWER_B[2]], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '另一朵花' },
   ]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS.find(s => s.key === sub)!.name}
+    <LabShell title="植物的一生" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS.find(s => s.key === sub)!.name}
       stage={<Room at={sub === 'rate' ? 'rate' : sub === 'hydro' ? 'hydro' : 's6b'} labels={labels}>
         <RateTray group={grp} k={cult ? k : 0} />
         <group position={H0}><HydroPlant liquid="water" x={-1.9} k={hk} /><HydroPlant liquid="nutrient" x={1.9} k={hk} /></group>

@@ -12,6 +12,9 @@ import { Glove, Place, useSettled } from './parts'
 import { SLANT, armOf, hooksN, leverTilt, round, sideMoment, slantArm, slantForce, type Angle } from './physics'
 import { LeverView, ScaleView, Table } from './views'
 import { BZ, ST, TOP, U, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const NAME: Record<Angle, string> = { 0: '竖直向上', 30: '偏 30°', 60: '偏 60°' }
 const TASKS: Task[] = SLANT.angles.map(a => ({ id: `a${a}`, text: a === 0 ? '竖直向上拉，让杠杆在水平位置平衡，记下示数' : `把拉的方向偏离竖直 ${a}°，杠杆还在水平位置平衡时记下示数`, note: `力臂 ${round(slantArm(a) * 100, 1)} cm，拉力 ${slantForce(a).toFixed(2)} N${a ? '：方向一斜，力臂变短，拉力变大' : ''}` }))
@@ -68,7 +71,7 @@ export default function Lesson3() {
     { id: 'n1', at: [X + 1.2, PY - 1.6, BZ], name: true, className: 'scene-name', children: '杠杆尺 · 每格 5 cm' },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="弹簧测力计"
+    <LabShell title="简单机械" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="弹簧测力计"
       stage={<Place at="l3" labels={labels}>
         <group position={BASE}><Lever tilt={tilt} live={live} /></group>
         <group position={[X + 3.0, TOP, BZ + 1.1]}><HookBox n={6} /></group>

@@ -10,6 +10,9 @@ import { Done, H2, Room, useReading } from './parts'
 import { BOIL, CLINIC, CUPS, FREEZE, ROOM, THERMO, readT, steady, type CupKey } from './physics'
 import { ThermoView } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: CupKey[] = ['ice', 'warm', 'hot']
 const TASKS: Task[] = [
@@ -61,7 +64,7 @@ export default function Lesson1() {
     { id: 'th', at: [x - 0.06, bulb + 1.5, Z], ax: 1, name: true, className: 'scene-name -translate-y-1/2', children: '温度计' },
   ]
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="温度计"
+    <LabShell title="物态变化" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="温度计"
       stage={<Room at="s1" labels={labels}>
         {/* 两只铁架台架着一根横杆，温度计用细线挂在横杆上 */}
         <Stand at={[X - 1.7, TOP, Z]}><Boss y={BAR} /></Stand>

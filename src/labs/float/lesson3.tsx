@@ -7,6 +7,9 @@ import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { G, LIQUIDS3, MATS, STEP, dropForTop3, kN, maxDrop3, solve3, type Lesson3Result, type Liquid3Key, type MatKey } from './physics'
 import { useCrane } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Factor = 'vol' | 'liq' | 'mat' | 'depth'
 const FACTORS: Record<Factor, { name: string; ask: string; yes: string; no: string }> = {
@@ -99,7 +102,7 @@ export default function Lesson3() {
   const posNow = factor === 'vol' || factor === 'depth' ? POS[factor].find(p => Math.abs(p.drop - drop) < 0.02)?.key ?? '' : ''
   const fixed = [factor !== 'mat' && '钢块 1 m³', factor !== 'liq' && '淡水', factor !== 'vol' && '完全浸没'].filter(Boolean).join(' · ')
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="浮力" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene3 r={r} mat={mat} liquid={liquid} drop={drop} onDrop={crane.dragTo} dragHint={!crane.touched} />}
       lesson={
         <LessonBlock no="3" title="和什么有关" concept="每次只改一个条件，看浮力变不变" tasks={TASKS} done={done} current={factor}

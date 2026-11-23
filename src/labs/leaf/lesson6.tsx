@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import House from './house'
 import { LESSONS, goLesson } from './lessons'
 import { MARKS, balanceTimes, clock, co2At, lightAt, photoAt, respAt, stored } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = MARKS.map(h => ({
   id: String(h), text: `到 ${h} 时，记下二氧化碳浓度`,
@@ -35,7 +38,7 @@ export default function Lesson6() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="时间"
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="时间"
       stage={<House t={t} />}
       lesson={<LessonBlock no="6" title="大棚的一昼夜" concept="光合作用白天才有，呼吸作用昼夜不停" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

@@ -11,6 +11,9 @@ import { WINDS, rig6, round, type Wind } from './physics'
 import { PulleyRig, type RigDef } from './pulley'
 import { ScaleView, Table } from './views'
 import { BZ, ST, TOP, U, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const H = 110, X = ST.l6, Y0 = TOP + H * U
 const DEFS: Record<Wind, RigDef> = {
@@ -52,7 +55,7 @@ export default function Lesson6() {
     { id: 'n2', at: world([-46, -70]), ax: 1, name: true, className: 'scene-name -translate-y-1/2', children: '动滑轮' },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="滑轮组"
+    <LabShell title="简单机械" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="滑轮组"
       stage={<Place at="l6" labels={labels}>
         <group position={[X, TOP, BZ]}><Frame w={100} h={H}>
           <group position={[-14 * U, 0, 4 * U]}><MeterStick len={100} /></group>

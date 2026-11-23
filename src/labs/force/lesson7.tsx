@@ -10,6 +10,9 @@ import { LESSONS, goLesson } from './lessons'
 import { CASES, DRAG, MU, SPRING_K, dragAt, dragEnd, friction, pressure, type Case7 } from './physics'
 import { Diagram, ScaleView } from './views'
 import { BENCH_Z, ST, TOP, U, type SpotKey } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: Case7[] = ['base', 'load', 'towel', 'side']
 const f2 = (k: Case7) => friction(k).toFixed(2)
@@ -109,7 +112,7 @@ export default function Lesson7() {
     { id: 'n3', at: P(-8, -2.5, 9), ax: 0.5, name: true, className: 'scene-name', children: c.face === 'towel' ? '长木板上铺着毛巾' : '长木板' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="卷线器"
+    <LabShell title="力和运动" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="卷线器"
       stage={<DragStage at="l7" labels={labels}><DragRig face={c.face} load={c.load} side={c.side} f={f} run={run} onEnd={ended} /></DragStage>}
       lesson={<LessonBlock no="7" title="滑动摩擦力" concept="跟压力和粗糙程度有关" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

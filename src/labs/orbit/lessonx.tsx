@@ -7,6 +7,9 @@ import Scene6 from './scene6'
 import PendulumScene from './scenex'
 import { LESSONS, goLesson } from './lessons'
 import { TILT, YEAR, dateText, dayLength, hoursText, latText, noonAltitude, pendulumRate, shadowLength, subsolarLat, termOf } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'height' | 'upright' | 'pendulum'
 const SUBS: Record<Sub, { name: string; title: string; concept: string }> = {
@@ -41,7 +44,8 @@ export default function LessonX() {
   // 傅科摆
   const [spot, setSpot] = useState<SpotKey>('bj'), [hoursGoal, setHoursGoal] = useState(0), [swung, setSwung] = useState<SpotKey[]>([])
   const hours = useSlide(hoursGoal, 2.5), turned = pendulumRate(SPOT[spot].lat) * hours
-  useEffect(() => { if (hours >= 5.99) { const next = swung.includes(spot) ? swung : [...swung, spot]; if (next !== swung) setSwung(next); if (next.includes('bj') && next.includes('eq')) T.check(id => id === 'pendulum') } }, [hours, spot])   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (hoursGoal >= 6 && hours >= 5.99) {   // 换地点时目标先归零，读数还在往回滑，不能算这里摆过了
+     const next = swung.includes(spot) ? swung : [...swung, spot]; if (next !== swung) setSwung(next); if (next.includes('bj') && next.includes('eq')) T.check(id => id === 'pendulum') } }, [hours, hoursGoal, spot])   // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetAll = () => { setSub('height'); setCity('bj'); setWinter(false); setSeen([]); setTiltGoal(TILT); setYearGoal(20); from.current = 20; setSpot('bj'); setHoursGoal(0); setSwung([]); T.reset() }
   const nextSub = ORDER.find(k => !T.done[k])
@@ -53,7 +57,7 @@ export default function LessonX() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="地球的运动" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint}
       actionsLabel={{ height: '哪一天的正午', upright: '地轴和地球', pendulum: '时间' }[sub]}
       stage={sub === 'height' ? <Scene6 altitude={alt} shadow={Math.abs(shadowLength(10, alt))} city={CITY[city].name} /> : sub === 'upright' ? <Scene4 day={day} tilt={Math.round(tilt * 10) / 10} /> : <PendulumScene turned={turned} place={SPOT[spot].name} />}
       lesson={

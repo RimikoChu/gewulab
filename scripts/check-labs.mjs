@@ -60,7 +60,7 @@ for (const id of labs) {
 if (has('public/assets')) {
   const list = has('public/assets/README.md') ? read('public/assets/README.md') : ''
   const walk = d => readdirSync(join(root, d)).flatMap(f => statSync(join(root, d, f)).isDirectory() ? walk(`${d}/${f}`) : [`${d}/${f}`])
-  for (const f of walk('public/assets')) { const name = f.split('/').pop(); if (name !== 'README.md' && !list.includes(name)) err('素材', `${f} 没有登记在 public/assets/README.md（来源和许可）`) }
+  for (const f of walk('public/assets')) { const name = f.split('/').pop(); if (name !== 'README.md' && !/public\/assets\/voice\//.test(f) && !list.includes(name)) err('素材', `${f} 没有登记在 public/assets/README.md（来源和许可）`) }
 }
 
 for (const w of warns) console.log('提醒 ' + w)

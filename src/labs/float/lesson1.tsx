@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import Scene1 from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { ITEMS, STEP, kN, maxDrop1, solve1, type ItemKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Rec = Partial<Record<ItemKey, { g?: number; f?: number }>>
 const both = (x?: { g?: number; f?: number }) => x?.g != null && x?.f != null
@@ -94,7 +97,7 @@ export default function Lesson1() {
   const rows = (Object.keys(ITEMS) as ItemKey[]).filter(k => rec[k])
   const it = ITEMS[item]
   return (
-    <LabShell autoStep={() => { if (moving || busy || (next !== 'lower' && next !== 'raise')) return false; moveTo(next === 'lower' ? max : 0); return true }} title="浮力" lessons={LESSONS} current="1" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} autoStep={() => { if (moving || busy || (next !== 'lower' && next !== 'raise')) return false; moveTo(next === 'lower' ? max : 0); return true }} title="浮力" lessons={LESSONS} current="1" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene1 r={r} item={item} drop={drop} onDrop={dragTo} dragHint={!touched} />}
       lesson={
         <LessonBlock no="1" title="水里变轻了" concept="读数变小了多少，浮力就是多少" tasks={TASKS} done={done} current={task?.id}

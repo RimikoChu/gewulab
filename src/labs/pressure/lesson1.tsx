@@ -5,6 +5,9 @@ import Scene1 from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { POSES, kN, solve1, type PoseKey } from './physics'
 import { useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; pose: PoseKey; n: number; F: number; S: number; sink: number }
 const TASKS: Task[] = [
@@ -65,7 +68,7 @@ export default function Lesson1() {
   }, [])
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="混凝土块（点一下它可以换放法）"
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="压强" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="混凝土块（点一下它可以换放法）"
       stage={<Scene1 pose={pose} n={n} down={down} sink={r.sink} pit={pit} F={r.F} S={r.S} onTap={() => change(ORDER[(ORDER.indexOf(pose) + 1) % 3])} tapHint={next === 'pose' && !tapped} />}
       lesson={
         <LessonBlock no="1" title="压出来的坑" concept="压得多重、压在多大一块地方，都算数" tasks={TASKS} done={T.done} current={task?.id}
