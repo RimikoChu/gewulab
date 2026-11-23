@@ -32,7 +32,7 @@ export function SiteFooter() {
       {(paid || channels.length > 0) && (
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-5 border-t pt-6">
           {paid && <div className="flex items-center gap-3">
-            {SITE.contact.qr && <img src={SITE.contact.qr} alt="联系方式的二维码" className="size-24 rounded-md border" />}
+            {SITE.contact.qr && <img src={SITE.contact.qr} alt="联系方式的二维码" className="size-32 rounded-md border" />}
             <div><p className="text-[13.5px] font-semibold">培训、定制、商业合作</p>{SITE.contact.text && <p className="mt-1 text-[13.5px] text-muted-foreground">{SITE.contact.text}</p>}</div>
           </div>}
           {channels.map(c => (

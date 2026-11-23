@@ -19,3 +19,9 @@ NASA 的地球影像，公有领域（美国政府作品，不受版权限制，
 | tex/earth_aux.jpg | 三个通道各放一样东西。红：云，由 Blue Marble 带云的那张（`Land_ocean_ice_cloud_hires.jpg`）减去无云的那张得到；绿：海面范围，从无云图按颜色分出来；蓝：夜晚灯光，取自 NASA/NOAA DMSP 1994–1995 城市灯光图（`Earth's City Lights by DMSP, 1994-1995 (large).jpg`） | 地球的运动：云、海面反光、夜晚的城市灯光 |
 
 新增素材时，每个文件都要在这张表里写明文件名、来源和许可。`npm run check:labs` 会逐个核对。
+
+## site/
+
+| 文件 | 来源 | 许可 |
+|---|---|---|
+| `site/wechat.png` | 项目维护者自己的微信二维码，首页底部的联系方式用 | 维护者本人提供；不是可以再分发的素材，别的站点不要用 |
