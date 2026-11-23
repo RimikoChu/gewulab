@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import * as THREE from 'three'
 import { DAM, SITE3 } from './physics'
 import { Hills, Pines } from './world'
-import { Painted, makeStrata, mergeParts, useConcrete, useFaceGradient, useRipple, useSlide, type Part } from '@/lab-kit'
+import { Painted, makeStrata, mergeParts, useConcrete, useFaceGradient, useRipple, useSlide, type Part, makeGround } from '@/lab-kit'
 
 /** 各课所在的位置（x 坐标） */
 export const ST = { lock: 150, tunnel: 102, sand: 72, road: 40, bank: 0, dam: -250 }
@@ -87,7 +87,8 @@ function Terrain() {
   const tex = useMemo(() => {
     const base = makeStrata(['#6f6a55', '#8a7a5c', '#7b6a4e', '#6a5a44', '#5c5142', '#54493d']), sand = makeStrata(SAND), soil = makeStrata(SOIL)
     base.wrapT = THREE.RepeatWrapping; base.repeat.set(0.07, 0.2); sand.repeat.set(3, 1); soil.repeat.set(3, 1)
-    return { base, sand, soil }
+    const sandTop = makeGround('#d8c08f', '190,164,112', '236,220,178', 5), soilTop = makeGround('#8f7d5b', '104,88,60', '160,144,110', 9); sandTop.repeat.set(7, 4); soilTop.repeat.set(5, 2.5)
+    return { base, sand, soil, sandTop, soilTop }
   }, [])
   // 剖面：整条岩土面是一个多边形，泥浆井那里挖一个洞
   const face = useMemo(() => {
@@ -129,8 +130,8 @@ function Terrain() {
       <mesh position={[(CANAL.x0 + CANAL.x1) / 2, CANAL.bed / 2, CANAL.back]}><planeGeometry args={[CANAL.x1 - CANAL.x0, -CANAL.bed]} /><meshStandardMaterial color="#8f8d84" roughness={0.9} /></mesh>
       <mesh position={[CANAL.x0, CANAL.bed / 2, CANAL.back / 2]} rotation-y={Math.PI / 2}><planeGeometry args={[-CANAL.back, -CANAL.bed]} /><meshStandardMaterial color="#8f8d84" roughness={0.9} /></mesh>
       <mesh position={[CANAL.x1, CANAL.bed / 2, CANAL.back / 2]} rotation-y={-Math.PI / 2}><planeGeometry args={[-CANAL.back, -CANAL.bed]} /><meshStandardMaterial color="#8f8d84" roughness={0.9} /></mesh>
-      <mesh position={[ST.sand + 1, 0.012, -7]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[26, 14]} /><meshStandardMaterial color="#d8c08f" roughness={1} /></mesh>
-      <mesh position={[ST.road + 6.5, 0.012, -4.5]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[19, 9]} /><meshStandardMaterial color="#8f7d5b" roughness={1} /></mesh>
+      <mesh position={[ST.sand + 1, 0.012, -7]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[26, 14]} /><meshStandardMaterial map={tex.sandTop} roughness={1} /></mesh>
+      <mesh position={[ST.road + 6.5, 0.012, -4.5]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[19, 9]} /><meshStandardMaterial map={tex.soilTop} roughness={1} /></mesh>
       {/* 水底：岸边浅水区、斜坡、坝前和下游的河床 */}
       <mesh position={[(SLOPE1 + WALL0) / 2, SHELF, BACK / 2]} rotation-x={-Math.PI / 2} receiveShadow><planeGeometry args={[WALL0 - SLOPE1, -BACK]} /><meshStandardMaterial color="#27505a" roughness={0.9} /></mesh>
       <mesh position={[(SLOPE0 + SLOPE1) / 2, (DEEP + SHELF) / 2, BACK / 2]} rotation={[-Math.PI / 2, -Math.atan2(SHELF - DEEP, SLOPE1 - SLOPE0), 0]}><planeGeometry args={[Math.hypot(SLOPE1 - SLOPE0, SHELF - DEEP), -BACK]} />{rock}</mesh>
@@ -145,7 +146,8 @@ function Terrain() {
       <mesh geometry={site} castShadow receiveShadow><Painted rough={0.8} metal={0.1} /></mesh>
       {[[ST.sand - 11, -5, 2.6, 1.7], [ST.sand + 13, -6, 3.2, 2.1], [ST.sand + 15.5, -4.4, 2, 1.3]].map(([x, z, rr, h], i) => <mesh key={i} position={[x, h / 2, z]} castShadow receiveShadow><coneGeometry args={[rr, h, 24]} /><meshStandardMaterial color="#cdb588" roughness={1} /></mesh>)}
       <Pines at={[[7, -15, 1], [9.5, -19, 1.3], [16, -17, 1.1], [18, -22, 1.4], [13, -27, 1.2], [26, -18, 1.5], [8, -30, 1.1], [30, -30, 1.6], [20, -36, 1.3], [15, -5, 0.8],
-        [44, -19, 1.2], [52, -22, 1.4], [60, -18, 1.3], [68, -20, 1.1], [78, -19, 1.4], [88, -16, 1.5], [96, -24, 1.4], [36, -24, 1.3]]} />
+        [44, -19, 1.2], [52, -22, 1.4], [60, -18, 1.3], [68, -20, 1.1], [78, -19, 1.4], [88, -16, 1.5], [96, -24, 1.4], [36, -24, 1.3],
+        [40, -27, 1.6], [48, -30, 1.3], [56, -26, 1.7], [64, -29, 1.4], [73, -25, 1.6], [83, -28, 1.3], [92, -31, 1.7], [102, -20, 1.2], [110, -26, 1.5], [24, -27, 1.7], [11, -22, 1.5], [34, -34, 1.8], [118, -22, 1.4], [126, -28, 1.6]]} />
     </group>
   )
 }
