@@ -25,7 +25,7 @@ export function SiteFooter() {
         {paid && <Way title="课件制作培训" lines={['面向想自己制作互动课件的老师。借助 AI 工具，3 到 7 天完成第一节互动微课。', '年费 299 元，含分步教程、起手模板和一年答疑。']} />}
         {paid && <Way title="课件定制" lines={['根据你的教学内容，定制一节互动微课。', '先确认需求与范围，在线预览满意后交付。']} />}
         {paid && <Way title="学校与机构合作" lines={['校内离线部署、按教材与进度定制成套课件、教师使用与制作培训。']} />}
-        <Way title="成为贡献者" lines={['本项目开源。你可以认领尚未完成的实验室，作品上线后署名展示。']}>
+        <Way title="成为贡献者" lines={['本项目开源。你可以认领尚未完成的实验室，一起完善这套课件。']}>
           <a className={link} href={SITE.repo} target="_blank" rel="noreferrer">查看认领方式</a>
         </Way>
       </div>
