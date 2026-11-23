@@ -5,6 +5,7 @@ import { NumberTicker } from '@/components/ui/number-ticker'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { LabMap } from '@/components/lab-map'
+import { SiteFooter } from '@/components/site-footer'
 import { CHANGES } from '@/changelog'
 import { LABS, SUBJECTS, type SubjectKey, hasOffline, offlineUrl } from '@/labs'
 
@@ -93,6 +94,7 @@ export default function App() {
           </p>
         )}
         {pool.some(l => subject === 'all' || l.s === subject) ? <LabMap labs={pool} subject={subject} /> : <p className="w-full py-14 text-center text-faint">没有找到相关的实验</p>}
+        <SiteFooter />
       </main>
       {log && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-4" onClick={() => setLog(false)}>

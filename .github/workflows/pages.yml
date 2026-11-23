@@ -1,0 +1,44 @@
+# 发布站点：main 一变，就重新构建并发布到 GitHub Pages。离线包也打一遍放在站点的 offline/ 下，首页的下载链接指向那里。
+# 站点的路径前缀写在下面的 GEWU_BASE 里：现在用免费网址 https://rimikochu.github.io/gewulab/ ，所以是 /gewulab/；以后绑了自己的域名改成 / 。
+name: 发布站点
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:offline
+      - name: 构建站点
+        env:
+          GEWU_BASE: /gewulab/
+          VITE_GEWU_OFFLINE: '1'
+        run: npm run build
+      - name: 把离线包放进站点
+        run: mkdir -p dist/offline && cp dist-offline/*.zip dist-offline/packs.json dist/offline/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
