@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Cell } from './models'
 import { PARTS, PART_KEYS, has, onlyPlant, type CellKind } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -26,7 +29,7 @@ export default function Lesson6() {
     : task.id === 'animal' ? { hint: '把模型换成“动物细胞”', next: 'kind' } : { hint: '按“比一比”：植物细胞比它多了哪几样', next: 'cmp' }
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="细胞模型"
+    <LabShell title="细胞" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="细胞模型"
       stage={<LabStage labels={[{ id: 'n', at: [ST.model, TOP + 1.85, 0], ax: 0.5, className: `scene-tag -translate-y-full${cmp ? ' key' : ''}`, children: cmp ? <><small>植物细胞才有</small>{onlyPlant().map(k => PARTS[k].name).join(' · ')}</> : NAME[kind] }]} target={SPOT.model} span={SPAN.model}><Cell position={[ST.model, TOP + 0.95, 0]} kind={kind} glow={cmp ? onlyPlant() : []} /></LabStage>}
       lesson={<LessonBlock no="6" title="动物细胞少了什么" concept="都有膜、质、核；植物细胞多三样" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

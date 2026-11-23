@@ -5,6 +5,9 @@ import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { LOCK, lockBlock, lockGoal, lockNext, lockStart, type Lock5 } from './physics'
 import { useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'in', text: '让闸室和下游相平，把船开进闸室', note: '阀门一开，闸室和下游底下连通了：水面慢慢变得一样高' },
@@ -56,7 +59,7 @@ export default function Lesson5() {
   const doNext = () => { if (next) { if (next.key === 'go') go(); else tap(next.key) } }
 
   return (
-    <LabShell autoStep={() => { if (task?.id !== 'stuck' || s.boat !== 0) return false; tap('gLow'); return true }} title="压强" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner ?? why} onReset={resetAll} hint={hint} actionsLabel="船闸（阀门、闸门、船都可以直接点）"
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} autoStep={() => { if (task?.id !== 'stuck' || s.boat !== 0) return false; tap('gLow'); return true }} title="压强" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner ?? why} onReset={resetAll} hint={hint} actionsLabel="船闸（阀门、闸门、船都可以直接点）"
       stage={<Scene5 s={s} onTap={tap} onGo={go} />}
       lesson={
         <LessonBlock no="5" title="船怎样翻过大坝" concept="底下连通了，水面就会一样高" tasks={TASKS} done={T.done} current={task?.id}

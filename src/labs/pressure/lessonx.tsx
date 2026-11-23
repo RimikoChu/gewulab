@@ -5,6 +5,9 @@ import SceneX, { type Sub } from './scenex'
 import { LESSONS, goLesson } from './lessons'
 import { BALL, BOIL, JACK, P0, SPOTS, ballHold, kN, kPa, pWater, tonPerM2, type SpotKey } from './physics'
 import { useSlide, useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const SUBS: Record<Sub, { name: string; title: string; concept: string }> = {
   ball: { name: '半球', title: '马德堡半球', concept: '看不见的空气，力气大得惊人' },
@@ -96,7 +99,7 @@ export default function LessonX() {
   }[sub]
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="压强" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint}
       actionsLabel={{ ball: '半球', dive: '潜水器（也可以直接抓住它拖）', boil: '灶和锅', jack: '压小活塞' }[sub]}
       stage={<SceneX sub={sub} ball={{ vac, pull, open }} dive={{ h, onH: setHGoal }} boil={{ spot, lid, temp, boiling }} jack={{ push, lift }} />}
       lesson={

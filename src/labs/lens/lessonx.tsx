@@ -7,6 +7,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Dark, Ray } from './optics'
 import { ZOOM, imageDistance, magnify } from './physics'
 import { AXIS, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'prism' | 'mirage' | 'zoom'
 const SUBS: Record<Sub, { name: string; title: string; say: string; button: string }> = {
@@ -72,7 +75,7 @@ export default function LessonX() {
   )
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={stage}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && (

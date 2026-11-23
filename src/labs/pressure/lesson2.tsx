@@ -5,6 +5,9 @@ import Scene2 from './scene2'
 import { LESSONS, goLesson } from './lessons'
 import { CARS, G, kN, kPa, solve2, type CarKey } from './physics'
 import { useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; car: CarKey; plates: boolean; F: number; S: number; p: number }
 const TASKS: Task[] = [
@@ -51,7 +54,7 @@ export default function Lesson2() {
   })()
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="开车"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="压强" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="开车"
       stage={<Scene2 car={car} plates={plates} onSoil={onSoil} sink={r.sink} p={r.p} rut={rut} />}
       lesson={
         <LessonBlock no="2" title="压强" concept="每一平方米上压着多大的力" tasks={TASKS} done={T.done} current={task?.id}

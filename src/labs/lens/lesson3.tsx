@@ -5,6 +5,9 @@ import { useSlide, useTasks, type Label } from '@/lab-kit'
 import Bench, { ScreenView, benchAt } from './bench'
 import { LESSONS, goLesson } from './lessons'
 import { F, US, imageDistance, nature } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type U = '30' | '20' | '15' | '5'
 const TASKS: Task[] = US.map(u => ({ id: String(u), text: `物距 ${u} cm：${nature(u)!.real ? '移动光屏找到清晰的像' : '看光屏上还接不接得到像'}`, note: `${nature(u)!.text}${nature(u)!.real ? `，像距 ${imageDistance(u)} cm` : '：光屏接不到，要透过透镜去看'}` }))
@@ -36,7 +39,7 @@ export default function Lesson3() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光屏"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光屏"
       stage={<Bench u={uNow} screen={sx} image={found && !shifting} dims labels={labels}>
         {!n.real && found && <><mesh position={benchAt(31, 0)}><sphereGeometry args={[0.1, 20, 14]} /><meshStandardMaterial color="#f3e6da" roughness={0.6} /></mesh><mesh position={[benchAt(31, 0)[0] - 0.085, benchAt(31, 0)[1], benchAt(31, 0)[2]]}><sphereGeometry args={[0.04, 14, 10]} /><meshStandardMaterial color="#30343a" /></mesh></>}
       </Bench>}

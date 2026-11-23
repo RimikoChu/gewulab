@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { CITIES, floodAt, floodPeak, type CityKey } from './physics'
 import { ground, riverZ } from './world'
 
@@ -31,7 +34,7 @@ export default function Lesson6() {
   const labels: Label[] = [{ id: 'q', at: [-19.5, ground(-19.5, riverZ(-19.5)) + 1.6, riverZ(-19.5)], ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>雨后 {t.toFixed(0)} 小时 · 河里的流量</small>{q.toFixed(0)}</> }]
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="暴雨"
+    <LabShell title="水循环" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="暴雨"
       stage={<Basin at="city" labels={labels} want={{ city, rain: goal > 0 && t < 3 ? ['city'] : [], flow: 1 + q / 35, flood: city === 'hard' ? Math.max(0, (q - 45) / 45) : 0 }} />}
       lesson={<LessonBlock no="6" title="城市为什么会内涝" concept="地面硬了，雨水渗不下去，一下子全涌进河里" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

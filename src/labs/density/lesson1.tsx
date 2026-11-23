@@ -8,6 +8,9 @@ import { Block, Clay, IceCup, Room, newLive, useSettled, type V3 } from './parts
 import { ICE_M, THINGS, columnCm, reading, volumeOf, weigh, weightsText, type ThingKey } from './physics'
 import { BalanceView } from './views'
 import { CM, ST, TOP, YARD } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: ThingKey[] = ['shape', 'state', 'place']
 const SEG: Record<ThingKey, string> = { shape: '改变形状', state: '改变状态', place: '改变位置' }
@@ -48,7 +51,7 @@ export default function Lesson1() {
     { id: 'b', at: [box[0], TOP + 0.62, box[2]], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '砝码盒' },
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={thing.name}
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="质量与密度" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={thing.name}
       stage={<Room at={site === SITE.yard ? 'yard' : 's1'} labels={labels}>
         <Balance at={base} left={thing.m} right={reading(w.on, w.rider)} rider={w.rider} live={live} kick={kick}
           leftPan={kind === 'shape' ? <Clay flat={flat} /> : kind === 'state' ? <IceCup melt={melt} water={WATER_H} /> : <Block kind="al" size={[5, 2, 2]} />} />

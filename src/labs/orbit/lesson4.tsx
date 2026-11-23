@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene4 from './scene4'
 import { LESSONS, goLesson } from './lessons'
 import { TERMS, TILT, YEAR, dateText, latText, nearTerm, subsolarLat, type TermKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; day: number; term: TermKey | null; lat: number }
 const TASKS: Task[] = [
@@ -40,7 +43,7 @@ export default function Lesson4() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="地球的运动" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球"
       stage={<Scene4 day={day} />}
       lesson={
         <LessonBlock no="4" title="太阳直射到哪了" concept="直射点在两条回归线之间来回" tasks={TASKS} done={T.done} current={task?.id}

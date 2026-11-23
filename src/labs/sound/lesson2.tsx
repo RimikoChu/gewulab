@@ -8,6 +8,9 @@ import { Metal, bolts, disc, lathe, shell, useSlide, useTasks, type Label } from
 import { ENV, Hall, Hose, P, Rings } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { AIR, heard, heardWord } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: '100', text: '罩上玻璃罩，听一听闹钟的铃声，记录', note: '罩里有空气：铃声隔着玻璃也听得清楚' },
@@ -149,7 +152,7 @@ export default function Lesson2() {
   ]
   const glass = <meshPhysicalMaterial color="#d4ecf2" transparent opacity={0.08} roughness={0.03} metalness={0} clearcoat={1} clearcoatRoughness={0.03} envMapIntensity={1.3} depthWrite={false} side={THREE.DoubleSide} />
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="抽气机"
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} title="声现象" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="抽气机"
       stage={<Hall at="jar" labels={labels}>
         {/* 底盘：一块厚铝盘，三只脚，上面一圈橡胶垫；玻璃罩扣在垫上 */}
         <group position-x={JX}>

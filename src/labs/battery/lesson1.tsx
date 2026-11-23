@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { METALS, negativeOf, reactsWithAcid } from './physics'
 import Rig, { X } from './rig'
 import { TOP } from './world'
@@ -32,7 +35,7 @@ export default function Lesson1() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="锌片和铜片"
+    <LabShell title="原电池" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="锌片和铜片"
       stage={<Rig left="Zn" right="Cu" joined={on} flow={on ? 1 : 0} gasL={on ? 0 : 0.8} gasR={on ? 0.9 : 0} labels={labels} />}
       lesson={<LessonBlock no="1" title="连上导线以后" concept="把化学能直接变成电能的装置，叫原电池" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

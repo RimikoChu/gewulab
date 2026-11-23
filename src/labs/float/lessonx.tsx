@@ -5,6 +5,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import SceneX, { type Sub } from './scenex'
 import { LESSONS, goLesson } from './lessons'
 import { BASE5, CROWN, CYL, G, GOLD, LIQUIDS, POOL, WRECK, iceBerg, kN, salvage, stepG, type CrownKey, type LiquidKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const SUBS: Record<Sub, { name: string; title: string; concept: string }> = {
   ice: { name: '冰山', title: '冰山的九成在水下', concept: '冰化了，水面会升高吗' },
@@ -103,7 +106,7 @@ export default function LessonX() {
   const info = SUBS[sub]
   const dens = (k: CrownKey) => got[k] != null ? (GOLD.mass / (got[k]! - CYL.start)).toFixed(1) : '—'
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="x" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="浮力" lessons={LESSONS} current="x" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       actionsLabel={{ ice: '冰', salvage: '浮筒（每只排开 0.5 m³ 的水）', space: '木箱（也可以直接拖）', crown: '溢水杯' }[sub]}
       stage={<SceneX sub={sub} liquid={liquid}
         ice={{ side: ice.side, level: ice.level, bottom: ice.bottom, under: ice.under, start }}

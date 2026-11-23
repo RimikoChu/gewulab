@@ -10,6 +10,9 @@ import { PLATE_US, imageDistance } from './physics'
 import { GlassPlate, GridPaper, Ruler } from './props'
 import { DataTable, Finale, Readout } from './ui'
 import { CM, ST, TOP, VIEWS } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type U = '6' | '9' | '12'
 const TASKS: Task[] = [
@@ -51,7 +54,7 @@ export default function Lesson4() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="蜡烛 B 和白纸"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title={TITLE} lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="蜡烛 B 和白纸"
       stage={<Dark at="plate" view={card ? VIEWS.card : undefined} labels={labels}>
         <GridPaper x={X0} z={0} cw={44} ch={32} scale={CM} />
         <Ruler x0={X(-20)} y={TOP + 0.004} z={0.8} cm={40} scale={CM} zero={20} />

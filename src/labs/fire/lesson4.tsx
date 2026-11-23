@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 4 课 燃烧的三个条件：训练场上的燃烧箱。箱里一垛木柴，门下一道风门，旁边一把点火枪。
 // 三个条件都有时点火，木柴烧起来；拿走木柴、关上门和风门、不点火，各试一次，都烧不起来。可燃物、氧气、温度达到着火点，缺一不可。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -75,7 +78,7 @@ export default function Lesson4() {
   const gunHome: V3 = [X0 + BOX.w * M * 0.3, top + 0.04 * M, Z0 + 1.2], gunIn: V3 = [X0 + 1.4, FLOOR + 0.18 * M, Z0 + 0.9]
   const gp: V3 = [lerp(gunHome[0], gunIn[0], ease(gun)), lerp(gunHome[1], gunIn[1], ease(gun)), lerp(gunHome[2], gunIn[2], ease(gun))]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="燃烧箱"
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['4'], VOICE)} actionsLabel="燃烧箱"
       stage={<Place at="l4" labels={labels}>
         <group position={[X0, 0, Z0]}><BurnBox door={door} damper={damper} /></group>
         {c.fuel && <group position={[X0, FLOOR, Z0]}><WoodCrib n={4} len={0.5} sec={0.055} char={Math.min(1, level * 0.7)} glow={level * 0.8} /></group>}

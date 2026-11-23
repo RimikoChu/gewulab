@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Block, Carry, Room, newLive, useSettled, type V3 } from './parts'
 import { BLOCK_V, CAPACITY, RHO, blocks, density } from './physics'
 import { ST, TOP, CM } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type M = 'al' | 'cu'
 const METALS: M[] = ['al', 'cu'], TINT: Record<M, string> = { al: '#d5dce2', cu: '#e8a07a' }
@@ -69,7 +72,7 @@ export default function Lesson4() {
     { id: 'cu', at: [home('cu', 0)[0] - 0.2, TOP + 0.14, 1.3], ax: 1, name: true, className: 'scene-name -translate-y-1/2', children: '铜块' },
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`${RHO[metal].name}块`}
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="质量与密度" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`${RHO[metal].name}块`}
       stage={<Room at="s4" labels={labels}>
         <Balance at={BASE} left={Wg.left} right={Wg.right} rider={Wg.rider} live={live} />
         <WeightSet box={BOX} base={BASE} on={Wg.on} live={live} />

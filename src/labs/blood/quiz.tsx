@@ -1,4 +1,7 @@
 // 血液循环 · 随堂检测：九道选择题，每题对应前面的一课。答完立刻看对错和讲解。背景是整个展厅。题目里的数都从计算核心取。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Check, X } from 'lucide-react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
@@ -38,7 +41,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="血液循环" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="血液循环" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} narration={voiced(NARRATION['q'], VOICE)} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Place at="q" labels={[]} want={{ stream: 'all' }} />}
       lesson={<LessonBlock no="随堂检测" title="随堂检测" concept="九道题，看看都弄懂了没有" tasks={TASKS} done={done}
         theory={<p>每道题对应前面的一课。答错的题，回到那一课把任务再做一遍，比看答案更管用。题目可以反复做，点右上角“重做本课”清空。拓展课的内容不考。</p>} />}

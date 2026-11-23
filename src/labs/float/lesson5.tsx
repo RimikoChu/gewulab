@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { FLOATERS, G, LIQUIDS, SEA5, TANK5, kN, motion5, rest5, step5, wet5, type FloaterKey, type LiquidKey, type Motion5 } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const STATE: Record<Motion5, { name: string; color: string }> = {
   float: { name: '漂浮', color: '#7fe3d4' }, hover: { name: '悬浮', color: '#ffe9a8' }, sunk: { name: '沉底', color: '#ffb394' },
@@ -100,7 +103,7 @@ export default function Lesson5() {
   const cmp = (a: number, b: number, tol: number) => Math.abs(a - b) < tol ? '=' : a > b ? '>' : '<'
   const fSym = m === 'sunk' ? '<' : cmp(w.fBuoy, g, 30), dSym = cmp(mass, rho, 0.5)
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="5" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="浮力" lessons={LESSONS} current="5" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene5 obj={obj} mass={mass} liquid={liquid} b={pos.b} moving={moving} onMove={dragTo} onEnd={() => { sim.current.held = false }} dragHint={!touched} />}
       lesson={
         <LessonBlock no="5" title="沉还是浮" concept="比一比：浮力和重力谁大" tasks={TASKS} done={done} current={task?.id}

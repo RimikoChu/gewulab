@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Ball, Block, Carry, Line, Room, newLive, useLag, useSettled, type Live, type V3 } from './parts'
 import { BALL, RHO, SLAB as BIG, UNKNOWN, ballR, density, hollowV, identify, sci, slabM, slabV, solidV, toSI, type Stuff } from './physics'
 import { CM, SLAB, TOP, YARD } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = 'id' | 'slab' | 'ball'
 const MODES: Mode[] = ['id', 'slab', 'ball']
@@ -79,7 +82,7 @@ export default function Lesson7() {
   const got = (n: number, v: string) => k > n || (k === n && settled) ? v : null
   const big = mode === 'id' ? rhoU.toFixed(1) : mode === 'slab' ? sci(slabM()) : hollowV().toFixed(0)
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SEG[mode]}
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="质量与密度" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SEG[mode]}
       stage={<Room at={mode === 'slab' ? 'slab' : 'yard7'} labels={labels}>
         <Bench key={mode} mode={mode} k={k} live={live} />
         {dims && <>

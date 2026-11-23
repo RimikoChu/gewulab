@@ -5,13 +5,16 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { YEAR, zones } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TILTS = [0, 23.5, 40]
 interface Row { id: number; tilt: number; tropic: number; polar: number }
 const TASKS: Task[] = [
   { id: '23.5', text: '地轴倾斜 23.5°，记下回归线和极圈', note: '回归线在 23.5°，极圈在 66.5°：倾斜多少度，回归线就在多少度' },
   { id: '0', text: '把地轴扶正（0°），再记一次', note: '不倾斜，太阳永远直射赤道：没有回归线，没有极昼极夜，也就分不出五带' },
-  { id: '40', text: '倾斜到 40°，再记一次', note: '倾斜得更多：热带和寒带都变宽了，温带被挤没了' },
+  { id: '40', text: '倾斜到 40°，再记一次', note: '倾斜得更多：热带和寒带都变宽了，温带变窄了' },
 ]
 
 export default function Lesson7() {
@@ -32,7 +35,7 @@ export default function Lesson7() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="数据"
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="地球的运动" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="数据"
       stage={<Scene5 day={YEAR / 4} tilt={Math.round(tilt * 10) / 10} zonesOn />}
       lesson={
         <LessonBlock no="7" title="五带" concept="地轴斜多少度，决定了五带的界线" tasks={TASKS} done={T.done} current={task?.id}

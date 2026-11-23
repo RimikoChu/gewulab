@@ -5,6 +5,9 @@ import { useTasks, type Label } from '@/lab-kit'
 import Bench, { benchAt } from './bench'
 import { LESSONS, goLesson } from './lessons'
 import { DEVICES, imageDistance, nature, type DeviceKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(DEVICES) as DeviceKey[]
 const TASKS: Task[] = KEYS.map(k => ({ id: k, text: `${DEVICES[k].name}：看它用的是哪一种成像，记下来`, note: `${DEVICES[k].where}：${nature(DEVICES[k].u)!.text}` }))
@@ -25,7 +28,7 @@ export default function Lesson5() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={d.name}
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={d.name}
       stage={<Bench u={d.u} image rays={2} screen={n.real ? v : undefined} dims labels={labels} />}
       lesson={<LessonBlock no="5" title="照相机、投影仪、放大镜" concept="同一块凸透镜，物体远近不同，用处就不同" tasks={TASKS} done={T.done} current={task?.id}
         theory={<ul className="flex flex-col gap-2 text-[14px] text-white/80">{KEYS.map(k => <li key={k}><b className="text-[#7fe3d4]">{DEVICES[k].name}（{DEVICES[k].where}）：</b>{DEVICES[k].say}</li>)}</ul>} />}

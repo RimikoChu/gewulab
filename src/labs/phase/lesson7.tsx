@@ -7,6 +7,9 @@ import { Done, H2, Room } from './parts'
 import { CHANGES, CHANGE_KEYS, NATURE, PAIRS, byHeat, type Change, type NatureKey } from './physics'
 import { Triangle } from './views'
 import { SITE } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Pick = Change | 'none'
 const ORDER = PAIRS.flatMap(p => p.keys), ITEM = Object.fromEntries(NATURE.map(n => [n.key, n])) as Record<NatureKey, typeof NATURE[number]>
@@ -44,7 +47,7 @@ export default function Lesson7() {
   const labels: Label[] = TAGS[key].map((t, i): Label => ({ id: `${key}${i}`, at: [s.x + t.at[0], s.y + t.at[1], s.z + t.at[2]], ax: 0.5, className: i === 0 ? 'scene-tag -translate-y-full' : 'scene-name -translate-y-full', children: t.text }))
   const shown = got.map(k => ITEM[k].is)
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`第 ${Math.min(at, ORDER.length - 1) + 1} / ${ORDER.length} 处 · ${item.where}`}
+    <LabShell title="物态变化" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={`第 ${Math.min(at, ORDER.length - 1) + 1} / ${ORDER.length} 处 · ${item.where}`}
       stage={<Room at={key} labels={labels} />}
       lesson={<LessonBlock no="7" title="六种物态变化" concept="三种吸热，三种放热" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

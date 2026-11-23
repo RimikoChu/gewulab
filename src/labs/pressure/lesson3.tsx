@@ -7,6 +7,9 @@ import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { DIRS, PLACES, SITE3, dropFor, kPa, maxDrop3, solve3, type DirKey, type PlaceKey } from './physics'
 import { useCrane } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; place: PlaceKey; h: number; dir: DirKey; p: number }
 const near = (a: number, b: number) => Math.abs(a - b) < 0.055
@@ -94,7 +97,7 @@ export default function Lesson3() {
 
   const lq = PLACES[place]
   return (
-    <LabShell autoStep={() => { if (next !== 'turn') return false; turn(); return true }} title="压强" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint} actionsLabel="探头（也可以直接抓住上下拖）"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} autoStep={() => { if (next !== 'turn') return false; turn(); return true }} title="压强" lessons={LESSONS} current="3" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint} actionsLabel="探头（也可以直接抓住上下拖）"
       stage={<Scene3 r={r} place={place} dir={dir} drop={drop} moving={moving} onDrop={crane.dragTo} onTurn={turn} dragHint={!crane.touched} turnHint={next === 'turn' && !turned} />}
       lesson={
         <LessonBlock no="3" title="水里的压强" concept="越深，压得越厉害" tasks={TASKS} done={done} current={task?.id}

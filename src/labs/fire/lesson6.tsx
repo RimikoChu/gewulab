@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 6 课 灭火器的选择：训练场的灭火器训练区，一只灭火器架里放着水基型、干粉、二氧化碳三种灭火器；
 // 前面三处火：一垛木柴、一只汽油油盘、一只档案柜。每处火选一只灭火器：手套把它从架上提过去，拔掉保险销，对准火焰根部，压下压把。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
@@ -81,7 +84,7 @@ export default function Lesson6() {
     ...EXT_ORDER.map(k => ({ id: `n${k}`, at: [YARD.rack.x + SLOT[k] * M, (extTop(k) + 0.08) * M, YARD.rack.z + 0.3] as V3, ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: EXTS[k].name })),
   ]
   return (
-    <LabShell autoStep={autoStep} title="燃烧和灭火" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="用哪一只灭火器"
+    <LabShell autoStep={autoStep} title="燃烧和灭火" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['6'], VOICE)} actionsLabel="用哪一只灭火器"
       stage={<Place at={fire === 'wood' ? 'wood6' : fire === 'oil' ? 'oil6' : 'file'} labels={labels}>
         <group position={[YARD.rack.x, 0, YARD.rack.z - 0.05 * M]}><ExtRack w={1.5} /></group>
         {EXT_ORDER.filter(k => !(doing && doing.e === k)).map(k => <group key={k} position={rackAt(k)}><Extinguisher e={k} /></group>)}

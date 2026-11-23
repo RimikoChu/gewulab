@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task 
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { REFS, THINGS, moving, type RefKey, type ThingKey } from './physics'
 import { PLAT, TRACK, Train } from './world'
 
@@ -33,7 +36,7 @@ export default function Lesson3() {
   ]
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两列车"
+    <LabShell title="机械运动" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两列车"
       stage={<At at="platform" labels={labels}><Train x={6} z={TRACK.near} /><Train x={x} z={TRACK.far} color="#f1ede4" stripe="#c9453a" /></At>}
       lesson={<LessonBlock no="3" title="到底谁在动" concept="动还是没动，要看跟谁比" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Room } from './parts'
 import { BATH, BOIL, BOILING, CHANGES, CLINIC, FACTORS, FREEZE, HYPO_MELT, ROOM, boilAt, boilT, byHeat, heatT, hypoReach } from './physics'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
 const QS: Q[] = [
@@ -40,7 +43,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="物态变化" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="物态变化" lessons={LESSONS} current="q" narration={voiced(NARRATION['q'], VOICE)} onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Room at="s4" labels={[]}>
         <Stand at={[X, TOP, Z]}><Ring y={RING} /><Clamp y={BULB - TOP + 1.5} grip={0.04} /></Stand>
         <Lamp at={[CX, TOP + STAND.baseH, Z]} lit={0} />

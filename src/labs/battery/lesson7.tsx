@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks, type Label, lathe } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Bubbles, Bulb, Wire } from './parts'
 import { FUEL, fuelRuns } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -37,7 +40,7 @@ export default function Lesson7() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="燃料电池"
+    <LabShell title="原电池" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="燃料电池"
       stage={<LabStage labels={labels} target={SPOT.four} span={SPAN}>
         <group position={[X, TOP, 0]}>
           {/* 中间是电解质，两边各一块多孔的电极，再外面是两间气室 */}

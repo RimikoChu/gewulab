@@ -5,6 +5,9 @@ import { useSlide, useTasks, type Label } from '@/lab-kit'
 import { BallStand, DRUM_TOP, Drum, FORK, Fork, Glove, Hall, Mallet, P, Rings, SWING, ringing, type Hit, type Pose } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { FORK_HZ, period, sounding } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Dev = 'fork' | 'drum'
 const NAME: Record<Dev, string> = { fork: '音叉', drum: '鼓' }
@@ -59,7 +62,7 @@ export default function Lesson1() {
     { id: 'd', at: P('fork', DX, 0.1, 0.9), ax: 0.5, name: true, className: 'scene-name', children: '鼓 · 鼓面上撒了碎纸屑' },
   ]
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={tip ?? hint} actionsLabel={NAME[dev]}
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="声现象" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={tip ?? hint} actionsLabel={NAME[dev]}
       stage={<Hall at="fork" labels={labels}>
         <Fork x={FX} level={dev === 'fork' ? level : () => 0} />
         <BallStand x={FX - 1.75} to={[FX - FORK.dx - FORK.half - 0.1, FORK.top + 0.85]} len={1.05} dir={-1} level={dev === 'fork' ? level : () => 0} />

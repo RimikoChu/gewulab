@@ -12,6 +12,9 @@ import { Arm, C1, C2, Force, Pivot, Seg } from './marks'
 import { Glove, Place, useRun } from './parts'
 import { CRANE, INCLINE, WINCH, craneMoments, craneReach, incline, pct, round, sci, weightOf, winchForce, winchTurn } from './physics'
 import { BZ, M, ST, TC, TOP, U, YARD, trolleyX, type V3 } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'crane' | 'winch' | 'ramp'
 const SUBS: Record<Sub, { name: string; button: string; note: string }> = {
@@ -108,7 +111,7 @@ export default function LessonX() {
     { id: 'r4', at: [RX + (along + 0.06) * Math.cos(ANG) * M - 0.2, TOP + (along + 0.06) * Math.sin(ANG) * M - 0.25, RZ], ax: 1, className: 'scene-tag -translate-y-1/2', children: <><small>G</small>{INCLINE.G} N</> },
   ]
   return (
-    <LabShell title="简单机械" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell title="简单机械" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<Place at={AT[sub]} labels={labels} trolley={r}>
         {sub === 'crane' && <CraneMarks r={r} />}
         <WinchScene th={th} rise={rise} />

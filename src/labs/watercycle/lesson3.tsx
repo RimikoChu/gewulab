@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { LINKS, LOOPS, type LoopKey } from './physics'
 import { pathMid } from './world'
 
@@ -26,7 +29,7 @@ export default function Lesson3() {
   const labels: Label[] = links.map(k => ({ id: k, at: pathMid(k), ax: 0.5, className: 'scene-tag -translate-y-full', children: LINKS[k].name }))
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水"
+    <LabShell title="水循环" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水"
       stage={<Basin labels={labels} want={{ links, rain: on ? (loop === 'sea' ? ['sea'] : ['land']) : [] }} />}
       lesson={<LessonBlock no="3" title="三种循环" concept="按水走的范围，水循环分成三种" tasks={TASKS} done={T.done} current={task?.id}
         theory={<ul className="flex flex-col gap-2 text-[14px] text-white/80">{KEYS.map(k => <li key={k}><b className="text-[#7fe3d4]">{LOOPS[k].name}：</b>{LOOPS[k].say}</li>)}</ul>} />}

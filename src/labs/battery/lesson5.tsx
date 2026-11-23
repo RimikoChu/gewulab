@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useSlide, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Beaker, LIQUID, Meter, Plate, Wire } from './parts'
 import { RUN_MIN, currentAt } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -42,7 +45,7 @@ export default function Lesson5() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="铜锌原电池"
+    <LabShell title="原电池" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="铜锌原电池"
       stage={<LabStage labels={labels} target={SPOT.two} span={SPAN}>
         <group position={[X, TOP, 0]}>
           {dbl ? <><Beaker position={[-dx, 0, 0]} r={0.22} liquid={LIQUID.zinc} /><Beaker position={[dx, 0, 0]} r={0.22} liquid={LIQUID.copper} /></> : <Beaker position={[0, 0, 0]} r={0.27} liquid={LIQUID.copper} />}

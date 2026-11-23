@@ -1,5 +1,8 @@
 // 血液循环 · 第 7 课 在哪里换了气：推近到肺泡和肌肉旁边的两个放大模型。让血流过，看橙色的氧、灰紫色的二氧化碳往哪里走，
 // 血在哪里由蓝变红、由红变蓝；最后对比吸入和呼出的气体。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useRef, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -52,7 +55,7 @@ export default function Lesson7() {
     { id: 'mag', at: add(at, [0, -2.25, 0]), ax: 0.5, name: true, className: 'scene-name', children: '放大的示意' },
   ]
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="气体交换"
+    <LabShell title="血液循环" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['7'], VOICE)} actionsLabel="气体交换"
       stage={<Place at={site === 'lung' ? 'lung' : 'tissue'} labels={labels} want={{ look: { shell: 0.6, lungs: 0.5, tree: 1 }, gas: { lung: on && site === 'lung', tissue: on && site === 'tissue' } }} />}
       lesson={<LessonBlock no="7" title="在哪里换了气" concept="气体总是从多的地方扩散到少的地方" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

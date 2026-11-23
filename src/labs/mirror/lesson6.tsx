@@ -10,6 +10,9 @@ import { DOLL, DOLL_US, PERISCOPE, hitHeight, mirrorNeed, turnAngle } from './ph
 import { Doll, Lighthouse, Periscope, UprightMirror } from './props'
 import { Finale, Note, Readout } from './ui'
 import { CM, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'peri' | 'mirror'
 const NAME: Record<Sub, string> = { peri: '潜望镜', mirror: '穿衣镜' }
@@ -83,7 +86,7 @@ export default function Lesson6() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={NAME[sub]}
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title={TITLE} lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={NAME[sub]}
       stage={sub === 'peri' ? <Dark at="use" labels={labels}>
         <Lighthouse x={TOWER} y0={TOP} h={YT - TOP} />
         <Wall x={WALL} h={1.42} />

@@ -1,4 +1,7 @@
 // 血液循环 · 第 1 课 血液的组成：左展台上一支加了抗凝剂的血液试管，静置后分成三层；再到后面的视野展板上，逐个认红细胞、白细胞、血小板。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -42,7 +45,7 @@ export default function Lesson1() {
     ] : [{ id: 't', at: [TUBE_AT[0] - 0.2, TUBE_AT[1] + TUBE.h + 0.12, TUBE_AT[2]], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '加了抗凝剂的血' }]
   const c = cur && cur !== 'plasma' ? CELLS[cur] : null
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="试管和视野"
+    <LabShell title="血液循环" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['1'], VOICE)} actionsLabel="试管和视野"
       stage={<Place at={onField ? 'field' : 'tube'} labels={labels} want={{ tube: { k, hl: cur === 'plasma' ? 'plasma' : null }, field: onField ? cur : null }} />}
       lesson={<LessonBlock no="1" title="血液的组成" concept="血液由血浆和血细胞组成" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

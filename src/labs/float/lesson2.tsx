@@ -7,6 +7,9 @@ import Scene2 from './scene2'
 import { LESSONS, goLesson } from './lessons'
 import { BOXES, G, STEP, dropForTop, kN, maxDrop2, solve2, type BoxKey } from './physics'
 import { useCrane } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; box: BoxKey; dTop: number; down: number; up: number }
 const DEEPER = 1       // “更深”至少要比上一次深这么多（m）
@@ -71,7 +74,7 @@ export default function Lesson2() {
 
   const max = maxDrop2()
   return (
-    <LabShell autoStep={() => { if (moving || busy || next !== 'lower') return false; crane.moveTo(dropForTop(box, task?.id === 'deep' ? b.deep : b.shallow)); return true }} title="浮力" lessons={LESSONS} current="2" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['2'], VOICE)} autoStep={() => { if (moving || busy || next !== 'lower') return false; crane.moveTo(dropForTop(box, task?.id === 'deep' ? b.deep : b.shallow)); return true }} title="浮力" lessons={LESSONS} current="2" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       stage={<Scene2 r={r} box={box} drop={drop} onDrop={crane.dragTo} dragHint={!crane.touched} />}
       lesson={
         <LessonBlock no="2" title="浮力从哪来" concept="下面的水往上推得更用力" tasks={TASKS} done={done} current={task?.id}

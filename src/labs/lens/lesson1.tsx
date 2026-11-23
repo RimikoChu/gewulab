@@ -6,6 +6,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Dark, Ray } from './optics'
 import { ANGLES, N_WATER, refract, refractOut } from './physics'
 import { AXIS, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type A = '0' | '30' | '60'
 type Dir = 'in' | 'out'
@@ -54,7 +57,7 @@ export default function Lesson1() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="激光笔"
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="激光笔"
       stage={<Dark at="tank" labels={labels}>
         {/* 水槽：坐在台面上的一只玻璃槽。水用普通的半透明材质，水里的光线才看得清、不走样 */}
         <mesh position={[PX, BOTTOM + DEEP / 2, 0]} renderOrder={2}><boxGeometry args={[2.9, DEEP, 0.56]} /><meshStandardMaterial color="#17548f" transparent opacity={0.2} roughness={0.15} depthWrite={false} /></mesh>

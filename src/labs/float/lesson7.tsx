@@ -5,6 +5,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import Scene7 from './scene7'
 import { LESSONS, goLesson } from './lessons'
 import { BALLOON, BASKET, G, LIQUIDS3, METER, RIDERS, flight7, kN, solve7, stemIn, step7, type Flight, type Liquid3Key } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = 'balloon' | 'meter'
 const FLIGHT: Record<Flight, { name: string; color: string }> = {
@@ -81,7 +84,7 @@ export default function Lesson7() {
 
   const balloon = mode === 'balloon', rho = LIQUIDS3[liquid].rho
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="7" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="浮力" lessons={LESSONS} current="7" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       actionsLabel={balloon ? '燃烧器（每次 10 °C）' : '把密度计放进'}
       stage={<Scene7 mode={mode} r={r} t={t} alt={fly.alt} burning={burning} liquid={liquid} />}
       lesson={

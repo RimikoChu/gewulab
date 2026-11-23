@@ -1,6 +1,9 @@
 // 电路 · 第 3 课 电流和电流表：电池盒、开关、灯泡 L₁ 和一只电流表串成一圈，电流表在正中。
 // 先用“−”和“3”（0–3 A）试触：指针只偏一点，读不准；改用“−”和“0.6”（0–0.6 A）：指针偏到一半，读出 0.30 A；
 // 最后把正负接线柱接反：指针往左打到头。换接线时开关先断开。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -61,7 +64,7 @@ export default function Lesson3() {
     { id: 'n3', at: W(add(BAT, [0, 4.8, 0])), ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '电池盒' },
   ]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电路"
+    <LabShell title="电路" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['3'], VOICE)} actionsLabel="电路"
       stage={<Place at="l3" labels={labels}>
         <Bench at="l3">
           <group position={BAT}><BatteryBox n={2} /></group>

@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import House from './house'
 import { LESSONS, goLesson } from './lessons'
 import { PLANS, clock, photoAt, respAt, yieldIndex, yieldSoFar, type PlanKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const WHY: Record<PlanKey, string> = {
   none: '什么都不做，作为对照',
@@ -35,7 +38,7 @@ export default function Lesson7() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="大棚"
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="大棚"
       stage={<House t={t} plan={plan} />}
       lesson={<LessonBlock no="7" title="让大棚多产一点" concept="多制造一些，少消耗一些" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

@@ -4,6 +4,9 @@ import { Glass, LabButton, LabShell, LessonBlock, ParamTile, type Task } from '@
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { BRIDGE, TRIP, bridgeTime, bridgeTimeWrong, toMs, tripSpeed } from './physics'
 import { LINE, Train, lineX } from './world'
 
@@ -31,7 +34,7 @@ export default function Lesson7() {
   ]
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="算一算"
+    <LabShell title="机械运动" lessons={LESSONS} current="7" narration={voiced(NARRATION['7'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="算一算"
       stage={<At at="line" labels={labels}>
         <Train x={lineX(head)} z={LINE.z} len={BRIDGE.train * LINE.scale / 0.8} s={0.8} y={0.3} />
         {/* 大桥：正线下面的一排桥墩和桥面 */}

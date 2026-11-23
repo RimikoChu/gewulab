@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene1, { DAY0, type Look } from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { CITIES, clockText, isDay, localTime, utcForNoon } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'turn', text: '让地球转一圈，盯住北京', note: '北京从白天转进黑夜，又转回白天：转一圈大约 24 小时，这就是一天' },
@@ -41,7 +44,7 @@ export default function Lesson1() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球（也可以直接抓住它拨）"
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="地球的运动" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="地球（也可以直接抓住它拨）"
       stage={<Scene1 utc={utc} look={look} cities={['beijing']} onSpin={spin} dragHint={!touched} />}
       lesson={
         <LessonBlock no="1" title="地球在自转" concept="地球转一圈，就是一天" tasks={TASKS} done={T.done} current={task?.id}

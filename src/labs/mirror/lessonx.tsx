@@ -8,6 +8,9 @@ import { RETRO_IN, WEDGES, imageCount, reflect, retro, wedgeImages } from './phy
 import { CornerMirrors, HingedMirrors, Orrery, Pawn, Post } from './props'
 import { Finale, Note, Readout } from './ui'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'eclipse' | 'wedge' | 'corner'
 const SUBS: Record<Sub, { name: string; title: string; say: string }> = {
@@ -92,7 +95,7 @@ export default function LessonX() {
   )
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title={TITLE} lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={stage}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && <Finale kicker="三个专题都看完了" title="影子、万花筒、自行车尾灯，都是光走直线和反射" onClose={() => T.setFinale(false)} />}

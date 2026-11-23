@@ -10,6 +10,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Room, type V3 } from './parts'
 import { FREEZE, LAKE, RHO, density, volumeOf } from './physics'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Sub = 'freeze' | 'lake' | 'air'
 const VW = volumeOf('water', FREEZE.m), VI = volumeOf('ice', FREEZE.m)
@@ -145,7 +148,7 @@ export default function LessonX() {
     { id: 'l', at: [X + 0.1, TOP + 0.14, Z + 0.2], name: true, className: 'scene-name', children: '酒精灯' },
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell narration={voiced(NARRATION['x'], VOICE)} title="质量与密度" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<Room at={sub === 'lake' ? 'sx' : sub === 'air' ? 'sx2' : 'sx3'} labels={labels}>
         {sub === 'freeze' && <group position={cup}><Beaker V={V} frozen={frozen} /><Chill on={frozen} /></group>}
         {sub === 'lake' && <Lake on={winter} />}

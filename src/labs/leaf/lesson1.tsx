@@ -5,6 +5,9 @@ import { useTasks } from '@/lab-kit'
 import Scene1 from './scene1'
 import { LESSONS, goLesson } from './lessons'
 import { STEPS, makesStarch } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'prep', text: '暗处理，再遮住叶片的一半', note: '先耗尽原有的淀粉；同一片叶子上一半见光、一半遮光，做对照' },
@@ -33,7 +36,7 @@ export default function Lesson1() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="实验步骤"
+    <LabShell narration={voiced(NARRATION['1'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="实验步骤"
       stage={<Scene1 step={step} iodine={iodine} />}
       lesson={<LessonBlock no="1" title="叶片见光才有淀粉" concept="绿叶在光下制造有机物" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

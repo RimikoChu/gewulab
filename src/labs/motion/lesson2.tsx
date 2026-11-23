@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { RUNS, stopwatch, type RunKey } from './physics'
 import { DESK } from './world'
 
@@ -29,7 +32,7 @@ export default function Lesson2() {
   const hand = (deg: number, len: number, w: number, c: string, cx: number, cy: number) => <line x1={cx} y1={cy} x2={cx + Math.sin(deg * Math.PI / 180) * len} y2={cy - Math.cos(deg * Math.PI / 180) * len} stroke={c} strokeWidth={w} strokeLinecap="round" />
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="停表"
+    <LabShell title="机械运动" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="停表"
       stage={<At at="desk" labels={[{ id: 'n', at: [DESK[0], DESK[1] + 1.0, DESK[2]], ax: 0.5, name: true, className: 'scene-name', children: '停表' }]}>
         <group position={[DESK[0], DESK[1] + 0.9, DESK[2]]} rotation-x={-0.5}>
           <mesh rotation-x={Math.PI / 2}><cylinderGeometry args={[0.2, 0.2, 0.05, 40]} /><meshStandardMaterial color="#c9ced2" metalness={0.8} roughness={0.3} /></mesh>

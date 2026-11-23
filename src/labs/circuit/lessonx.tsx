@@ -1,5 +1,8 @@
 // 电路 · 拓展课：这套房子里真的电路。楼梯灯的双控开关（楼下、楼上各一个单刀双掷开关，扳任意一个都能开灯、关灯）；
 // 前墙的插座（家里的插座都并联在 220 V 上，插上的用电器各自工作，拔掉一个别的照常）。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -78,7 +81,7 @@ export default function LessonX() {
     { id: 'k', at: [OUTLET.x - 4.3, 5.2, OUTLET.z - 3.2], ax: 0.5, className: 'scene-name -translate-y-full', children: `电水壶 · ${S.kettle.on ? '工作' : '不工作'}` },
   ]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub]}
+    <LabShell title="电路" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['x'], VOICE)} actionsLabel={SUBS[sub]}
       stage={<Place at={sub === 'plug' ? 'outlet' : upstairs ? 'stairUp' : 'stairDown'} labels={labels} want={{ stairLamp: lit, sw, plugs }} />}
       lesson={<LessonBlock no="拓展" title="房子里的电路" concept="家里的用电器都是并联的" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

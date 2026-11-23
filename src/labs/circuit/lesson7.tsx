@@ -1,6 +1,9 @@
 // 电路 · 第 7 课 电阻和滑动变阻器：楼梯口的小工作台上，后面一块电阻示教板（四根金属丝），前面一排电池盒、开关、电流表、灯泡 L₁ 和一只滑动变阻器。
 // 两根导线把示教板上的一根金属丝（或变阻器）串进电路：比电流的大小就知道电阻的大小——电流越小，电阻越大。
 // 最后接上滑动变阻器（一上一下），把滑片从阻值最大的一端移到另一端，电流从 0.10 A 变到 0.30 A，灯越来越亮。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useSlide, useTasks, type Label } from '@/lab-kit'
@@ -68,7 +71,7 @@ export default function Lesson7() {
   ]
   const head = ['', 'a', 'b', 'c', 'd']
   return (
-    <LabShell title="电路" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电路"
+    <LabShell title="电路" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['7'], VOICE)} actionsLabel="电路"
       stage={<Place at="l7" labels={labels}>
         <Bench at="l7">
           <group position={BRD}><Board active={pick === 'rheo' ? null : pick} /></group>

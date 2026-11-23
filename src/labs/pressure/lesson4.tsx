@@ -5,6 +5,9 @@ import Scene4 from './scene4'
 import { LESSONS, goLesson } from './lessons'
 import { DAM, G, kPa, pWater } from './physics'
 import { useSlide, useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; wide: boolean; h: number; p: number }
 const TASKS: Task[] = [
@@ -43,7 +46,7 @@ export default function Lesson4() {
   })()
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水库水位（也可以直接抓住水面拖）"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="压强" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="水库水位（也可以直接抓住水面拖）"
       stage={<Scene4 level={level} wide={wide} onLevel={set} dragHint={!touched} />}
       lesson={
         <LessonBlock no="4" title="大坝为什么上窄下宽" concept="水越深的地方，坝要越厚" tasks={TASKS} done={T.done} current={task?.id}

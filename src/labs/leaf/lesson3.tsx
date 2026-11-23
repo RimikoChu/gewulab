@@ -5,6 +5,9 @@ import { useTasks } from '@/lab-kit'
 import Scene3 from './scene3'
 import { LESSONS, goLesson } from './lessons'
 import { JARS, makesStarch, type JarKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'light', text: '把两只钟罩一起放到光下', note: '两盆都先暗处理过；除了小烧杯里的液体，别的都一样' },
@@ -34,7 +37,7 @@ export default function Lesson3() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两只钟罩"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两只钟罩"
       stage={<Scene3 lit={lit} pick={pick} tested={tested} />}
       lesson={<LessonBlock no="3" title="没有二氧化碳行不行" concept="二氧化碳是光合作用的原料" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

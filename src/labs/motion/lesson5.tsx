@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { gaps, posAt } from './physics'
 import { TRACK, Train } from './world'
 
@@ -38,7 +41,7 @@ export default function Lesson5() {
   ]
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="检测车"
+    <LabShell title="机械运动" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="检测车"
       stage={<At at="platform" labels={labels}>
         <Train x={X0 + s * k} z={TRACK.near} len={7} stripe="#e9a53a" />
         {marks.map((m, i) => <mesh key={i} position={[X0 + m * k, 0.5, TRACK.near + 1.6]}><cylinderGeometry args={[0.16, 0.16, 1, 10]} /><meshBasicMaterial color="#ff6b4a" toneMapped={false} /></mesh>)}

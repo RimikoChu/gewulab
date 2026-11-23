@@ -7,6 +7,9 @@ import { Metal, lathe, useSlide, useTasks, type Label } from '@/lab-kit'
 import { ENV, Hall, P, Readout, useWood } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { ECHO_GAP, SLOW, V_AIR, V_STEEL, V_WATER, WALLS, canTell, echoDistance, echoTime, frontAt } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type D = '17' | '34' | '68'
 const TASKS: Task[] = WALLS.map(d => ({ id: String(d), text: `墙在 ${d} m 处：拍一下手，等回声回来，记录`, note: `回声晚到 ${echoTime(d).toFixed(1)} s：声音走了 ${2 * d} m 的来回` }))
@@ -59,7 +62,7 @@ export default function Lesson3() {
     { id: 's', at: P('hall', 0.6, 0.05, 1.5), ax: 0.5, className: 'scene-name', children: `音乐厅的模型 · 画面里的声音放慢了 ${SLOW} 倍` },
   ]
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="拍手"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="声现象" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="拍手"
       stage={<Hall at="hall" labels={labels}>
         {/* 模型的底板：一块浅色的木板，前沿贴着标尺，上面两条让墙滑动的铜轨 */}
         <RoundedBox args={[7.9, FLOOR, 2.1]} radius={0.03} position={[0, FLOOR / 2, 0]} castShadow receiveShadow><meshPhysicalMaterial map={wood} roughness={0.6} clearcoat={0.25} /></RoundedBox>

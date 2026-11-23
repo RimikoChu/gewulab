@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { SEEDS, T0, WAIT_H, breathes, flaskTemp, type SeedKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'wait', text: `等 ${WAIT_H} 小时，比较两瓶的温度`, note: `萌发的那瓶升到 ${flaskTemp('alive', WAIT_H)} ℃：呼吸作用释放了能量，一部分变成热` },
@@ -38,7 +41,7 @@ export default function Lesson5() {
   const wantPick: SeedKey = task?.id === 'boiled' ? 'boiled' : 'alive'
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两瓶种子"
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="两瓶种子"
       stage={<Scene5 hours={hours} pick={pick} lime={lime} candle={candle} />}
       lesson={<LessonBlock no="5" title="种子也在呼吸" concept="呼吸作用：吸进氧气，放出二氧化碳，释放能量" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

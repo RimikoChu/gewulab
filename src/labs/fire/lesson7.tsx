@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 7 课 易燃物和易爆物的安全：实验台第 4 格，一只剖开的铁皮罐，罐底中间的小漏斗里一撮面粉，罐里点着一支短蜡烛；一根胶管从罐底接到皮老虎。
 // 面粉堆着时盖上罐盖，只是蜡烛在烧；用皮老虎一鼓气，面粉散开，“砰”的一声罐盖被掀开。最后给面粉厂的车间选一个安全标志（后墙上的四块牌子）。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -65,7 +68,7 @@ export default function Lesson7() {
     { id: 'n3', at: [X0 + 0.02 * M, Y + 0.035 * M, Z + 0.55], ax: 0.5, name: true, className: 'scene-name', children: '面粉' },
   ]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="粉尘爆炸"
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['7'], VOICE)} actionsLabel="粉尘爆炸"
       stage={<Place at={atSigns ? 'signs' : 'l7'} labels={labels}>
         <group position={[X0, Y, Z]}>
           <DustCan />

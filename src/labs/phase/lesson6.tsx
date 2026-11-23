@@ -11,6 +11,9 @@ import { Big, Carry, Done, H2, Room, useRun } from './parts'
 import { CHANGES, DRYICE, IODINE, dryIceLeft, frostOn, iodineBack, iodineGas } from './physics'
 import { Triangle } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Exp = 'iodine' | 'dryice'
 const SEG: Record<Exp, string> = { iodine: '碘', dryice: '干冰' }
@@ -64,7 +67,7 @@ export default function Lesson6() {
   ]
   const ice = <meshPhysicalMaterial color="#f2f7fa" roughness={0.45} clearcoat={0.3} />
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={exp === 'iodine' ? '装着碘的锥形瓶' : '干冰'}
+    <LabShell title="物态变化" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={exp === 'iodine' ? '装着碘的锥形瓶' : '干冰'}
       stage={<Room at={exp === 'iodine' ? 's6' : 's6b'} labels={labels}>
         {exp === 'iodine' ? <>
           <Trough at={HOT} level={0.3} color="#e9a878" o={0.2} /><Puffs at={[HOT[0], TOP + TROUGH.h, Z]} on={1} n={14} len={0.7} size={0.42} spread={0.3} dense={0.9} speed={0.25} color="#e6ecf0" />

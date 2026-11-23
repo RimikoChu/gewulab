@@ -1,4 +1,7 @@
 // 血液循环 · 第 3 课 心脏的结构：胸腔里的心脏，先看外面（冠状血管、连着的大血管），再剖开，逐个认四个腔和连着的血管，找两种瓣膜。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -56,7 +59,7 @@ export default function Lesson3() {
   ]
   const ch = focus ? CHAMBERS[focus] : null
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="心脏"
+    <LabShell title="血液循环" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['3'], VOICE)} actionsLabel="心脏"
       stage={<Place at="heart" labels={labels} want={{ look: { shell: 0.12, lungs: 0, tree: 0 }, heart: { cut: cut.k, focus: valves ? 'valves' : focus }, stream: 'none' }} />}
       lesson={<LessonBlock no="3" title="心脏的结构" concept="心脏有四个腔，心房连静脉，心室连动脉" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

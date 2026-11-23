@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import { BallStand, FORK, Fork, Hall, Rings } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { ECHO_GAP, V_AIR, echoDistance, echoTime } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
 const QS: Q[] = [
@@ -37,7 +40,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="声现象" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell narration={voiced(NARRATION['q'], VOICE)} autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="声现象" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Hall at="fork" labels={[]}>
         <Fork x={-0.6} level={() => 0.45} />
         <BallStand x={-2.35} to={[-0.6 - FORK.dx - FORK.half - 0.1, FORK.top + 0.85]} len={1.05} dir={-1} level={() => 0.45} />

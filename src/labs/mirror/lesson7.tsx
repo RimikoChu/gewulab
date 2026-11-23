@@ -8,6 +8,9 @@ import { CURVES, RAY_HS, R_CURVE, curveRay, type CurveKey } from './physics'
 import { CurvedMirror, LightBox, Post, SolarCooker, StreetMirror } from './props'
 import { Finale, Note, Readout } from './ui'
 import { CM, ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS = Object.keys(CURVES) as CurveKey[]
 const TASKS: Task[] = KEYS.flatMap(k => [
@@ -47,7 +50,7 @@ export default function Lesson7() {
   ]
 
   return (
-    <LabShell title={TITLE} lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={c.name}
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title={TITLE} lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={c.name}
       stage={<Dark at="curve" labels={labels}>
         <Post x={SRC - 0.29} z={-0.36} y={AY + 0.06} />
         <LightBox at={[SRC, AY]} dir={[1, 0]} w={0.95} slits={RAY_HS.map(h => h * CM)} on={on} />

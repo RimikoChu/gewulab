@@ -11,6 +11,9 @@ import { Done, H2, Room, useRun } from './parts'
 import { BATH, HYPO_MELT, STUFF, coolT, heatT, hypoReach, liquidLeft, meltFrac, readT, samples, stateName, type Stuff } from './physics'
 import { TChart, ThermoView } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: Stuff[] = ['hypo', 'wax']
 const TASKS: Task[] = [
@@ -65,7 +68,7 @@ export default function Lesson2() {
     { id: 'n3', at: [CX + 0.11, TUBE_Y + 0.82, Z], name: true, className: 'scene-name -translate-y-1/2', children: `试管里装着${name}` },
   ]
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="酒精灯"
+    <LabShell title="物态变化" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="酒精灯"
       stage={<Room at="s2" labels={labels} bloom={0.35}>
         <Stand at={[X, TOP, Z]}>
           <Ring y={RING} />

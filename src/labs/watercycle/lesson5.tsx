@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useSlide, useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { FLOW, flowAt, flowRange, meanFlow } from './physics'
 import { ground, riverZ } from './world'
 
@@ -36,7 +39,7 @@ export default function Lesson5() {
   ]
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="时间"
+    <LabShell title="水循环" lessons={LESSONS} current="5" narration={voiced(NARRATION['5'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="时间"
       stage={<Basin at="dam" labels={labels} want={{ dam: has, flow: q / meanFlow(), rain: FLOW[month] > 100 && goal > 0 ? ['land'] : [] }} />}
       lesson={<LessonBlock no="5" title="修一座水库" concept="水库改变的是河水在一年里的分配" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

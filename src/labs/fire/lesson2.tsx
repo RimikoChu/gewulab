@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 第 2 课 燃烧需要氧气：实验台第 2 格，两支点着的蜡烛，旁边一大一小两只烧杯。
 // 拿一只烧杯倒扣着罩住左边的蜡烛：罩里的氧气一点点被用掉，火焰变小、熄灭；右边没罩的那支一直在烧。拿开烧杯重新点燃，换大烧杯再罩一次，熄灭得更晚。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -78,7 +81,7 @@ export default function Lesson2() {
     ...KEYS.map(kk => ({ id: `n${kk}`, at: [HOME[kk], Y + (BEAKER[vol(kk)].h + 0.02) * M, BZ + 0.3] as V3, ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: `${BEAKERS[kk].name} 烧杯` })),
   ]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="烧杯"
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['2'], VOICE)} actionsLabel="烧杯"
       stage={<Place at="l2" labels={labels}>
         <group position={[A, Y, BZ]}><Candle /></group>
         <Flame at={[A, Y + (CANDLE.h + 0.008) * M, BZ]} w={0.016 * M} h={0.048 * M} kind="candle" level={level} seed={1} light={0.9} />

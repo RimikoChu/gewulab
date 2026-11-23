@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { Microscope } from './models'
 import { SCOPE, type ScopeKey } from './physics'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -26,7 +29,7 @@ export default function Lesson1() {
   const labels: Label[] = KEYS.filter(k => seen.includes(k)).map(k => ({ id: k, at: [ST.scope + AT[k][0], TOP + AT[k][1], AT[k][2]], className: `scene-tag -translate-y-1/2${part === k ? ' key' : ''}`, children: SCOPE[k].name }))
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="1" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
+    <LabShell title="细胞" lessons={LESSONS} current="1" narration={voiced(NARRATION['1'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="显微镜"
       stage={<LabStage labels={labels} target={SPOT.scope} span={SPAN.scope}><Microscope position={[ST.scope, TOP, 0]} glow={part} /></LabStage>}
       lesson={<LessonBlock no="1" title="认识显微镜" concept="细胞太小，要靠显微镜才看得见" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<ul className="flex flex-col gap-2 text-[14px] text-white/80">{KEYS.map(k => <li key={k}><b className="text-[#7fe3d4]">{SCOPE[k].name}：</b>{SCOPE[k].what}</li>)}</ul>} />}

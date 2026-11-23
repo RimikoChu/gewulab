@@ -10,6 +10,9 @@ import { lerp, rng, seg, useRun, type V3 } from './parts'
 import { FLOWER, MAIN_PARTS, POLLINATION, pollinationOf, type Pollination } from './physics'
 import { Finale, H, Row } from './ui'
 import { FLOWER_A, FLOWER_B, Room, TREE } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'zoom', text: '推近，看桃树上的一朵花', note: '一朵花开在枝条上，下面连着花柄' },
@@ -79,7 +82,7 @@ export default function Lesson6() {
   ]
   const last = did[did.length - 1]
   return (
-    <LabShell title="植物的一生" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="桃花"
+    <LabShell title="植物的一生" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="桃花"
       stage={<Room at={zoom ? 's6b' : 's6'} labels={labels}>
         <group position={FLOWER_A} rotation={POSE_A}>
           <Flower cut={cut} sel={sel} />

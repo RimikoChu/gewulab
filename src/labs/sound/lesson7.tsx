@@ -9,6 +9,9 @@ import { Metal, Rod, bolts, disc, lathe, shell, useSlide, useTasks, type Label }
 import { ENV, Hall, P, Readout, Rings } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { CUT, NOISE, WAYS, noiseAfter, verdict, type WayKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const ORDER: WayKey[] = ['source', 'path', 'ear']
 const TASKS: Task[] = [
@@ -93,7 +96,7 @@ export default function Lesson7() {
   const alu = <meshStandardMaterial color="#4d545b" roughness={0.6} metalness={0.4} />
   const post = <meshPhysicalMaterial color="#a67c14" roughness={0.55} clearcoat={0.4} />
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={WAYS[way].name}
+    <LabShell narration={voiced(NARRATION['7'], VOICE)} title="声现象" lessons={LESSONS} current="7" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={WAYS[way].name}
       stage={<Hall at="noise" labels={labels}>
         <Fan />
         {/* 隔音罩：吊在一副门架上，放下来把风机整个罩住 */}

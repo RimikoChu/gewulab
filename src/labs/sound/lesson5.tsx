@@ -6,6 +6,9 @@ import { useSlide, useTasks, type Label } from '@/lab-kit'
 import { DRUM_TOP, Drum, Hall, METER_MIC, Mallet, Meter, P, Rings, SWING, ringing, type Hit, type Pose } from './gear'
 import { LESSONS, goLesson } from './lessons'
 import { AMPS, FAR, NEAR, level, type HitKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Pos = 'near' | 'far'
 const DIST: Record<Pos, number> = { near: NEAR, far: FAR }, HIT: Record<HitKey, string> = { soft: '轻敲', hard: '重敲' }
@@ -57,7 +60,7 @@ export default function Lesson5() {
     { id: 'd', at: P('drum', DX, 0.1, 1.45), ax: 0.5, name: true, className: 'scene-name', children: '鼓面上撒了碎纸屑' },
   ]
   return (
-    <LabShell title="声现象" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="鼓"
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="声现象" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="鼓"
       stage={<Hall at="drum" labels={labels}>
         <Drum x={DX} level={lv} jump={0.9} />
         <Mallet rest={REST} hit={STRIKE} t0={hit ? hit.t - SWING : null} />

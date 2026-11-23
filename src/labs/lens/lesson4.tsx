@@ -5,6 +5,9 @@ import { useTasks, type Label } from '@/lab-kit'
 import Bench, { benchAt } from './bench'
 import { LESSONS, goLesson } from './lessons'
 import { RAYS, imageDistance, nature } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type U = '30' | '15'
 const TASKS: Task[] = [
@@ -30,7 +33,7 @@ export default function Lesson4() {
   ]
 
   return (
-    <LabShell title="折射和凸透镜" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光路图"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="折射和凸透镜" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="光路图"
       stage={<Bench u={u} rays={n} image={n >= 2} beam={false} dims labels={labels} />}
       lesson={<LessonBlock no="4" title="三条光线画出像" concept="从同一点发出的光，穿过透镜后又交于一点" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

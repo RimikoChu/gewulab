@@ -1,5 +1,8 @@
 // 血液循环 · 第 5 课 体循环：看着整个人，从左心室送出一团血，跟着它走到下肢、在毛细血管里变成静脉血、沿静脉回到右心房；
 // 换去头部再送一次；最后让全身的血一起流起来。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useRef, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -56,7 +59,7 @@ export default function Lesson5() {
     { id: 'ra', at: onBody([-1.2, 12.5, 0.6]), ax: 1, name: true, className: 'scene-name', children: '右心房' },
   ]
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一团血"
+    <LabShell title="血液循环" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['5'], VOICE)} actionsLabel="一团血"
       stage={<Place at="body" labels={labels} want={{ look: { shell: 0.75, lungs: 0.35, tree: 1 }, stream: flow ? 'all' : 'none' }}>
         {sent && <group position-y={BODY_Y}><Bolus route={sent} s={s} size={0.2} /></group>}
       </Place>}

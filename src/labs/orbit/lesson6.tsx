@@ -5,6 +5,9 @@ import { useSlide, useTasks } from '@/lab-kit'
 import Scene6 from './scene6'
 import { LESSONS, goLesson } from './lessons'
 import { noonAltitude, shadowLength, subsolarLat, termOf, type TermKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const LAT = 40, POLE = 10
 type Pick = 'equinox' | 'summer' | 'winter'
@@ -35,7 +38,7 @@ export default function Lesson6() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="卷尺"
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="地球的运动" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="卷尺"
       stage={<Scene6 altitude={alt} shadow={len} />}
       lesson={
         <LessonBlock no="6" title="影子的长短" concept="太阳越高，影子越短" tasks={TASKS} done={T.done} current={task?.id}

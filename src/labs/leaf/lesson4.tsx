@@ -5,6 +5,9 @@ import { useTasks } from '@/lab-kit'
 import Scene4 from './scene4'
 import { LESSONS, goLesson } from './lessons'
 import { PARTS, stomaOpen, type PartKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'look', text: '依次看一看表皮、叶肉、叶脉', note: '表皮保护，叶肉制造有机物，叶脉运输' },
@@ -35,7 +38,7 @@ export default function Lesson4() {
   })()
 
   return (
-    <LabShell title="光合作用和呼吸作用" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="气孔"
+    <LabShell narration={voiced(NARRATION['4'], VOICE)} title="光合作用和呼吸作用" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="气孔"
       stage={<Scene4 part={part} open={open} />}
       lesson={<LessonBlock no="4" title="走进一片叶子" concept="叶绿体是加工厂，气孔是大门" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

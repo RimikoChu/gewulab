@@ -9,6 +9,9 @@ import { Done, H2, Room, useRun } from './parts'
 import { BOIL, BOILING, afterOff, boilAt, boilT, boilTotal, bubbles, readT, samples } from './physics'
 import { BubbleView, TChart, ThermoView } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const TASKS: Task[] = [
   { id: 'boil', text: `点燃酒精灯，从 ${BOILING.start} ℃ 起每分钟记一次，加热到水沸腾`, note: `第 ${boilAt()} 分钟水沸腾了，温度是 ${BOIL} ℃` },
@@ -49,7 +52,7 @@ export default function Lesson4() {
   ]
   const pts = samples(boilT, t), offPts = mode === 'off' ? samples(m => afterOff(boilT(t), m), tOff).map(([m, v]) => [boilTotal() + m, v] as [number, number]) : []
   return (
-    <LabShell title="物态变化" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="酒精灯"
+    <LabShell title="物态变化" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="酒精灯"
       stage={<Room at="s4" labels={labels} bloom={0.35}>
         <Stand at={[X, TOP, Z]}>
           <Ring y={RING} />

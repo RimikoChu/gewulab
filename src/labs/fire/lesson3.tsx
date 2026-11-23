@@ -1,6 +1,9 @@
 // 燃烧和灭火 · 第 3 课 温度要达到着火点（样板课）：实验台第 3 格的通风橱里，一只 500 mL 的烧杯，杯底用纸圈圈着一小块白磷；
 // 往杯里倒水，盖上一片铜片，铜片一头放白磷、一头放红磷。冷水时都不燃烧；热水时铜片上的白磷燃烧、红磷不燃烧、水里的白磷也不燃烧；
 // 再向水里的白磷通入氧气，它燃烧了。白磷有毒，燃烧生成的白烟被通风橱抽走。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -94,7 +97,7 @@ export default function Lesson3() {
     { id: 'n3', at: [X0 + 0.27 * M, Y + 0.12 * M, Z - 0.3 * M], ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '氧气袋' },
   ]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="铜片实验"
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['3'], VOICE)} actionsLabel="铜片实验"
       stage={<Place at="l3" labels={labels}>
         <group position={[X0, Y, BENCH.z1]}><FumeHood /></group>
         {/* 烧杯、杯底纸圈里的白磷、温度计 */}

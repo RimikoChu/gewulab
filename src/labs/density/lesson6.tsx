@@ -8,6 +8,9 @@ import { LESSONS, goLesson } from './lessons'
 import { Carry, Room, STONE_H, Stone, newLive, useLag, usePhase, useSettled, type Live, type V3 } from './parts'
 import { BRINE, STONE, brineAll, brinePart, displaced, stoneRho, stoneV2 } from './physics'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = 'stone' | 'all' | 'part'
 const MODES: Mode[] = ['stone', 'all', 'part'], A = brineAll(), P2 = brinePart()
@@ -87,7 +90,7 @@ export default function Lesson6() {
   const row = (name: string, v: string | null, key = false) => <tr className="border-t border-white/12"><td className="py-1.5 text-white/80">{name}</td><td className={`text-right tabular-nums${key ? ' font-semibold text-[#7fe3d4]' : ''}`}>{v ?? '—'}</td></tr>
   const got = (n: number, v: string) => k > n || (k === n && settled) ? v : null
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={mode === 'stone' ? '测石块的密度' : '测盐水的密度'}
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="质量与密度" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={mode === 'stone' ? '测石块的密度' : '测盐水的密度'}
       stage={<Room at="s6" labels={labels}><Bench key={mode} mode={mode} k={k} live={live} /></Room>}
       lesson={<LessonBlock no="6" title="测石块和盐水" concept="测出质量和体积，用 ρ = m/V 算密度" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

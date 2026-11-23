@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import Scene6 from './scene6'
 import { LESSONS, goLesson } from './lessons'
 import { BARGE, FULL6, G, PLATE_V, WATERS, kN, solve6, ton, type WaterKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Mode = 'plate' | 'barge'
 interface Now { mode: Mode; boxes: number; water: WaterKey; sunk: boolean }
@@ -66,7 +69,7 @@ export default function Lesson6() {
   const plateBuoy = WATERS[water].rho * G * PLATE_V
   const barge = mode === 'barge'
   return (
-    <LabShell title="浮力" lessons={LESSONS} current="6" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="浮力" lessons={LESSONS} current="6" onLesson={goLesson} banner={banner} onReset={resetAll} hint={hint}
       actionsLabel={barge ? '装货（每箱 20 吨）' : '钢板'}
       stage={<Scene6 mode={mode} r={r} boxes={boxes} water={water} sink={sink} />}
       lesson={

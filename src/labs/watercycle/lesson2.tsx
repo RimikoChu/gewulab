@@ -4,6 +4,9 @@ import { Glass, LabButton, LabShell, LessonBlock, type Task } from '@/components
 import { useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { LINKS, TRIP } from './physics'
 import { pathMid } from './world'
 
@@ -23,7 +26,7 @@ export default function Lesson2() {
   const labels: Label[] = open.map((k, i) => ({ id: k, at: pathMid(k), ax: 0.5, className: `scene-tag -translate-y-full${i === n - 1 ? ' key' : ''}`, children: <><small>{i + 1}</small>{LINKS[k].name}</> }))
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="2" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一滴水"
+    <LabShell title="水循环" lessons={LESSONS} current="2" narration={voiced(NARRATION['2'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一滴水"
       stage={<Basin labels={labels} want={{ links: open, rain: n >= 3 ? ['land'] : [] }} />}
       lesson={<LessonBlock no="2" title="一滴水的旅行" concept="水在海洋、大气和陆地之间不停地转" tasks={TASKS} done={T.done} current={T.current?.id}
         theory={<>

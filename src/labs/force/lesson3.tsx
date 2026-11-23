@@ -9,6 +9,9 @@ import { LESSONS, goLesson } from './lessons'
 import { G, HOOK_M, TILT, hooks, ratio } from './physics'
 import { Plot, ScaleView } from './views'
 import { BENCH_Z, ST, TOP, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const MAX = 4
 const TASKS: Task[] = [
@@ -51,7 +54,7 @@ export default function Lesson3() {
     { id: 'n3', at: P(sc[0] - 4, top - 16), ax: 1, name: true, className: 'scene-name -translate-y-1/2', children: '弹簧测力计' },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="钩码（每只 50 g）"
+    <LabShell title="力和运动" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="钩码（每只 50 g）"
       stage={<Place at="l3" labels={labels}>
         <group position={[X, TOP, BENCH_Z]}>
           {/* 铁架台：垫斜时绕底座右下角的棱转 */}

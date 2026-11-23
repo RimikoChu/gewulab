@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { LIQUID } from './parts'
 import { METALS, SETUPS, checks, negativeOf, works, type SetupKey } from './physics'
 import Rig, { X } from './rig'
@@ -35,7 +38,7 @@ export default function Lesson3() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="装置"
+    <LabShell title="原电池" lessons={LESSONS} current="3" narration={voiced(NARRATION['3'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="装置"
       stage={<Rig left={s.a} right={s.b} liquid={s.electrolyte ? LIQUID.acid : LIQUID.alcohol} joined apart={setup === 'apart'} flow={on && ok ? (neg === s.a ? 1 : -1) : 0} gasR={on && ok ? 0.9 : 0} gasL={on && !ok && s.electrolyte && setup === 'apart' ? 0.7 : 0} labels={labels} />}
       lesson={<LessonBlock no="3" title="少一样行不行" concept="四个条件，缺一个都不行" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

@@ -7,6 +7,9 @@ import { Hooks, Place, Plumb, SCALE_RING, STAND, SpringScale, Stand } from './ge
 import { LESSONS, goLesson } from './lessons'
 import { G, SCALE, friction, hooks, pull, weight } from './physics'
 import { BENCH_Z, ST, TOP, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Q { lesson: string; q: string; options: string[]; answer: number; why: string }
 const F7 = friction('base').toFixed(2), DX = 7.5, M4 = 2
@@ -39,7 +42,7 @@ export default function Quiz() {
   const done = { all: answered === QS.length, pass: right >= 7 }
   const hint = mine === null ? '选一个答案' : mine === q.answer ? '答对了' : `答错了：可以回到第 ${q.lesson} 课再做一遍`
   return (
-    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="力和运动" lessons={LESSONS} current="q" onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
+    <LabShell autoStep={() => { if (mine === null) choose(q.answer); else if (i < QS.length - 1) setI(i + 1); return true }} title="力和运动" lessons={LESSONS} current="q" narration={voiced(NARRATION['q'], VOICE)} onLesson={goLesson} onReset={resetAll} hint={hint} actionsLabel={`第 ${i + 1} / ${QS.length} 题`}
       stage={<Place at="q" labels={[]}>
         <group position={[ST.l3, TOP, BENCH_Z]}>
           <Stand />

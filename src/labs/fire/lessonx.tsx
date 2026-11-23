@@ -1,5 +1,8 @@
 // 燃烧和灭火 · 拓展课 训练场上的三件事：都在基地东边的训练塔一带。
 // 隔离带：草坪着火，割出一条隔离带，火烧到那里就灭了。低姿逃生：烟热训练室里的烟往上聚，弯下腰才在烟层下面。水枪灭火：消防车的水炮对着训练塔窗口里的火喷水。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Control, Glass, LabButton, LabShell, LessonBlock, Segmented, type Task } from '@/components/lab/lab-shell'
@@ -76,7 +79,7 @@ export default function LessonX() {
     { id: 'w', at: [WIN[0] + 6, WIN[1] + 4, WIN[2]], className: 'scene-tag -translate-y-1/2', children: <><small>窗口的火</small>{winLevel < 0.05 ? '灭了' : '在烧'}</> },
   ]
   return (
-    <LabShell title="燃烧和灭火" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={TOPICS[topic].name}
+    <LabShell title="燃烧和灭火" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['x'], VOICE)} actionsLabel={TOPICS[topic].name}
       stage={<Place at={spot} labels={labels}>
         {/* 草坪上的火线、烧过的黑地、隔离带 */}
         <mesh rotation-x={-Math.PI / 2} position={[L.x, 0.06, (LAWN.z0 - 3 + front) / 2]}><planeGeometry args={[LAWN.x1 - LAWN.x0 + 4, Math.max(0.1, front - LAWN.z0 + 3)]} /><meshStandardMaterial map={burnt} transparent depthWrite={false} roughness={1} /></mesh>

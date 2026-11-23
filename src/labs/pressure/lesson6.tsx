@@ -5,6 +5,9 @@ import Scene6 from './scene6'
 import { LESSONS, goLesson } from './lessons'
 import { SPOTS, TUBE, kPa, solve6, type SpotKey } from './physics'
 import { useSlide, useTasks } from '@/lab-kit'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 interface Row { id: number; spot: SpotKey; tilt: number; thick: boolean; h: number; len: number }
 const TASKS: Task[] = [
@@ -43,7 +46,7 @@ export default function Lesson6() {
   })()
 
   return (
-    <LabShell title="压强" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="玻璃管（也可以直接抓住它倾斜）"
+    <LabShell narration={voiced(NARRATION['6'], VOICE)} title="压强" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="玻璃管（也可以直接抓住它倾斜）"
       stage={<Scene6 spot={spot} tilt={tilt} thick={thick} h={r.h} len={r.len} onTilt={d => { setTouched(true); setGoal(d) }} dragHint={!touched} />}
       lesson={
         <LessonBlock no="6" title="空气也在压" concept="我们头顶上压着一整片空气" tasks={TASKS} done={T.done} current={task?.id}

@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { useTasks, type Label } from '@/lab-kit'
 import Basin from './basin'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { RAIN, RENEW, runoff } from './physics'
 import { ground } from './world'
 
@@ -30,7 +33,7 @@ export default function LessonX() {
     : sub === 'cut' && on ? [{ id: 'f', at: [15, ground(15, 5) + 2, 5], ax: 0.5, className: 'scene-tag key -translate-y-full', children: <><small>地表径流</small>{runoff('forest')} → {runoff('bare')} mm</> }] : []
 
   return (
-    <LabShell title="水循环" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
+    <LabShell title="水循环" lessons={LESSONS} current="x" narration={voiced(NARRATION['x'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={SUBS[sub].name}
       stage={<Basin at={sub === 'cut' ? 'hill' : sub === 'canal' ? 'dam' : 'all'} labels={labels} want={{ dam: sub === 'canal', canal: sub === 'canal' && on, forest: !(sub === 'cut' && on), rain: sub === 'cut' && on ? ['land'] : [], flow: sub === 'cut' && on ? 2.2 : sub === 'canal' && on ? 0.6 : 1 }} />}
       lesson={<LessonBlock no="拓展" title={SUBS[sub].name} concept={SUBS[sub].title} tasks={TASKS} done={T.done} current={task?.id} theory={<p>{SUBS[sub].say}</p>} />}
       finale={T.finale && (

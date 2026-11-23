@@ -4,6 +4,9 @@ import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented,
 import { Led, useSlide, useTasks, type Label } from '@/lab-kit'
 import At from './at'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { PARTS, RAMP as R, part, rampTime, type PartKey } from './physics'
 import { RAMP } from './world'
 
@@ -40,7 +43,7 @@ export default function Lesson6() {
   ]
 
   return (
-    <LabShell title="机械运动" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小车"
+    <LabShell title="机械运动" lessons={LESSONS} current="6" narration={voiced(NARRATION['6'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小车"
       stage={<At at="ramp" labels={labels}>
         <group position={[RAMP[0] - 1.8, RAMP[1] + 1.0, RAMP[2]]} rotation-z={-TILT}>
           <mesh position={[R.s * K / 2, -0.08, 0]} castShadow><boxGeometry args={[R.s * K + 0.3, 0.1, 0.7]} /><meshStandardMaterial color="#b98650" roughness={0.8} /></mesh>

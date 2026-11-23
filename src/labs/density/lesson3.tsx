@@ -8,6 +8,9 @@ import { Carry, Eye, Line, Room, STONE_H, Stone, usePhase, useSettled, type V3 }
 import { CYL, SIGHT, STONE, displaced, sightReading, stoneV2 } from './physics'
 import { CylView } from './views'
 import { ST, TOP } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 type Look = 'down' | 'level' | 'up'
 const DEG: Record<Look, number> = { down: SIGHT, level: 0, up: -SIGHT }, NAME: Record<Look, string> = { down: '俯视', level: '平视', up: '仰视' }
@@ -68,7 +71,7 @@ export default function Lesson3() {
     ...(!sunk ? [{ id: 's', at: [ROCK_AT[0], TOP + 0.24, ROCK_AT[2]] as V3, ax: 0.5, name: true, className: 'scene-name -translate-y-full', children: '拴着细线的石块' }] : []),
   ]
   return (
-    <LabShell title="质量与密度" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="量筒"
+    <LabShell narration={voiced(NARRATION['3'], VOICE)} title="质量与密度" lessons={LESSONS} current="3" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="量筒"
       stage={<Room at="s3" labels={labels}>
         <Cylinder at={CYL_AT} V={V} />
         <Carry at={sunk ? [CYL_AT[0], TOP + CYL_IN + STONE_H + 0.004, CYL_AT[2]] : ROCK_AT} lift={1.14} speed={2.4} grip={sunk ? [0.012, RIM - CYL_IN - STONE_H + 0.004, 0.11] : [0.17, 0.07]}><Stone thread={sunk ? 'hook' : 'coil'} up={RIM - CYL_IN - STONE_H} /></Carry>

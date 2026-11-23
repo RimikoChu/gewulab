@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { LabStage, useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { SAMPLES, SLIDE, type SampleKey } from './physics'
 import View from './view'
 import { SPAN, SPOT, ST, TOP } from './world'
@@ -35,7 +38,7 @@ export default function Lesson4() {
   ]
 
   return (
-    <LabShell title="细胞" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="装片"
+    <LabShell title="细胞" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="装片"
       stage={<LabStage labels={labels} target={SPOT.prep} span={SPAN.prep}>
         <group position={[X, TOP, 0]}>
           {/* 载玻片、中央的液滴、材料、盖玻片 */}

@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
 import { LESSONS, goLesson } from './lessons'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { METALS, emf, negativeOf, type MetalKey } from './physics'
 import Rig, { X } from './rig'
 import { TOP } from './world'
@@ -33,7 +36,7 @@ export default function Lesson4() {
   ]
 
   return (
-    <LabShell title="原电池" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电极"
+    <LabShell title="原电池" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电极"
       stage={<Rig left={a} right={b} joined flow={(a === n ? 1 : -1) * Math.min(1, volt(pair) / 1.1)} gasR={0.8} labels={labels} />}
       lesson={<LessonBlock no="4" title="换一对电极" concept="较活泼的金属做负极" tasks={TASKS} done={T.done} current={task?.id}
         theory={<>

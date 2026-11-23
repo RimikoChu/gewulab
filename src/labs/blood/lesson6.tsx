@@ -1,5 +1,8 @@
 // 血液循环 · 第 6 课 肺循环：看着胸腔和两肺，从右心室送出一团血，经肺动脉到肺里的毛细血管变成动脉血，经肺静脉回到左心房；
 // 认一认肺动脉、肺静脉里各流着什么血；最后让两条循环一起流。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useRef, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -61,7 +64,7 @@ export default function Lesson6() {
     { id: 'la', at: onHeart([3.4, 3.2, 0]), ax: 0, name: true, className: 'scene-name', children: '左心房' },
   ]
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="一团血"
+    <LabShell title="血液循环" lessons={LESSONS} current="6" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['6'], VOICE)} actionsLabel="一团血"
       stage={<Place at="chest" labels={labels} want={{ look: { shell: 0.35, lungs: 0.8, tree: 1 }, stream: both ? 'all' : 'none' }}>
         {sent && <group position-y={BODY_Y}><Bolus route="lungL" s={s} size={0.1} /></group>}
       </Place>}

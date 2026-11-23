@@ -1,6 +1,9 @@
 // 电路 · 第 5 课 电压和电压表：折叠工作台上三只单节电池盒，用短导线首尾相连（串联电池组），后面一只电压表。
 // 电压表的“−”接线柱接第一节的负极，另一根线接在第一、二或三节的正极上：读出一节 1.5 V、两节 3.0 V；
 // 三节时用 0–3 V 量程，指针打过满刻度，换用 0–15 V 读出 4.5 V。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useState } from 'react'
 import { Control, Glass, LabButton, LabShell, LessonBlock, ParamTile, Segmented, type Task } from '@/components/lab/lab-shell'
 import { useTasks, type Label } from '@/lab-kit'
@@ -57,7 +60,7 @@ export default function Lesson5() {
     { id: 'n1', at: W(add(VM, [-6.8, 9, -1])), ax: 1, name: true, className: 'scene-name -translate-y-1/2', children: '电压表' },
   ]
   return (
-    <LabShell title="电路" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="电压表"
+    <LabShell title="电路" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['5'], VOICE)} actionsLabel="电压表"
       stage={<Place at="l5" labels={labels}>
         <Bench at="l5">
           {BOX.map((b, i) => <group key={i} position={b}><BatteryBox n={1} /></group>)}

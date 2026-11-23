@@ -5,6 +5,9 @@ import { useTasks } from '@/lab-kit'
 import Scene5 from './scene5'
 import { LESSONS, goLesson } from './lessons'
 import { dayLength, hoursText, latText, subsolarLat, termOf, type TermKey } from './physics'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const PLACES = { eq: { name: '赤道', lat: 0 }, bj: { name: '北京', lat: 40 }, arctic: { name: '北纬 70°', lat: 70 } } as const
 type PlaceKey = keyof typeof PLACES
@@ -35,7 +38,7 @@ export default function Lesson5() {
   })()
 
   return (
-    <LabShell title="地球的运动" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="日子"
+    <LabShell narration={voiced(NARRATION['5'], VOICE)} title="地球的运动" lessons={LESSONS} current="5" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="日子"
       stage={<Scene5 day={day} lat={lat} />}
       lesson={
         <LessonBlock no="5" title="白天有多长" concept="直射点在哪个半球，哪个半球白天就长" tasks={TASKS} done={T.done} current={task?.id}

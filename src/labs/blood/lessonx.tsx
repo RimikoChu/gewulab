@@ -1,5 +1,8 @@
 // 血液循环 · 拓展课 量血压 · 数脉搏：给展厅里的这个人量一次血压（电子血压计，袖带缠在左上臂），把读数换成 kPa 和正常范围比；
 // 再按住他左手腕上的桡动脉数 15 秒脉搏，乘以 4 得到每分钟的次数，和心率一样。
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -64,7 +67,7 @@ export default function LessonX() {
     { id: 'w', at: [RA1[0] + 0.3, RA1[1] + 0.15, RA1[2] + 0.2], ax: 0, className: `scene-tag ${c.busy ? 'key' : ''} -translate-y-1/2`, children: c.busy || c.k >= 1 ? <><small>{sec.toFixed(0)} 秒</small>{shown} 次</> : <><small>按在这里</small>桡动脉</> },
   ]
   return (
-    <LabShell title="血液循环" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel={mode === 'bp' ? '血压计' : '数脉搏'}
+    <LabShell title="血液循环" lessons={LESSONS} current="x" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} narration={voiced(NARRATION['x'], VOICE)} actionsLabel={mode === 'bp' ? '血压计' : '数脉搏'}
       stage={<Place at={mode === 'bp' ? 'bp' : 'wrist'} labels={labels} want={{ look: { shell: 0.9, lungs: 0.25, tree: 0.85 }, bp: { on: true, lines, busy: m.busy, squeeze: m.busy ? (m.k < 0.3 ? m.k / 0.3 : 1 - (m.k - 0.3) / 0.7) : 0 } }}>
         <Radial on={mode === 'pulse'} />
       </Place>}

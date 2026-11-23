@@ -9,6 +9,9 @@ import { LESSONS, goLesson } from './lessons'
 import { RAMP, SURF, TRACK, cartAt, cartDist, cartEnd, rampSpeed, type Surf } from './physics'
 import { Bars } from './views'
 import { BENCH_Z, ST, TOP, U } from './world'
+import { voiced } from '@/lab-kit/narration'
+import { NARRATION } from './narration'
+import { VOICE } from './voice'
 
 const KEYS: Surf[] = ['towel', 'cotton', 'wood', 'none']
 const TINT: Record<Surf, string> = { towel: '#d9b64a', cotton: '#7fb0d8', wood: '#d9a070', none: '#7fe3d4' }
@@ -60,7 +63,7 @@ export default function Lesson4() {
     { id: 'n2', at: P(0.5, -3, 9), ax: 0.5, name: true, className: 'scene-name', children: surf === 'none' ? '假想的光滑面' : surf === 'wood' ? '木板' : `木板上铺着${SURF[surf].name}` },
   ]
   return (
-    <LabShell title="力和运动" lessons={LESSONS} current="4" onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小车"
+    <LabShell title="力和运动" lessons={LESSONS} current="4" narration={voiced(NARRATION['4'], VOICE)} onLesson={goLesson} banner={T.banner} onReset={resetAll} hint={hint} actionsLabel="小车"
       stage={<Place at="l4" labels={labels}>
         <group position={[X, Y, BENCH_Z]}>
           <RampTrack surf={surf} />
