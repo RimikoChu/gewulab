@@ -18,12 +18,13 @@ export function SiteFooter() {
   const channels = SITE.channels.filter(c => c.id || c.url || c.qr)
   return (
     <footer className="mt-16 border-t pt-8">
-      <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
         <Way title="上课用" lines={['每一间都能下载成一个网页文件，拷到教室的电脑上双击就能打开，不用联网。']}>
           <a className={link} href={offlineUrl('all')}>下载全部离线包</a>
         </Way>
         {paid && <Way title="学着自己做" lines={['加入培训群，用 AI 辅助，3 到 7 天做出自己的第一节互动微课。', '299 元一年：分步教程、起手模板、群里答疑。']} />}
         {paid && <Way title="请我们定制" lines={['一节微课的互动课件，1000 元上下，按工作量报价。', '先说清做什么，再开工；做完在线预览，满意再交付。']} />}
+        {paid && <Way title="学校和机构合作" lines={['整校或整个机构使用：按学科打包部署到校内电脑，可以不联网；按你们的教材和进度定制成套课件；给老师做使用和制作的培训。', '可签合同、对公结算。']} />}
         <Way title="一起来做" lines={['全部开源。还没做的实验室都可以认领，做出来就上线，写上你的名字。']}>
           <a className={link} href={SITE.repo} target="_blank" rel="noreferrer">源码和认领办法</a>
         </Way>
@@ -32,7 +33,7 @@ export function SiteFooter() {
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-5 border-t pt-6">
           {paid && <div className="flex items-center gap-3">
             {SITE.contact.qr && <img src={SITE.contact.qr} alt="联系方式的二维码" className="size-24 rounded-md border" />}
-            <div><p className="text-[13.5px] font-semibold">培训和定制</p>{SITE.contact.text && <p className="mt-1 text-[13.5px] text-muted-foreground">{SITE.contact.text}</p>}</div>
+            <div><p className="text-[13.5px] font-semibold">培训、定制、商业合作</p>{SITE.contact.text && <p className="mt-1 text-[13.5px] text-muted-foreground">{SITE.contact.text}</p>}</div>
           </div>}
           {channels.map(c => (
             <div key={c.name} className="flex items-center gap-3">
