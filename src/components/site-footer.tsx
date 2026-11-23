@@ -1,4 +1,4 @@
-// 首页底部：这个站点可以怎么用、怎么学着做、怎么请人做、怎么参与，以及去哪里关注。内容在 src/site.ts。
+// 首页底部：课堂使用、课件制作培训、课件定制、学校与机构合作、成为贡献者，以及联系方式和关注的地方。内容在 src/site.ts。
 import { SITE } from '@/site'
 import { offlineUrl } from '@/labs'
 
@@ -19,21 +19,21 @@ export function SiteFooter() {
   return (
     <footer className="mt-16 border-t pt-8">
       <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-        <Way title="上课用" lines={['每一间都能下载成一个网页文件，拷到教室的电脑上双击就能打开，不用联网。']}>
+        <Way title="课堂使用" lines={['每间实验室都可下载为单个网页文件，拷到教室电脑上双击即可打开，无需联网。']}>
           <a className={link} href={offlineUrl('all')}>下载全部离线包</a>
         </Way>
-        {paid && <Way title="学着自己做" lines={['加入培训群，用 AI 辅助，3 到 7 天做出自己的第一节互动微课。', '299 元一年：分步教程、起手模板、群里答疑。']} />}
-        {paid && <Way title="请我们定制" lines={['一节微课的互动课件，1000 元上下，按工作量报价。', '先说清做什么，再开工；做完在线预览，满意再交付。']} />}
-        {paid && <Way title="学校和机构合作" lines={['整校或整个机构使用：按学科打包部署到校内电脑，可以不联网；按你们的教材和进度定制成套课件；给老师做使用和制作的培训。', '可签合同、对公结算。']} />}
-        <Way title="一起来做" lines={['全部开源。还没做的实验室都可以认领，做出来就上线，写上你的名字。']}>
-          <a className={link} href={SITE.repo} target="_blank" rel="noreferrer">源码和认领办法</a>
+        {paid && <Way title="课件制作培训" lines={['面向想自己制作互动课件的老师。借助 AI 工具，3 到 7 天完成第一节互动微课。', '年费 299 元，含分步教程、起手模板和一年答疑。']} />}
+        {paid && <Way title="课件定制" lines={['根据你的教学内容，定制一节互动微课。', '先确认需求与范围，在线预览满意后交付。']} />}
+        {paid && <Way title="学校与机构合作" lines={['校内离线部署、按教材与进度定制成套课件、教师使用与制作培训。']} />}
+        <Way title="成为贡献者" lines={['本项目开源。你可以认领尚未完成的实验室，作品上线后署名展示。']}>
+          <a className={link} href={SITE.repo} target="_blank" rel="noreferrer">查看认领方式</a>
         </Way>
       </div>
       {(paid || channels.length > 0) && (
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-5 border-t pt-6">
           {paid && <div className="flex items-center gap-3">
             {SITE.contact.qr && <img src={SITE.contact.qr} alt="联系方式的二维码" className="size-32 rounded-md border" />}
-            <div><p className="text-[13.5px] font-semibold">培训、定制、商业合作</p>{SITE.contact.text && <p className="mt-1 text-[13.5px] text-muted-foreground">{SITE.contact.text}</p>}</div>
+            <div><p className="text-[13.5px] font-semibold">培训、定制与合作</p>{SITE.contact.text && <p className="mt-1 text-[13.5px] text-muted-foreground">{SITE.contact.text}</p>}</div>
           </div>}
           {channels.map(c => (
             <div key={c.name} className="flex items-center gap-3">
