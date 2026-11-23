@@ -74,6 +74,11 @@
 .ill .w { fill: #fff; } .ill .a { fill: var(--s-bg); } .ill .s { fill: var(--s-mid); }
 .ill .d { stroke-dasharray: 3 5; } .ill .t { stroke-width: 1.2; } .ill .c { stroke: var(--s-mid); } .ill .n { stroke: none; }
 .ill text { stroke: none; fill: #5f5e5b; font: italic 15px var(--font-formula); }
+/* 小沙盘封面（scripts/covers 生成）：中性灰三档、学科色加深两档、细线 */
+.ill .g1 { fill: #f3f2ef; } .ill .g2 { fill: #e7e5e0; } .ill .g3 { fill: #d9d6cf; }
+.ill .a2 { fill: color-mix(in srgb, var(--s-mid) 30%, #fff); } .ill .a3 { fill: color-mix(in srgb, var(--s-mid) 44%, #fff); }
+.ill .wa { fill: #e2e9ee; } .ill .wa2 { fill: #cbd8e0; }   /* 和学科无关的水色 */
+.ill .iso { stroke-width: 0.78; } .ill .iso .t { stroke-width: 0.55; } .ill .iso .c { stroke-width: 1.4; }
 .ill text.zh { font: 500 12.5px -apple-system, "PingFang SC", sans-serif; }
 
 /* 宽幅线稿：线宽不随缩放变粗；小卡片里不显示文字标注 */
