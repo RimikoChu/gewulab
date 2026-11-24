@@ -54,7 +54,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `machine` | 简单机械 | 初中 · 八年级下册 简单机械 | 杠杆的平衡条件；滑轮；机械效率 | 建筑工地：塔吊、撬棍、滑轮组 | 已完成 |
 | `heat` | 内能和热机 | 初中 · 九年级 内能、内能的利用 | 分子热运动；比热容；热机的四个冲程 | 汽车发动机厂 | [#10](https://github.com/RimikoChu/gewulab/issues/10) |
 | `circuit` | 电路 | 初中 · 九年级 电流和电路、电压 电阻 | 串联和并联；电流、电压、电阻怎样测 | 一栋正在做水电改造的房子 | 已完成 |
-| `ohm` | 欧姆定律 | 初中 · 九年级 欧姆定律 | 电流与电压、电阻的关系；伏安法测电阻 | 电子元件检测车间 | [#12](https://github.com/RimikoChu/gewulab/issues/12) |
+| `ohm` | 欧姆定律 | 初中 · 九年级 欧姆定律 | 电流与电压、电阻的关系；伏安法测电阻 | 电子元件检测车间 | 已完成 |
 | `power` | 电功率和生活用电 | 初中 · 九年级 电功率、生活用电 | 电能、电功率；焦耳定律；家庭电路和安全用电 | 一户人家和小区配电房 | [#13](https://github.com/RimikoChu/gewulab/issues/13) |
 | `magnet` | 电与磁 | 初中 · 九年级 电与磁 | 磁场；电生磁；电动机和发电机 | 风力发电场 | [#14](https://github.com/RimikoChu/gewulab/issues/14) |
 | `projectile` | 抛体运动 | 高中 · 必修第二册 抛体运动 | 运动的合成与分解；平抛的规律；初速度、角度、高度怎样一起决定落点 | 山地消防：水炮和空投 | [#61](https://github.com/RimikoChu/gewulab/issues/61) |
@@ -76,7 +76,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `atom` | 分子和原子 | 初中 · 九年级上册 物质构成的奥秘 | 分子在运动、有间隔；原子的结构；元素 | 从一滴水一路放大到原子 | [#16](https://github.com/RimikoChu/gewulab/issues/16) |
 | `water` | 水的净化和组成 | 初中 · 九年级上册 自然界的水 | 沉淀、过滤、吸附、消毒；电解水说明水的组成 | 自来水厂 | 已完成 |
 | `mass` | 质量守恒定律 | 初中 · 九年级上册 化学方程式 | 反应前后质量为什么不变；怎样写化学方程式 | 化工厂的称量和反应车间 | [#18](https://github.com/RimikoChu/gewulab/issues/18) |
-| `carbon` | 碳和二氧化碳 | 初中 · 九年级上册 碳和碳的氧化物 | 二氧化碳的制取和性质；一氧化碳；碳循环 | 汽水厂和温室 | [#19](https://github.com/RimikoChu/gewulab/issues/19) |
+| `carbon` | 碳和二氧化碳 | 初中 · 九年级上册 碳和碳的氧化物 | 二氧化碳的制取和性质；一氧化碳；碳循环 | 汽水厂和温室 | 已完成 |
 | `fire` | 燃烧和灭火 | 初中 · 九年级上册 燃料及其利用 | 燃烧的三个条件；灭火的原理 | 消防训练基地 | 已完成 |
 | `metal` | 金属和炼铁 | 初中 · 九年级下册 金属和金属材料 | 金属的活动性顺序；铁的冶炼；锈蚀和防护 | 钢铁厂：高炉和轧钢线 | [#21](https://github.com/RimikoChu/gewulab/issues/21) |
 | `solution` | 溶液 | 初中 · 九年级下册 溶液 | 溶解和结晶；溶解度曲线；溶质的质量分数 | 盐湖和盐场 | [#22](https://github.com/RimikoChu/gewulab/issues/22) |
@@ -115,7 +115,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | `globe` | 地球和经纬网 | 初中 · 七年级上册 地球和地图 | 经线、纬线；用经纬度定位；半球的划分 | 一艘远洋科考船和一只大地球仪 | [#35](https://github.com/RimikoChu/gewulab/issues/35) |
 | `orbit` | 地球的运动 | 初中 · 七年级上册 地球和地图 | 自转和公转；昼夜、时差、四季、五带 | 太阳和地球 | [#36](https://github.com/RimikoChu/gewulab/issues/36) |
 | `contour` | 等高线地形图 | 初中 · 七年级上册 地球和地图 | 等高线怎样表示地形；山峰、山脊、山谷、鞍部、陡崖 | 一座可以切片的山 | [#37](https://github.com/RimikoChu/gewulab/issues/37) |
-| `plate` | 板块运动 | 初中 · 七年级上册 陆地和海洋 | 大陆漂移；板块怎样运动；火山和地震带 | 海底到高原的一条大剖面 | [#38](https://github.com/RimikoChu/gewulab/issues/38) |
+| `plate` | 板块运动 | 初中 · 七年级上册 陆地和海洋 | 大陆漂移；板块怎样运动；火山和地震带 | 海底到高原的一条大剖面 | 已完成 |
 | `climate` | 天气和气候 | 初中 · 七年级上册 天气与气候 | 气温和降水怎样量、怎样分布；影响气候的因素 | 一座气象站和一条跨越山脉的路线 | [#39](https://github.com/RimikoChu/gewulab/issues/39) |
 | `watercycle` | 水循环 | 高中 · 必修第一册 地球上的水 | 水循环的环节；人类活动影响了哪一环 | 从海洋到雪山的一个流域 | [#40](https://github.com/RimikoChu/gewulab/issues/40) |
 | `wind` | 热力环流和风 | 高中 · 必修第一册 地球上的大气 | 大气怎样受热；热力环流；海陆风、山谷风 | 一座海滨城市 | [#41](https://github.com/RimikoChu/gewulab/issues/41) |
@@ -149,7 +149,7 @@ gh issue list --repo RimikoChu/gewulab --label 可认领 --limit 100
 | 数学 | 8 |
 | 合计 | 72 |
 
-压强、浮力、地球的运动、光合作用和呼吸作用、水循环、细胞、原电池、机械运动、光的折射和凸透镜成像、声现象、光的反射和平面镜、质量与密度、物态变化、力和运动、植物的一生、简单机械、电路、燃烧和灭火、血液循环、水的净化和组成、呼吸二十一间已完成。其余的都可以认领。
+压强、浮力、地球的运动、光合作用和呼吸作用、水循环、细胞、原电池、机械运动、光的折射和凸透镜成像、声现象、光的反射和平面镜、质量与密度、物态变化、力和运动、植物的一生、简单机械、电路、燃烧和灭火、血液循环、水的净化和组成、呼吸、欧姆定律、碳和二氧化碳、板块运动二十四间已完成。其余的都可以认领。
 
 ## 做的先后
 
