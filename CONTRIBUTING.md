@@ -18,7 +18,7 @@
 
 **① 选题。** 两种来法：
 
-- **认领**：[`docs/roadmap.md`](docs/roadmap.md) 是总规划表，一共 72 间，每间有一个议题。在[还可以认领的](https://github.com/RimikoChu/gewulab/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)里挑一间，在它的议题下回复 `/认领`，这一间就归你了，不用等确认。认领后 14 天内要提交规格卡，过期会自动释放；一个人同时最多认领两间。
+- **认领**：[`docs/roadmap.md`](docs/roadmap.md) 是总规划表，一共 72 间，每间有一个议题。在[还可以认领的](https://github.com/RimikoChu/gewulab/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)里挑一间，在它的议题下回复 `/认领`，这一间就归你了，不用等确认。认领后 14 天内要提交规格卡，过期会自动释放；一个人同时最多认领两间（仓库维护者不受这个限制）。
 - **新规划**：表里没有的题目，开一个“新实验室选题”议题，写明学科、学段、教材的册和章、想让学生弄懂什么。维护者看过觉得可以，会给它贴上“可认领”标签，之后一样回复 `/认领`。
 
 **② 规格卡。** 在 `docs/specs/<名字>.md` 写规格卡（模板是 [`docs/spec-template.md`](docs/spec-template.md)），提交请求里只有这一个文件也可以。规格卡定了课次、每课学生做什么、读到什么数、大场景怎么布局。
