@@ -34,7 +34,8 @@ jobs:
             if (assignees.length) return say(`@${who} 这一间已经被 @${assignees[0]} 认领了，请另选一间：[还可以认领的](https://github.com/${owner}/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)。`)
             if (!labels.includes('可认领')) return say(`@${who} 这一间现在不能认领（看它的标签）。[还可以认领的](https://github.com/${owner}/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3A可认领)。`)
             const mine = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', assignee: who, labels: '实验室,已认领' })
-            if (mine.length >= 2) return say(`@${who} 你已经认领了两间（${mine.map(i => '#' + i.number).join('、')}）。做完一间，或者在其中一间回复 \`/放弃\`，再来认领。`)
+            const maintainer = ['OWNER', 'MEMBER'].includes(context.payload.comment.author_association)
+            if (!maintainer && mine.length >= 2) return say(`@${who} 你已经认领了两间（${mine.map(i => '#' + i.number).join('、')}）。做完一间，或者在其中一间回复 \`/放弃\`，再来认领。`)
             await github.rest.issues.addAssignees({ owner, repo, issue_number: issue.number, assignees: [who] })
             await swap('可认领', '已认领')
             await say([
