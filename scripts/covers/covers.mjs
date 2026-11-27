@@ -458,6 +458,43 @@ S.ammonia = () => [BASE('g2'),
   line([[44, 34, 20], [62, 34, 20]], ''), line([[78, 34, 12], [96, 30, 12]], ''), line([[118, 30, 26], [128, 50, 60]], ''),
 ]
 
+// 大气环流：一颗地球，北半球外面三圈环流（强调色的三个椭圆箭头圈），表面几条风带
+S.circulation = () => {
+  const [cx, cy] = P(62, 36, 34), R = 27
+  const lat = (d) => { const a = d * Math.PI / 180, y = cy - R * Math.sin(a), w = R * Math.cos(a); return `<ellipse class="t" cx="${f(cx)}" cy="${f(y)}" rx="${f(w)}" ry="${f(w * 0.18)}" style="fill:none"/>` }
+  const cell = (a0, a1) => { const m = (a0 + a1) / 2, rr = R + 6, x = cx + rr * Math.cos(m), y = cy - rr * Math.sin(m); return `<ellipse class="c" cx="${f(x)}" cy="${f(y)}" rx="${f(R * (a1 - a0) * 0.5)}" ry="5" transform="rotate(${f(-(m * 180 / Math.PI + 90))} ${f(x)} ${f(y)})" style="fill:none"/>` }
+  return [BASE('g1'), ball(62, 36, 34, R, 'wa'), path('g2', `M${f(cx)} ${f(cy - R)}A${R} ${R} 0 0 0 ${f(cx)} ${f(cy + R)}z`),
+    lat(0), lat(30), lat(60), lat(-30), lat(-60),
+    cell(0, 0.52), cell(0.52, 1.05), cell(1.05, 1.57),
+    ...[[0.2, 1], [0.82, -1], [1.3, 1]].map(([a, d]) => arrow([62 + (R + 2) * Math.cos(a), 36, 34 + (R + 2) * Math.sin(a)], [62 + (R + 2) * Math.cos(a + 0.18 * d), 36, 34 + (R + 2) * Math.sin(a + 0.18 * d)], 'c', 4)),
+  ]
+}
+
+// 基因的表达：一段 DNA 双螺旋（左），一条 mRNA 伸向右边的核糖体，核糖体上长出一条肽链（强调色）
+S.expression = () => {
+  const helix = (k) => Array.from({ length: 41 }, (_, i) => [10 + i * 1.6, 30, 46 + 10 * Math.sin(i * 0.4 + k)])
+  const rungs = Array.from({ length: 10 }, (_, i) => { const x = 10 + i * 6.4, a = (x - 10) / 1.6 * 0.4; return line([[x, 30, 46 + 10 * Math.sin(a)], [x, 30, 46 + 10 * Math.sin(a + Math.PI)]], 't') })
+  return [BASE(), line(helix(0), ''), line(helix(Math.PI), ''), ...rungs,
+    path('a2', `M${xy(P(76, 30, 46))}Q${xy(P(92, 30, 30))} ${xy(P(108, 30, 30))}`), line([[76, 30, 46], [108, 30, 30]].map(p => p), ''),
+    ball(116, 30, 28, 11, 'g1'), ball(116, 30, 42, 14, 'w'),
+    ...[[118, 30, 56], [124, 30, 62], [130, 30, 66], [136, 30, 72], [140, 30, 78]].map(p => ball(...p, 2.6, 's')),
+  ]
+}
+
+// 带电粒子在磁场中：回旋加速器。上下两块红色线圈夹着磁极，中间两只铜色 D 形盒，质子的螺旋轨迹是强调色；右边一根电子射线管
+S.bfield = () => {
+  const c = [60, 34, 20], spiral = Array.from({ length: 90 }, (_, i) => { const a = i * 0.21, r = 2 + i * 0.26; return [c[0] + r * Math.cos(a), c[1] + r * Math.sin(a) * 0.9, c[2]] })
+  return [BASE(),
+    cyl(60, 34, 0, 10, 30, { side: 'g3', t: 'g2' }), cyl(60, 34, 10, 16, 32, { side: 'a2', t: 'a3' }),
+    disc(60, 34, 18, 26, 'a3'), line([[60, 8, 18.2], [60, 60, 18.2]], 't'),
+    line(spiral, 'c'),
+    cyl(60, 34, 34, 40, 32, { side: 'a2', t: 'a3' }), cyl(60, 34, 40, 50, 30, { side: 'g2', t: 'g1' }),
+    box(110, 144, 30, 36, 0, 4, { t: 'g2', fr: 'g3', r: 'g3' }), ...[116, 138].map(x => line([[x, 33, 4], [x, 33, 16]], '')),
+    cyl(127, 33, 16, 17, 0.1, { open: true }), path('', `M${xy(P(108, 33, 22))}L${xy(P(146, 33, 22))}`), ell([127, 33, 22], [16, 0, 0], [0, 0, 5], ''),
+    path('c', `M${xy(P(112, 33, 22))}Q${xy(P(127, 33, 30))} ${xy(P(142, 33, 24))}`),
+  ]
+}
+
 // 万有引力与航天：发射场的地面上，左边一座发射塔和火箭；右上方一颗地球，外面一圈卫星轨道，轨道上的卫星是强调色
 S.gravity = () => {
   const sun = [150, 70, 120]
