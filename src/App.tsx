@@ -50,7 +50,10 @@ export default function App() {
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <div>
             <h1 className="text-[30px] leading-tight font-bold tracking-tight sm:text-[36px]">实验室</h1>
-            <p className="mt-1.5 text-base text-muted-foreground">课本里的每个单元，都有一间能动手的实验室。</p>
+            <p className="mt-1.5 text-base text-muted-foreground">
+              课本里的每个单元，都有一间能动手的实验室。
+              <a href={`${import.meta.env.BASE_URL}intro/`} className="ml-2 whitespace-nowrap font-medium text-primary underline-offset-4 hover:underline">三分钟介绍</a>
+            </p>
             <button type="button" onClick={() => setLog(true)} className="mt-2 text-left text-[13.5px] text-muted-foreground underline-offset-2 hover:text-primary hover:underline">
               最近更新 · {day(CHANGES[0].date)}：{CHANGES[0].title}
             </button>
