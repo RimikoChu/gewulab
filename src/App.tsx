@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { NumberTicker } from '@/components/ui/number-ticker'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { HomeHero } from '@/components/home-hero'
 import { LabMap } from '@/components/lab-map'
 import { SiteFooter } from '@/components/site-footer'
 import { CHANGES } from '@/changelog'
 import { LABS, SUBJECTS, type SubjectKey, hasOffline, offlineUrl } from '@/labs'
+import './home.css'
 
 export default function App() {
   const [subject, setSubject] = useState<'all' | SubjectKey>('all')
@@ -32,47 +33,14 @@ export default function App() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 flex h-12 items-center gap-1.5 bg-background/90 px-4 backdrop-blur">
-        <a href="#" className="flex h-8 items-center gap-2.5 rounded-md px-2 text-[15px] font-semibold tracking-wide hover:bg-accent">
-          <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
-            <rect width="24" height="24" rx="6.5" fill="var(--primary)" />
-            <path d="M8.9 13.4h6.2l1.7 2.900a1.3 1.3 0 0 1-1.100 2H8.300a1.3 1.3 0 0 1-1.100-2z" fill="var(--brand-warm)" />
-            <path d="M10 6.2h4M10.8 6.2v3.9l-3.5 6.100a1.3 1.3 0 0 0 1.100 2h7.200a1.3 1.3 0 0 0 1.100-2l-3.500-6.100V6.200" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          格物实验室
-        </a>
-        <span className="flex-1" />
-        <a href="#" className="flex h-8 items-center rounded-md px-2.5 text-sm text-muted-foreground hover:bg-accent">嵌入课件</a>
-        <button type="button" onClick={() => setLog(true)} className="flex h-8 items-center rounded-md px-2.5 text-sm text-muted-foreground hover:bg-accent">更新记录</button>
-      </header>
+      <HomeHero onLog={() => setLog(true)} />
 
-      <main className="mx-auto max-w-[1160px] px-4 pt-5 pb-24 sm:px-10 sm:pt-8">
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <div>
-            <h1 className="text-[30px] leading-tight font-bold tracking-tight sm:text-[36px]">实验室</h1>
-            <p className="mt-1.5 text-base text-muted-foreground">
-              课本里的每个单元，都有一间能动手的实验室。
-              <a href={`${import.meta.env.BASE_URL}intro/`} className="ml-2 whitespace-nowrap font-medium text-primary underline-offset-4 hover:underline">三分钟介绍</a>
-            </p>
-            <button type="button" onClick={() => setLog(true)} className="mt-2 text-left text-[13.5px] text-muted-foreground underline-offset-2 hover:text-primary hover:underline">
-              最近更新 · {day(CHANGES[0].date)}：{CHANGES[0].title}
-            </button>
-          </div>
-          <dl className="flex gap-7 pb-0.5 text-sm text-muted-foreground">
-            {[[LABS.filter(l => l.href).length, '间已上线'], [LABS.length, '间在规划'], [Object.keys(SUBJECTS).length, '个学科']].map(([n, t]) => (
-              <div key={t as string} className="flex items-baseline gap-1.5">
-                <dt className="order-2">{t}</dt>
-                <dd className="text-[22px] font-bold text-foreground tabular-nums"><NumberTicker value={n as number} className="tracking-normal text-foreground" /></dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <div className="mt-6 flex items-center gap-2 border-b">
+      <main id="labs" className="mx-auto max-w-[1360px] scroll-mt-0 px-4 pb-24 sm:px-10">
+        <div className="sticky top-0 z-20 -mx-4 flex items-center gap-2 border-b bg-background/92 px-4 pt-3 backdrop-blur sm:-mx-10 sm:px-10">
           <Tabs value={subject} onValueChange={v => setSubject(v as typeof subject)} className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden [scrollbar-width:none]">
-            <TabsList variant="line" className="h-10 gap-1 p-0">
+            <TabsList variant="line" className="h-11 gap-1 p-0">
               {(['all', ...Object.keys(SUBJECTS)] as ('all' | SubjectKey)[]).map(k => (
-                <TabsTrigger key={k} value={k} className="h-10 flex-none px-2.5 text-[14.5px] font-normal data-[state=active]:font-semibold after:bottom-[-1px]!">
+                <TabsTrigger key={k} value={k} className="h-11 flex-none px-3 text-[15.5px] font-normal data-[state=active]:font-semibold after:bottom-[-1px]!">
                   {k === 'all' ? '全部' : SUBJECTS[k]}<span className="text-[12.5px] font-normal text-faint">{count(k)}</span>
                 </TabsTrigger>
               ))}
@@ -96,7 +64,7 @@ export default function App() {
             {packs.map(([k, t]) => <a key={k} href={offlineUrl(k)} className="text-foreground underline-offset-2 hover:text-primary hover:underline">{t}</a>)}
           </p>
         )}
-        {pool.some(l => subject === 'all' || l.s === subject) ? <LabMap labs={pool} subject={subject} /> : <p className="w-full py-14 text-center text-faint">没有找到相关的实验</p>}
+        {pool.some(l => subject === 'all' || l.s === subject) ? <LabMap labs={pool} subject={subject} full={!!q.trim()} /> : <p className="w-full py-14 text-center text-faint">没有找到相关的实验</p>}
         <SiteFooter />
       </main>
       {log && (
