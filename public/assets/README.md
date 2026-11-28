@@ -29,3 +29,9 @@ NASA 的地球影像，公有领域（美国政府作品，不受版权限制，
 ## voice/
 
 自动演示的解说录音，由 `npm run voice -- <实验室>` 用 MiniMax 语音合成（音色“男播音员”）从各实验室的 `narration.ts` 生成，文字是本项目自己写的解说词。按目录登记，不逐个列文件：`voice/<实验室>/*.mp3` 都是这样来的，改了解说词就重新生成。
+
+## shots/
+
+首页用的实验室场景图：用无界面浏览器打开每间实验室的一课，隐藏界面后把三维场景截下来（640×400，WebP）。画面都是本项目自己的实验室，许可跟项目走。某间实验室的场景改了，就重新截它那一张。
+
+`acid.webp`、`air.webp`、`ammonia.webp`、`atom.webp`、`battery.webp`、`bfield.webp`、`blood.webp`、`breath.webp`、`carbon.webp`、`cells.webp`、`chance.webp`、`chloroplast.webp`、`circuit.webp`、`circulation.webp`、`climate.webp`、`conic.webp`、`contour.webp`、`crystal.webp`、`density.webp`、`derivative.webp`、`digest.webp`、`eco.webp`、`efield.webp`、`electrolysis.webp`、`energy.webp`、`expression.webp`、`fire.webp`、`float.webp`、`force.webp`、`gene.webp`、`globe.webp`、`gravity.webp`、`heat.webp`、`induction.webp`、`ionic.webp`、`leaf.webp`、`lens.webp`、`light.webp`、`linear.webp`、`machine.webp`、`magnet.webp`、`mass.webp`、`meiosis.webp`、`metal.webp`、`mirror.webp`、`momentum.webp`、`motion.webp`、`nerve.webp`、`neuron.webp`、`ocean.webp`、`ohm.webp`、`orbit.webp`、`petro.webp`、`phase.webp`、`plant.webp`、`plate.webp`、`population.webp`、`power.webp`、`pressure.webp`、`projectile.webp`、`pyth.webp`、`quadratic.webp`、`quake.webp`、`similar.webp`、`solution.webp`、`sound.webp`、`sulfuric.webp`、`transform.webp`、`water.webp`、`watercycle.webp`、`wave.webp`、`wind.webp`
