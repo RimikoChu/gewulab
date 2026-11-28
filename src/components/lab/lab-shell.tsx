@@ -83,7 +83,9 @@ export function LabShell({ title, lessons, current, onLesson, stage, lesson, pan
       </div>
 
       <header className="absolute inset-x-0 top-0 z-30 flex h-14 items-center gap-2 px-3 sm:px-4">
-        <a href={HOME} className="flex h-10 flex-none items-center gap-2 rounded-lg px-2.5 text-[15px] font-semibold hover:bg-white/10"><ArrowLeft className="size-4" />{title}</a>
+        <a href={HOME} aria-label="回到格物实验室首页" className="flex h-10 flex-none items-center gap-2 rounded-lg px-2.5 text-[15px] font-semibold hover:bg-white/10"><ArrowLeft className="size-4" />格物实验室</a>
+        {/* 这间实验室的名字：屏幕够宽才放在顶栏里，窄了让位给课次 */}
+        <span className="hidden flex-none text-[14px] text-white/60 2xl:inline">{title}</span>
         <nav className="glass flex min-w-0 items-center gap-0.5 overflow-x-auto rounded-xl p-1 [scrollbar-width:none]" aria-label="课次">
           {lessons.map(l => (
             <button key={l.key} disabled={l.disabled} aria-current={l.key === current} onClick={() => l.key !== current && onLesson(l.key)}
